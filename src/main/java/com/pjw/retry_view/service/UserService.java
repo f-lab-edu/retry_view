@@ -14,8 +14,8 @@ public class UserService {
     private UserRepository userRepository;
 
     public List<UserDTO> getUserList(){
-        List<User> list = userRepository.findAll();
-        List<UserDTO> userList = list.stream().map(i->i.toDTO()).toList();
-        return userList;
+        List<User> userList = userRepository.findAll();
+        List<UserDTO> result = userList.stream().map(user->user.toDTO()).toList();
+        return result;
     }
 }
