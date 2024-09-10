@@ -14,27 +14,35 @@ import java.time.Instant;
 public class UserDTO implements Serializable {
     private Long id;
     private String name;
+    private Integer gender;
+    private String phone;
+    private String address;
     private String loginId;
     private String password;
+    private String nickname;
+    private String type;
+    private Integer state;
+
+    private String createdBy;
     private Instant created;
+    private String updatedBy;
     private Instant updated;
-/*
-    public UserDTO(Long id, String name, String loginId, String password, Instant created, Instant updated){
-        this.id = id;
-        this.name = name;
-        this.loginId = loginId;
-        this.password = password;
-        this.created = created;
-        this.updated = updated;
-    }
-*/
+
     public User toEntity(){
         return User.builder()
                 .id(id)
                 .name(name)
+                .gender(gender)
+                .phone(phone)
+                .address(address)
                 .loginId(loginId)
                 .password(password)
+                .nickname(nickname)
+                .type(type)
+                .state(state)
+                .createdBy(createdBy)
                 .created(created)
+                .updatedBy(updatedBy)
                 .updated(updated)
                 .build();
     }
@@ -44,9 +52,15 @@ public class UserDTO implements Serializable {
         return "UserDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", gender=" + gender +
                 ", loginId='" + loginId + '\'' +
                 ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", type='" + type + '\'' +
+                ", state=" + state +
+                ", createdBy='" + createdBy + '\'' +
                 ", created=" + created +
+                ", updatedBy='" + updatedBy + '\'' +
                 ", updated=" + updated +
                 '}';
     }
