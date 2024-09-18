@@ -1,11 +1,11 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.dto.Gender;
 import com.pjw.retry_view.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -21,7 +21,7 @@ public class User {
     @Column(name = "NAME")
     private String name;
     @Column(name = "GENDER")
-    private Integer gender;
+    private Gender gender;
     @Column(name = "PHONE")
     private String phone;
     @Column(name = "ADDRESS")
@@ -40,12 +40,12 @@ public class User {
 
     @Column(name = "CREATED_BY")
     private String createdBy;
-    @Column(name = "CREATED")
-    private Instant created;
+    @Column(name = "CREATED_AT")
+    private ZonedDateTime createdAt;
     @Column(name = "UPDATED_BY")
     private String updatedBy;
-    @Column(name = "UPDATED")
-    private Instant updated;
+    @Column(name = "UPDATED_AT")
+    private ZonedDateTime updatedAt;
 
     public UserDTO toDTO(){
         return UserDTO.builder()
@@ -60,9 +60,9 @@ public class User {
                 .type(type)
                 .state(state)
                 .createdBy(createdBy)
-                .created(created)
+                .createdAt(createdAt)
                 .updatedBy(updatedBy)
-                .updated(updated)
+                .updatedAt(updatedAt)
                 .build();
     }
 }

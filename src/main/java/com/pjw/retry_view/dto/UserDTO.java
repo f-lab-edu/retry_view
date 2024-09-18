@@ -4,7 +4,7 @@ import com.pjw.retry_view.entity.User;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ import java.time.Instant;
 public class UserDTO implements Serializable {
     private Long id;
     private String name;
-    private Integer gender;
+    private Gender gender;
     private String phone;
     private String address;
     private String loginId;
@@ -24,9 +24,9 @@ public class UserDTO implements Serializable {
     private Integer state;
 
     private String createdBy;
-    private Instant created;
+    private ZonedDateTime createdAt;
     private String updatedBy;
-    private Instant updated;
+    private ZonedDateTime updatedAt;
 
     public User toEntity(){
         return User.builder()
@@ -41,9 +41,9 @@ public class UserDTO implements Serializable {
                 .type(type)
                 .state(state)
                 .createdBy(createdBy)
-                .created(created)
+                .createdAt(createdAt)
                 .updatedBy(updatedBy)
-                .updated(updated)
+                .updatedAt(updatedAt)
                 .build();
     }
 
@@ -53,15 +53,17 @@ public class UserDTO implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
                 ", loginId='" + loginId + '\'' +
                 ", password='" + password + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", type='" + type + '\'' +
                 ", state=" + state +
                 ", createdBy='" + createdBy + '\'' +
-                ", created=" + created +
+                ", createdAt=" + createdAt +
                 ", updatedBy='" + updatedBy + '\'' +
-                ", updated=" + updated +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
