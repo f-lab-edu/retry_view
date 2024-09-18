@@ -1,0 +1,29 @@
+package com.pjw.retry_view.config;
+
+import com.pjw.retry_view.filter.JWTVerifyFilter;
+import com.pjw.retry_view.filter.UserAuthenticateFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    private final JWTVerifyFilter jwtverifyFilter;
+
+    public WebConfig(JWTVerifyFilter jwtVerifyFilter){
+        this.jwtverifyFilter = jwtVerifyFilter;
+    }
+
+    @Bean
+    public FilterRegistrationBean<JWTVerifyFilter> jwtVerifyFilterBean(){
+        FilterRegistrationBean<JWTVerifyFilter> jwtVerifyFilterBean = new FilterRegistrationBean<>();
+        jwtVerifyFilterBean.setFilter(jwtverifyFilter);
+        jwtVerifyFilterBean.setOrder(1);
+        jwtVerifyFilterBean.setUrlPatterns(List.of("/users","/users/info"));
+        return jwtVerifyFilterBean;
+    }
+
+}
