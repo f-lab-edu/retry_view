@@ -2,6 +2,7 @@ package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.entity.User;
+import com.pjw.retry_view.exception.UserNotFoundException;
 import com.pjw.retry_view.repository.UserRepository;
 import com.pjw.retry_view.request.LoginRequest;
 import jakarta.transaction.Transactional;
@@ -32,7 +33,7 @@ public class UserService {
         userParam.setLoginId(loginRequest.getLoginId());
         userParam.setPassword(loginRequest.getPassword());
         Optional<User> user = userRepository.findByLoginIdAndPassword(loginRequest.getLoginId(), loginRequest.getPassword());
-        return user.map(User::toDTO).orElse(null);
+        return user.map(User::toDTO).orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional
