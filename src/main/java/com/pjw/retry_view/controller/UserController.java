@@ -1,51 +1,55 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.request.RegistUserRequest;
+import com.pjw.retry_view.response.RegistUserResponse;
 import com.pjw.retry_view.service.UserService;
 import com.pjw.retry_view.validator.UserValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final UserValidator userValidator;
 
-    @InitBinder
-    public void init(WebDataBinder binder){
-        binder.addValidators(userValidator);
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public String getUsers(){
-        String result = "";
-        for(UserDTO user : userService.getUserList()){
-            result += user;
-        }
-        return "MainController : "+result;
+    public String getUsers() {
+        return "MainController : " + userService.getUserList().stream().map(UserDTO::toString).collect(Collectors.joining(", "));
     }
 
-    @PostMapping
-    public Map<String, Object> registUser(@RequestBody @Validated UserDTO user, BindingResult bindingResult){
-        Map<String, Object> result = new HashMap<>();
+    @GetMapping("/info")
+    public String getUserInfo(HttpServletRequest req) {
+        String loginId = req.getAttribute("loginId").toString();
+        return "Login User Info : " + userService.getUserInfo(loginId);
+    }
 
-        if(bindingResult.hasErrors()){
-            result.put("msg", "failure");
-            result.put("result", bindingResult.getAllErrors());
-        }else{
-            result.put("msg","success");
-            result.put("result", userService.insertUser(user));
+    @PostMapping("/regist")
+    public ResponseEntity<RegistUserResponse> registUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
+        RegistUserResponse response = new RegistUserResponse();
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        if (bindingResult.hasErrors()) {
+            response.setBindingErrors(bindingResult.getAllErrors());
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else {
+            UserDTO registUser = userService.saveUser(userReq.toUserDTO());
+            response.setName(registUser.getName());
+            response.setLoginId(registUser.getLoginId());
+            response.setNickname(registUser.getNickname());
         }
 
-        return result;
+        return new ResponseEntity<RegistUserResponse>(response, httpStatus);
     }
 }

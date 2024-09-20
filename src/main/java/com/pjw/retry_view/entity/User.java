@@ -1,11 +1,11 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.dto.Gender;
 import com.pjw.retry_view.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -18,34 +18,37 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "name")
     private String name;
-    @Column(name = "GENDER")
-    private Integer gender;
-    @Column(name = "PHONE")
+    @Column(name = "gender")
+    private Gender gender;
+    @Column(name = "phone")
     private String phone;
-    @Column(name = "ADDRESS")
+    @Column(name = "address")
     private String address;
-    @Column(name = "LOGIN_ID")
+    @Column(name = "role")
+    private String role;
+    @Column(name = "login_id")
     private String loginId;
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     private String password;
-    @Column(name = "NICKNAME")
+    @Column(name = "nickname")
     private String nickname;
-    @Column(name = "TYPE")
+    @Column(name = "type")
     private String type;
-    @Column(name = "STATE")
+    @Column(name = "state")
     private Integer state;
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
-
-    @Column(name = "CREATED_BY")
+    @Column(name = "created_by")
     private String createdBy;
-    @Column(name = "CREATED")
-    private Instant created;
-    @Column(name = "UPDATED_BY")
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
+    @Column(name = "updated_by")
     private String updatedBy;
-    @Column(name = "UPDATED")
-    private Instant updated;
+    @Column(name = "updated_at")
+    private ZonedDateTime updatedAt;
 
     public UserDTO toDTO(){
         return UserDTO.builder()
@@ -54,15 +57,17 @@ public class User {
                 .gender(gender)
                 .phone(phone)
                 .address(address)
+                .role(role)
                 .loginId(loginId)
                 .password(password)
                 .nickname(nickname)
                 .type(type)
                 .state(state)
+                .refreshToken(refreshToken)
                 .createdBy(createdBy)
-                .created(created)
+                .createdAt(createdAt)
                 .updatedBy(updatedBy)
-                .updated(updated)
+                .updatedAt(updatedAt)
                 .build();
     }
 }
