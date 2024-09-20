@@ -75,7 +75,7 @@ public class JWTService {
     private String tokenSplit(String token){
         if(token.startsWith(BEARER_TYPE)){
             return token.split(" ")[1];
-        }else{
+        } else{
             return token;
         }
     }

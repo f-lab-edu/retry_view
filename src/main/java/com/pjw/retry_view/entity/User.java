@@ -18,33 +18,36 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "name")
     private String name;
-    @Column(name = "GENDER")
+    @Column(name = "gender")
     private Gender gender;
-    @Column(name = "PHONE")
+    @Column(name = "phone")
     private String phone;
-    @Column(name = "ADDRESS")
+    @Column(name = "address")
     private String address;
-    @Column(name = "LOGIN_ID")
+    @Column(name = "role")
+    private String role;
+    @Column(name = "login_id")
     private String loginId;
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     private String password;
-    @Column(name = "NICKNAME")
+    @Column(name = "nickname")
     private String nickname;
-    @Column(name = "TYPE")
+    @Column(name = "type")
     private String type;
-    @Column(name = "STATE")
+    @Column(name = "state")
     private Integer state;
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
-
-    @Column(name = "CREATED_BY")
+    @Column(name = "created_by")
     private String createdBy;
-    @Column(name = "CREATED_AT")
+    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "UPDATED_BY")
+    @Column(name = "updated_by")
     private String updatedBy;
-    @Column(name = "UPDATED_AT")
+    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     public UserDTO toDTO(){
@@ -54,11 +57,13 @@ public class User {
                 .gender(gender)
                 .phone(phone)
                 .address(address)
+                .role(role)
                 .loginId(loginId)
                 .password(password)
                 .nickname(nickname)
                 .type(type)
                 .state(state)
+                .refreshToken(refreshToken)
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)

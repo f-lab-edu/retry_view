@@ -19,26 +19,21 @@ public class UserService {
 
     public List<UserDTO> getUserList(){
         List<User> userList = userRepository.findAll();
-        List<UserDTO> result = userList.stream().map(user->user.toDTO()).toList();
-        return result;
+        return userList.stream().map(User::toDTO).toList();
     }
 
     public UserDTO getUserInfo(String loginId){
         Optional<User> user = userRepository.findByLoginId(loginId);
-        return user.map(User::toDTO).orElse(null);
+        return user.map(User::toDTO).orElseThrow(UserNotFoundException::new);
     }
 
     public UserDTO userLogin(LoginRequest loginRequest){
-        User userParam = new User();
-        userParam.setLoginId(loginRequest.getLoginId());
-        userParam.setPassword(loginRequest.getPassword());
         Optional<User> user = userRepository.findByLoginIdAndPassword(loginRequest.getLoginId(), loginRequest.getPassword());
         return user.map(User::toDTO).orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional
-    public UserDTO insertUser(UserDTO userDTO){
-        UserDTO result = userRepository.save(userDTO.toEntity()).toDTO();
-        return result;
+    public UserDTO saveUser(UserDTO userDTO){
+        return userRepository.save(userDTO.toEntity()).toDTO();
     }
 }

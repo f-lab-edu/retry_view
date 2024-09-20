@@ -17,11 +17,13 @@ public class UserDTO implements Serializable {
     private Gender gender;
     private String phone;
     private String address;
+    private String role;
     private String loginId;
     private String password;
     private String nickname;
     private String type;
     private Integer state;
+    private String refreshToken;
 
     private String createdBy;
     private ZonedDateTime createdAt;
@@ -35,11 +37,13 @@ public class UserDTO implements Serializable {
                 .gender(gender)
                 .phone(phone)
                 .address(address)
+                .role(role)
                 .loginId(loginId)
                 .password(password)
                 .nickname(nickname)
                 .type(type)
                 .state(state)
+                .refreshToken(refreshToken)
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
@@ -55,11 +59,13 @@ public class UserDTO implements Serializable {
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
+                ", role='" + role + '\'' +
                 ", loginId='" + loginId + '\'' +
                 ", password='" + password + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", type='" + type + '\'' +
                 ", state=" + state +
+                ", refreshToken='" + refreshToken + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedBy='" + updatedBy + '\'' +

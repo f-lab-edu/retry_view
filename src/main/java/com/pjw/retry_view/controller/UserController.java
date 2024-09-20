@@ -13,24 +13,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final UserValidator userValidator;
 
-    public UserController(UserService userService, UserValidator userValidator){
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userValidator = userValidator;
-    }
-
-    @InitBinder
-    public void init(WebDataBinder binder) {
-        //binder.addValidators(userValidator);
     }
 
     @GetMapping
@@ -53,7 +44,7 @@ public class UserController {
             response.setBindingErrors(bindingResult.getAllErrors());
             httpStatus = HttpStatus.BAD_REQUEST;
         } else {
-            UserDTO registUser = userService.insertUser(userReq.toUserDTO());
+            UserDTO registUser = userService.saveUser(userReq.toUserDTO());
             response.setName(registUser.getName());
             response.setLoginId(registUser.getLoginId());
             response.setNickname(registUser.getNickname());

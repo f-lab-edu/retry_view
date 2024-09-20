@@ -1,7 +1,6 @@
 package com.pjw.retry_view.config;
 
 import com.pjw.retry_view.filter.JWTVerifyFilter;
-import com.pjw.retry_view.filter.UserAuthenticateFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

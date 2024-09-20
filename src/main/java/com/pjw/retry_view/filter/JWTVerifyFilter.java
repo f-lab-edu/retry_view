@@ -4,6 +4,7 @@ import com.pjw.retry_view.service.JWTService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -34,9 +35,9 @@ public class JWTVerifyFilter implements Filter {
     }
 
     private boolean isAllowMethod(String method){
-        switch(method){
-            case "GET","POST","PUT","DELETE": return true;
-            default: return false;
-        }
+        return switch (method) {
+            case "GET", "POST", "PUT", "DELETE" -> true;
+            default -> false;
+        };
     }
 }
