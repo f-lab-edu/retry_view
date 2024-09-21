@@ -1,6 +1,7 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.request.LoginRequest;
 import com.pjw.retry_view.response.LoginResponse;
 import com.pjw.retry_view.service.JWTService;
@@ -31,9 +32,9 @@ public class LoginController {
     public ResponseEntity<LoginResponse> userLogin(@RequestBody @Valid LoginRequest loginReq){
         UserDTO user = userService.userLogin(loginReq);
 
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("name", user.getName());
-        userInfo.put("loginId", user.getLoginId());
+        UserInfo userInfo = new UserInfo();
+        userInfo.setName(user.getName());
+        userInfo.setLoginId(user.getLoginId());
 
         LoginResponse response = new LoginResponse();
         response.setAccessToken(jwtService.createAccessToken(userInfo));

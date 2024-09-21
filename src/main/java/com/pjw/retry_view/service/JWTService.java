@@ -1,15 +1,18 @@
 package com.pjw.retry_view.service;
 
+import com.pjw.retry_view.dto.UserInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -18,15 +21,21 @@ public class JWTService {
     private final SecretKey secretKey;
     //private static final String AUTH_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    private static final long ACCESS_TOKEN_EXPIRED = 1000 * 60 * 60 * 24; // 1day
+    private static final long ACCESS_TOKEN_EXPIRED = 1000 * 60 * 60; // 1h
     private static final long REFRESH_TOKEN_EXPIRED = 1000 * 60 * 60 * 24 * 7; // 7day
+
+    private static final String USER_INFO_NAME = "name";
+    private static final String USER_INFO_LOGIN_ID = "loginId";
 
     public JWTService(@Value("${jwt.key}")String key){
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
 
-    public String createAccessToken(Map<String, Object> claims){
+    public String createAccessToken(UserInfo userInfo){
         long currentTimeMillis = System.currentTimeMillis();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(USER_INFO_NAME, userInfo.getName());
+        claims.put(USER_INFO_LOGIN_ID, userInfo.getLoginId());
         return Jwts.builder()
                 .claims(claims)
                 .issuer("issuer")
