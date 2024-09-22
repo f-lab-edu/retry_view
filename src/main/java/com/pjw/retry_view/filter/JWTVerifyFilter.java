@@ -29,6 +29,7 @@ public class JWTVerifyFilter implements Filter {
             servletRequest.setAttribute("loginId", loginId);
             filterChain.doFilter(servletRequest,servletResponse);
         }else{
+            // accessToken 재발급받게 하기
             HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
             httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다.");
         }

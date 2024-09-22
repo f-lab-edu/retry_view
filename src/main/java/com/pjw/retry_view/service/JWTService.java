@@ -1,16 +1,24 @@
 package com.pjw.retry_view.service;
 
+import com.pjw.retry_view.response.JWToken;
+import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.dto.UserInfo;
+import com.pjw.retry_view.entity.User;
+import com.pjw.retry_view.exception.InvalidTokenException;
+import com.pjw.retry_view.exception.UserNotFoundException;
+import com.pjw.retry_view.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.crypto.SecretKey;
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +35,11 @@ public class JWTService {
     private static final String USER_INFO_NAME = "name";
     private static final String USER_INFO_LOGIN_ID = "loginId";
 
-    public JWTService(@Value("${jwt.key}")String key){
+    private final UserRepository userRepository;
+
+    public JWTService(@Value("${jwt.key}")String key, UserRepository userRepository){
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
+        this.userRepository = userRepository;
     }
 
     public String createAccessToken(UserInfo userInfo){
@@ -43,6 +54,34 @@ public class JWTService {
                 .expiration(new Date(currentTimeMillis+ACCESS_TOKEN_EXPIRED))
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
+    }
+
+    @Transactional
+    public JWToken renewAccessToken(String refreshToken) throws InvalidTokenException {
+        //HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        if(this.validateToken(refreshToken)){ // refreshToken이 유효한 경우
+            Claims jwtClaims = getClaims(refreshToken);
+            JWToken token = new JWToken();
+            UserDTO user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
+            UserInfo userInfo = new UserInfo();
+            userInfo.setName(user.getName());
+            userInfo.setLoginId(user.getLoginId());
+
+            if(jwtClaims.getExpiration().before(new Date())){ // refreshToken이 만료되지 않은 경우 accessToken만 생성
+                token.setAccessToken(createAccessToken(userInfo));
+                return token;
+            }else{ // refreshToken이 만료된 경우 access,refreshToken 둘 다 생성
+                refreshToken = createRefreshToken();
+                token.setAccessToken(createAccessToken(userInfo));
+                token.setRefreshToken(refreshToken);
+                user.setRefreshToken(refreshToken);
+                userRepository.save(user.toEntity());
+                return token;
+            }
+        }else{
+            throw new InvalidTokenException();
+        }
     }
 
     public String createRefreshToken(){

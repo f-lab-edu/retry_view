@@ -1,5 +1,6 @@
 package com.pjw.retry_view.controller;
 
+import com.pjw.retry_view.response.JWToken;
 import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.request.LoginRequest;
@@ -13,9 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/login")
@@ -37,8 +35,15 @@ public class LoginController {
         userInfo.setLoginId(user.getLoginId());
 
         LoginResponse response = new LoginResponse();
-        response.setAccessToken(jwtService.createAccessToken(userInfo));
-        response.setRefreshToken(jwtService.createRefreshToken());
+        JWToken token = new JWToken();
+        String refreshToken = jwtService.createRefreshToken();
+        token.setAccessToken(jwtService.createAccessToken(userInfo));
+        token.setRefreshToken(refreshToken);
+        response.setToken(token);
+
+        user.setRefreshToken(refreshToken);
+        userService.saveUser(user);
+
         return new ResponseEntity<LoginResponse>(response, HttpStatus.OK);
     }
 }
