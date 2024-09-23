@@ -30,9 +30,7 @@ public class LoginController {
     public ResponseEntity<LoginResponse> userLogin(@RequestBody @Valid LoginRequest loginReq){
         UserDTO user = userService.userLogin(loginReq);
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setName(user.getName());
-        userInfo.setLoginId(user.getLoginId());
+        UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId());
 
         LoginResponse response = new LoginResponse();
         JWToken token = new JWToken();

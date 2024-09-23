@@ -58,27 +58,22 @@ public class JWTService {
 
     @Transactional
     public JWToken renewAccessToken(String refreshToken) throws InvalidTokenException {
-        //HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        boolean isValidate = this.validateToken(refreshToken);
+        boolean isExpired = this.isTokenExpired(refreshToken);
+        JWToken token = new JWToken();
+        UserDTO user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
+        UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId());
 
-        if(this.validateToken(refreshToken)){ // refreshToken이 유효한 경우
-            Claims jwtClaims = getClaims(refreshToken);
-            JWToken token = new JWToken();
-            UserDTO user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
-            UserInfo userInfo = new UserInfo();
-            userInfo.setName(user.getName());
-            userInfo.setLoginId(user.getLoginId());
-
-            if(jwtClaims.getExpiration().before(new Date())){ // refreshToken이 만료되지 않은 경우 accessToken만 생성
-                token.setAccessToken(createAccessToken(userInfo));
-                return token;
-            }else{ // refreshToken이 만료된 경우 access,refreshToken 둘 다 생성
-                refreshToken = createRefreshToken();
-                token.setAccessToken(createAccessToken(userInfo));
-                token.setRefreshToken(refreshToken);
-                user.setRefreshToken(refreshToken);
-                userRepository.save(user.toEntity());
-                return token;
-            }
+        if(isValidate && !isExpired){ // refreshToken이 유효한 경우
+            token.setAccessToken(createAccessToken(userInfo));
+            return token;
+        }else if(isValidate && isExpired){// refreshToken이 만료된 경우 access,refreshToken 둘 다 생성
+            refreshToken = createRefreshToken();
+            token.setAccessToken(createAccessToken(userInfo));
+            token.setRefreshToken(refreshToken);
+            user.setRefreshToken(refreshToken);
+            userRepository.save(user.toEntity());
+            return token;
         }else{
             throw new InvalidTokenException();
         }
@@ -118,6 +113,11 @@ public class JWTService {
             System.out.println("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+
+    public boolean isTokenExpired(String token){
+        Claims jwtClaims = getClaims(token);
+        return jwtClaims.getExpiration().before(new Date());
     }
 
     private String tokenSplit(String token){

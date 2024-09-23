@@ -8,4 +8,10 @@ import lombok.Setter;
 public class UserInfo {
     private String name;
     private String loginId;
+
+    public UserInfo(){}
+    public UserInfo(String name, String loginId){
+        this.name = name;
+        this.loginId = loginId;
+    }
 }
