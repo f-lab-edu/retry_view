@@ -22,7 +22,7 @@ public class UserDTO implements Serializable {
     private String password;
     private String nickname;
     private String type;
-    private Integer state;
+    private UserState state;
     private String refreshToken;
 
     private String createdBy;

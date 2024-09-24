@@ -1,6 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserState;
 import com.pjw.retry_view.entity.User;
 import com.pjw.retry_view.exception.UserNotFoundException;
 import com.pjw.retry_view.repository.UserRepository;
@@ -35,5 +36,19 @@ public class UserService {
     @Transactional
     public UserDTO saveUser(UserDTO userDTO){
         return userRepository.save(userDTO.toEntity()).toDTO();
+    }
+
+    @Transactional
+    public void withdrawUser(String loginId) {
+        User user = userRepository.findByLoginId(loginId).orElseThrow(UserNotFoundException::new);
+        user.setState(UserState.WITHDRAW);
+        user.setName(null);
+        user.setGender(null);
+        user.setPhone(null);
+        user.setAddress(null);
+        user.setPassword(null);
+        user.setNickname(null);
+        System.out.println(user);
+        userRepository.save(user);
     }
 }

@@ -1,7 +1,10 @@
 package com.pjw.retry_view.request;
 
+import com.pjw.retry_view.converter.UserStateEnumConverter;
 import com.pjw.retry_view.dto.Gender;
 import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserState;
+import jakarta.persistence.Convert;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,6 +26,8 @@ public class RegistUserRequest {
     @NotEmpty(message = "비밀번호는 필수 입력값입니다.")
     private String password;
 
+    private UserState state;
+
     private String nickname;
 
     public UserDTO toUserDTO(){
@@ -34,6 +39,7 @@ public class RegistUserRequest {
                 .loginId(loginId)
                 .password(password)
                 .nickname(nickname)
+                .state(state)
                 .build();
     }
 }
