@@ -52,4 +52,11 @@ public class UserController {
 
         return new ResponseEntity<RegistUserResponse>(response, httpStatus);
     }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<String> withdrawUser(HttpServletRequest req){
+        String loginId = req.getAttribute("loginId").toString();
+        userService.withdrawUser(loginId);
+        return ResponseEntity.ok("Success");
+    }
 }

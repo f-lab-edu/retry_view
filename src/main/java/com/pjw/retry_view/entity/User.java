@@ -1,7 +1,9 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.converter.UserStateEnumConverter;
 import com.pjw.retry_view.dto.Gender;
 import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserState;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +39,8 @@ public class User {
     @Column(name = "type")
     private String type;
     @Column(name = "state")
-    private Integer state;
+    @Convert(converter = UserStateEnumConverter.class)
+    private UserState state;
     @Column(name = "refresh_token")
     private String refreshToken;
 
@@ -49,6 +52,17 @@ public class User {
     private String updatedBy;
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
+
+    public void withdraw(){
+        this.state = UserState.WITHDRAW;
+        this.name = null;
+        this.gender = null;
+        this.phone = null;
+        this.address = null;
+        this.password = null;
+        this.nickname = null;
+        this.updatedAt = ZonedDateTime.now();
+    }
 
     public UserDTO toDTO(){
         return UserDTO.builder()
