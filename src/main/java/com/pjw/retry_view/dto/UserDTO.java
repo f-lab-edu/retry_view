@@ -30,6 +30,11 @@ public class UserDTO implements Serializable {
     private String updatedBy;
     private ZonedDateTime updatedAt;
 
+    public void changeRefereshToken(String token){
+        this.refreshToken = token;
+        this.updatedAt = ZonedDateTime.now();
+    }
+
     public User toEntity(){
         return User.builder()
                 .id(id)
