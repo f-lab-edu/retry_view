@@ -36,4 +36,11 @@ public class UserService {
     public UserDTO saveUser(UserDTO userDTO){
         return userRepository.save(userDTO.toEntity()).toDTO();
     }
+
+    @Transactional
+    public void logout(String loginId){
+        User user = userRepository.findByLoginId(loginId).orElseThrow(UserNotFoundException::new);
+        user.setRefreshToken(null);
+        userRepository.save(user);
+    }
 }
