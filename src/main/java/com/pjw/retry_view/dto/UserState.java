@@ -14,6 +14,6 @@ public enum UserState{
     }
 
     public static UserState getValue(int code) {
-        return Arrays.stream(UserState.values()).filter(state -> state.getCode() == code).findFirst().orElse(null);
+        return Arrays.stream(UserState.values()).filter(state -> state.getCode() == code).findFirst().orElse(UserState.NORMAL);
     }
 }

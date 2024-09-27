@@ -53,6 +53,17 @@ public class User {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
+    public void withdraw(){
+        this.state = UserState.WITHDRAW;
+        this.name = null;
+        this.gender = null;
+        this.phone = null;
+        this.address = null;
+        this.password = null;
+        this.nickname = null;
+        this.updatedAt = ZonedDateTime.now();
+    }
+
     public UserDTO toDTO(){
         return UserDTO.builder()
                 .id(id)

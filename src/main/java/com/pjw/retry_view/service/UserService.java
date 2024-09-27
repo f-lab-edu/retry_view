@@ -41,14 +41,7 @@ public class UserService {
     @Transactional
     public void withdrawUser(String loginId) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(UserNotFoundException::new);
-        user.setState(UserState.WITHDRAW);
-        user.setName(null);
-        user.setGender(null);
-        user.setPhone(null);
-        user.setAddress(null);
-        user.setPassword(null);
-        user.setNickname(null);
-        System.out.println(user);
+        user.withdraw();
         userRepository.save(user);
     }
 }
