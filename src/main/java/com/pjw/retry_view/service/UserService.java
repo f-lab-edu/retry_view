@@ -44,4 +44,11 @@ public class UserService {
         user.withdraw();
         userRepository.save(user);
     }
+
+    @Transactional
+    public void logout(String loginId){
+        User user = userRepository.findByLoginId(loginId).orElseThrow(UserNotFoundException::new);
+        user.setRefreshToken(null);
+        userRepository.save(user);
+    }
 }
