@@ -1,6 +1,7 @@
 package com.pjw.retry_view.filter;
 
 import com.pjw.retry_view.service.JWTService;
+import com.pjw.retry_view.util.JWTUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,10 +13,6 @@ import java.io.IOException;
 
 @Component
 public class JWTVerifyFilter implements Filter {
-    private final JWTService jwtService;
-    public JWTVerifyFilter(JWTService jwtService){
-        this.jwtService = jwtService;
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -24,8 +21,8 @@ public class JWTVerifyFilter implements Filter {
         String jwt = httpServletRequest.getHeader("Authorization");
 
         System.out.println("Method: "+method+", JWT: "+jwt);
-        if(isAllowMethod(method) && jwtService.validateToken(jwt)){
-            String loginId = jwtService.getClaims(jwt).get("loginId").toString();
+        if(isAllowMethod(method) && JWTUtil.isValidateToken(jwt)){
+            String loginId = JWTUtil.getClaims(jwt).get("loginId").toString();
             servletRequest.setAttribute("loginId", loginId);
             filterChain.doFilter(servletRequest,servletResponse);
         }else{

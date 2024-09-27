@@ -7,6 +7,7 @@ import com.pjw.retry_view.request.LoginRequest;
 import com.pjw.retry_view.response.LoginResponse;
 import com.pjw.retry_view.service.JWTService;
 import com.pjw.retry_view.service.UserService;
+import com.pjw.retry_view.util.JWTUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +34,12 @@ public class LoginController {
         UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId());
 
         LoginResponse response = new LoginResponse();
-        JWToken token = new JWToken();
-        String refreshToken = jwtService.createRefreshToken();
-        token.setAccessToken(jwtService.createAccessToken(userInfo));
-        token.setRefreshToken(refreshToken);
+        String refreshToken = JWTUtil.createRefreshToken();
+        JWToken token = JWToken.getJWT(JWTUtil.createAccessToken(userInfo), refreshToken);
+
         response.setToken(token);
 
-        user.setRefreshToken(refreshToken);
+        user.changeRefereshToken(refreshToken);
         userService.saveUser(user);
 
         return new ResponseEntity<LoginResponse>(response, HttpStatus.OK);

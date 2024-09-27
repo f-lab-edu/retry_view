@@ -19,7 +19,7 @@ public class TokenController {
     }
 
     @PostMapping
-    public ResponseEntity<JWToken> renweAccessToken(@RequestBody JWToken token){
-        return new ResponseEntity<JWToken>(jwtService.renewAccessToken(token.getRefreshToken()), HttpStatus.OK);
+    public JWToken renewAccessToken(@RequestBody JWToken token){
+        return jwtService.renewAccessToken(token.getRefreshToken());
     }
 }
