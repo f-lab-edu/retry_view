@@ -25,9 +25,9 @@ public class UserDTO implements Serializable {
     private UserState state;
     private String refreshToken;
 
-    private String createdBy;
+    private Long createdBy;
     private ZonedDateTime createdAt;
-    private String updatedBy;
+    private Long updatedBy;
     private ZonedDateTime updatedAt;
 
     public void changeRefereshToken(String token){

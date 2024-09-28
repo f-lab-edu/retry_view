@@ -45,11 +45,11 @@ public class User {
     private String refreshToken;
 
     @Column(name = "created_by")
-    private String createdBy;
+    private Long createdBy;
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
     @Column(name = "updated_by")
-    private String updatedBy;
+    private Long updatedBy;
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
