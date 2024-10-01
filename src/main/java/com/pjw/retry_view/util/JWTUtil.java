@@ -1,5 +1,6 @@
 package com.pjw.retry_view.util;
 
+import com.pjw.retry_view.dto.UserAuth;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.exception.InvalidTokenException;
 import com.pjw.retry_view.repository.UserRepository;
@@ -22,6 +23,7 @@ public class JWTUtil {
     private static final long REFRESH_TOKEN_EXPIRED = 1000 * 60 * 60 * 24 * 7;
     private static final String USER_INFO_NAME = "name";
     private static final String USER_INFO_LOGIN_ID = "loginId";
+    private static final String USER_INFO_ROLE = "role";
     //private static final String AUTH_KEY = "Authorization";
     private static final String BEARER_TYPE = "Bearer";// 7day
 
@@ -38,6 +40,7 @@ public class JWTUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put(USER_INFO_NAME, userInfo.getName());
         claims.put(USER_INFO_LOGIN_ID, userInfo.getLoginId());
+        claims.put(USER_INFO_ROLE, userInfo.getRole().getCode());
         return Jwts.builder()
                 .claims(claims)
                 .issuer("issuer")
@@ -64,6 +67,12 @@ public class JWTUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public static UserAuth getUserAuthInJWT(String token){
+        Claims claims = getClaims(token);
+        String authCode = claims.get(USER_INFO_ROLE,String.class);
+        return UserAuth.getValue(authCode);
     }
 
     public static boolean isValidateToken(String token){

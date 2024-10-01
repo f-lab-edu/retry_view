@@ -8,14 +8,12 @@ public class UserStateEnumConverter implements AttributeConverter<UserState, Int
     @Override
     public Integer convertToDatabaseColumn(UserState userStete) {
         if(userStete == null) return null;
-        System.out.println(userStete);
         return userStete.getCode();
     }
 
     @Override
     public UserState convertToEntityAttribute(Integer code) {
         if(code == null) return UserState.NORMAL;
-        System.out.println(code);
         return UserState.getValue(code);
     }
 

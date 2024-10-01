@@ -8,10 +8,12 @@ import lombok.Setter;
 public class UserInfo {
     private String name;
     private String loginId;
+    private UserAuth role;
 
     public UserInfo(){}
-    public UserInfo(String name, String loginId){
+    public UserInfo(String name, String loginId, UserAuth auth){
         this.name = name;
         this.loginId = loginId;
+        this.role = auth;
     }
 }
