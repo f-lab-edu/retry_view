@@ -8,6 +8,7 @@ import com.pjw.retry_view.request.WriteBoardRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.CollectionUtils;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class Board {
     }
 
     private List<BoardImageDTO> imagesToDTO(){
-        if(boardImage == null) return null;
+        if(CollectionUtils.isEmpty(boardImage)) return null;
         return boardImage.stream().map(BoardImage::toDTO).toList();
     }
 }
