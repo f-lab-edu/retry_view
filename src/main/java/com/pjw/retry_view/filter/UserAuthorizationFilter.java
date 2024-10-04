@@ -22,7 +22,7 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader(JWTUtil.AUTH_KEY);
         UserAuth userAuth = JWTUtil.getUserAuthInJWT(jwt);
         if(uri.startsWith(ADMIN_URL) && !UserAuth.ADMIN.equals(userAuth)){
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다.");

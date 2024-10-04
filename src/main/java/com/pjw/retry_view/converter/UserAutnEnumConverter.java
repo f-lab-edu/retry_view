@@ -4,11 +4,12 @@ import com.pjw.retry_view.dto.UserAuth;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.AttributeConverter;
 
+import java.util.Optional;
+
 public class UserAutnEnumConverter implements AttributeConverter<UserAuth, String> {
     @Override
     public String convertToDatabaseColumn(UserAuth userAuth) {
-        if(userAuth == null) return UserAuth.USER.getCode();
-        return userAuth.getCode();
+        return Optional.ofNullable(userAuth).map(UserAuth::getCode).orElse(UserAuth.USER.getCode());
     }
 
     @Override

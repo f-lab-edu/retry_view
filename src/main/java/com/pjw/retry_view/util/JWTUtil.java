@@ -3,13 +3,11 @@ package com.pjw.retry_view.util;
 import com.pjw.retry_view.dto.UserAuth;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.exception.InvalidTokenException;
-import com.pjw.retry_view.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import io.micrometer.common.util.StringUtils;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +22,8 @@ public class JWTUtil {
     private static final String USER_INFO_NAME = "name";
     private static final String USER_INFO_LOGIN_ID = "loginId";
     private static final String USER_INFO_ROLE = "role";
-    //private static final String AUTH_KEY = "Authorization";
     private static final String BEARER_TYPE = "Bearer";// 7day
+    public static final String AUTH_KEY = "Authorization";
 
     public JWTUtil(@Value("${jwt.key}")String key){
         secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
