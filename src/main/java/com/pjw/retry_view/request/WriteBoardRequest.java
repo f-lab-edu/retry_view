@@ -24,18 +24,6 @@ public class WriteBoardRequest implements Serializable {
     private List<String> images;
     private Long createdBy;
 
-    public BoardDTO toBoardDTO(){
-        return BoardDTO.builder()
-                .type(type)
-                .productId(productId)
-                .content(content)
-                .viewCount(0L)
-                .price(price)
-                .images(imagesToDTO())
-                .createdBy(createdBy)
-                .build();
-    }
-
     private List<BoardImageDTO> imagesToDTO(){
         if(images == null) return null;
         return images.stream().map(BoardImageDTO::getImageDTO).toList();
