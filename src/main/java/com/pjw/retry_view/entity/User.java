@@ -1,7 +1,9 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.converter.UserAutnEnumConverter;
 import com.pjw.retry_view.converter.UserStateEnumConverter;
 import com.pjw.retry_view.dto.Gender;
+import com.pjw.retry_view.dto.UserAuth;
 import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.dto.UserState;
 import jakarta.persistence.*;
@@ -29,7 +31,8 @@ public class User {
     @Column(name = "address")
     private String address;
     @Column(name = "role")
-    private String role;
+    @Convert(converter = UserAutnEnumConverter.class)
+    private UserAuth role;
     @Column(name = "login_id")
     private String loginId;
     @Column(name = "password")

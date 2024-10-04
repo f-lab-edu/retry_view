@@ -4,19 +4,17 @@ import com.pjw.retry_view.dto.UserState;
 import jakarta.persistence.AttributeConverter;
 import org.springframework.core.convert.converter.Converter;
 
+import java.util.Optional;
+
 public class UserStateEnumConverter implements AttributeConverter<UserState, Integer> , Converter<Integer, UserState> {
     @Override
-    public Integer convertToDatabaseColumn(UserState userStete) {
-        if(userStete == null) return null;
-        System.out.println(userStete);
-        return userStete.getCode();
+    public Integer convertToDatabaseColumn(UserState userState) {
+        return Optional.ofNullable(userState).map(UserState::getCode).orElse(UserState.NORMAL.getCode());
     }
 
     @Override
     public UserState convertToEntityAttribute(Integer code) {
-        if(code == null) return UserState.NORMAL;
-        System.out.println(code);
-        return UserState.getValue(code);
+        return Optional.ofNullable(code).map(UserState::getValue).orElse(UserState.NORMAL);
     }
 
     @Override

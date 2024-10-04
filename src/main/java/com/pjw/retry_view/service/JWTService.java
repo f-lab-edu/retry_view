@@ -28,7 +28,7 @@ public class JWTService {
         }
 
         UserDTO user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
-        UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId());
+        UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId(), user.getRole());
 
         boolean isExpired = JWTUtil.isTokenExpired(refreshToken);
         if (isExpired) {
