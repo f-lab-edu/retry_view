@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class WriteBoardRequest implements Serializable {
+    private Long id;
     private BoardType type;
     private Long productId;
     @NotEmpty(message = "내용은 필수 입력값입니다.")

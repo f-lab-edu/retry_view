@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.BoardDTO;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.BoardImage;
 import com.pjw.retry_view.repository.BoardRepository;
+import com.pjw.retry_view.request.WriteBoardRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

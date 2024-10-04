@@ -4,8 +4,6 @@ import com.pjw.retry_view.dto.BoardDTO;
 import com.pjw.retry_view.request.WriteBoardRequest;
 import com.pjw.retry_view.service.BoardService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +23,7 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BoardDTO> writeBoard(@RequestBody @Valid WriteBoardRequest board){
-        BoardDTO result = boardService.saveBoard(board.toBoardDTO());
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public BoardDTO writeBoard(@RequestBody @Valid WriteBoardRequest board){
+        return boardService.saveBoard(board);
     }
 }

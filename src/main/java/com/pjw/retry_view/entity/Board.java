@@ -4,8 +4,10 @@ import com.pjw.retry_view.converter.BoardTypeEnumConverter;
 import com.pjw.retry_view.dto.BoardDTO;
 import com.pjw.retry_view.dto.BoardImageDTO;
 import com.pjw.retry_view.dto.BoardType;
+import com.pjw.retry_view.request.WriteBoardRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -14,8 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "board")
 @Entity
 public class Board {
@@ -30,11 +30,11 @@ public class Board {
     @Column(name = "content")
     private String content;
     @Column(name = "view_count")
+    @ColumnDefault("0")
     private Long viewCount;
     @Column(name = "price")
     private Long price;
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Builder.Default
     private List<BoardImage> boardImage = new ArrayList<>();
 
     @Column(name = "created_by")
@@ -60,6 +60,39 @@ public class Board {
                 .updatedBy(updatedBy)
                 .updatedAt(updatedAt)
                 .build();
+    }
+
+    @Builder
+    public Board(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, List<BoardImage> boardImage, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+        this.id = id;
+        this.type = type;
+        this.productId = productId;
+        this.content = content;
+        this.viewCount = viewCount;
+        this.price = price;
+        this.boardImage = boardImage;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.updatedBy = updatedBy;
+        this.updatedAt = updatedAt;
+    }
+
+    public static Board newBoardFromReq(WriteBoardRequest req, List<BoardImage> images){
+        return Board.builder()
+                .id(req.getId())
+                .type(req.getType())
+                .productId(req.getProductId())
+                .content(req.getContent())
+                .viewCount(0L)
+                .price(req.getPrice())
+                .boardImage(images)
+                .createdBy(req.getCreatedBy())
+                .createdAt(ZonedDateTime.now())
+                .build();
+    }
+
+    public void changeBoardImage(List<BoardImage> images){
+        this.boardImage = images;
     }
 
     private List<BoardImageDTO> imagesToDTO(){

@@ -1,7 +1,5 @@
 package com.pjw.retry_view.dto;
 
-import com.pjw.retry_view.entity.Board;
-import com.pjw.retry_view.entity.BoardImage;
 import lombok.*;
 
 import java.time.ZonedDateTime;
@@ -9,9 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class BoardDTO {
     private Long id;
     private BoardType type;
