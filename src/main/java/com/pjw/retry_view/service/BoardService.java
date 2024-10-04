@@ -23,10 +23,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDTO saveBoard(BoardDTO boardDTO){
-        Board board = boardDTO.toEntity();
-        List<BoardImage> images = boardDTO.getImages().stream().map(img -> BoardImage.getBoardImage(board, img.getImageUrl())).toList();
-        board.setBoardImage(images);
+    public BoardDTO saveBoard(WriteBoardRequest req){
+        Board board = Board.newBoardFromReq(req, null);
+        List<BoardImage> images = req.getImages().stream().map(img -> BoardImage.getBoardImage(board, img, req.getCreatedBy())).toList();
+        board.changeBoardImage(images);
         return boardRepository.save(board).toDTO();
     }
 }

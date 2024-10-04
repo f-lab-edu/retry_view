@@ -23,19 +23,19 @@ public class BoardDTO {
 
     private List<BoardImageDTO> images;
 
-    public Board toEntity(){
-        return Board.builder()
-                .id(id)
-                .type(type)
-                .productId(productId)
-                .content(content)
-                .viewCount(viewCount)
-                .price(price)
-                .createdBy(createdBy)
-                .createdAt(createdAt)
-                .updatedBy(updatedBy)
-                .updatedAt(updatedAt)
-                .build();
+    @Builder
+    public BoardDTO(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<BoardImageDTO> images) {
+        this.id = id;
+        this.type = type;
+        this.productId = productId;
+        this.content = content;
+        this.viewCount = viewCount;
+        this.price = price;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.updatedBy = updatedBy;
+        this.updatedAt = updatedAt;
+        this.images = images;
     }
 
 }

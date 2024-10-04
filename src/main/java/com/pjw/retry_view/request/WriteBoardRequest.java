@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,7 +26,7 @@ public class WriteBoardRequest implements Serializable {
     private Long createdBy;
 
     private List<BoardImageDTO> imagesToDTO(){
-        if(images == null) return null;
+        if(CollectionUtils.isEmpty(images)) return null;
         return images.stream().map(BoardImageDTO::getImageDTO).toList();
     }
 }
