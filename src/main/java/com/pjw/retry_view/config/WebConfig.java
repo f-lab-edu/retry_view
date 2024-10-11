@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<JWTVerifyFilter> jwtVerifyFilterBean = new FilterRegistrationBean<>();
         jwtVerifyFilterBean.setFilter(jwtverifyFilter);
         jwtVerifyFilterBean.setOrder(1);
-        jwtVerifyFilterBean.setUrlPatterns(List.of("/users","/users/info","/logout","/users/withdraw","/board"));
+        jwtVerifyFilterBean.setUrlPatterns(List.of("*"));
         return jwtVerifyFilterBean;
     }
 
