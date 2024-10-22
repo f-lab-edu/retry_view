@@ -8,8 +8,9 @@ import lombok.Setter;
 @Setter
 public class ProductRequest {
     private Long id;
-    @NotNull(message = "카테고리 필수 입력값입니다.")
-    private String category;
+    @NotNull(message = "카테고리는 필수 입력값입니다.")
+    private Long mainCategoryId;
+    private Long subCategoryId;
     @NotNull(message = "제품명은 필수 입력값입니다.")
     private String name;
     private Integer price;

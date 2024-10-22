@@ -1,5 +1,6 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.dto.CategoryDTO;
 import com.pjw.retry_view.dto.ProductDTO;
 import com.pjw.retry_view.request.ProductRequest;
 import jakarta.persistence.*;
@@ -15,8 +16,12 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "category")
-    private String category;
+    @OneToOne
+    @JoinColumn(name = "main_cate_id")
+    private Category mainCategory;
+    @OneToOne
+    @JoinColumn(name = "sub_cate_id")
+    private Category subCategory;
     @Column(name = "name")
     private String name;
     @Column(name = "price")
@@ -38,9 +43,10 @@ public class Product {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public Product(Long id, String category, String name, Integer price, String brand, String detail, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Product(Long id, Category mainCategory, Category subCategory, String name, Integer price, String brand, String detail, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
-        this.category = category;
+        this.mainCategory = mainCategory;
+        this.subCategory = subCategory;
         this.name = name;
         this.price = price;
         this.brand = brand;
@@ -52,9 +58,10 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public static Product newProductFromReq(ProductRequest req){
+    public static Product newProductFromReq(ProductRequest req, Category mainCategory, Category subCategory){
         return Product.builder()
-                .category(req.getCategory())
+                .mainCategory(mainCategory)
+                .subCategory(subCategory)
                 .name(req.getName())
                 .price(req.getPrice())
                 .detail(req.getDetail())
@@ -64,10 +71,11 @@ public class Product {
                 .build();
     }
 
-    public static Product updateProductFromReq(ProductRequest req){
+    public static Product updateProductFromReq(ProductRequest req, Category mainCategory, Category subCategory){
         return Product.builder()
                 .id(req.getId())
-                .category(req.getCategory())
+                .mainCategory(mainCategory)
+                .subCategory(subCategory)
                 .name(req.getName())
                 .price(req.getPrice())
                 .detail(req.getDetail())
@@ -80,7 +88,8 @@ public class Product {
     public ProductDTO toDTO(){
         return ProductDTO.builder()
                 .id(id)
-                .category(category)
+                .mainCategory(categoryToDTO(mainCategory))
+                .subCategory(categoryToDTO(subCategory))
                 .name(name)
                 .price(price)
                 .brand(brand)
@@ -91,5 +100,10 @@ public class Product {
                 .updatedBy(updatedBy)
                 .updatedAt(updatedAt)
                 .build();
+    }
+
+    private CategoryDTO categoryToDTO(Category category){
+        if(category == null) return null;
+        return category.toDTO();
     }
 }

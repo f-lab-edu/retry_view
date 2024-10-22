@@ -1,5 +1,6 @@
 package com.pjw.retry_view.dto;
 
+import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.entity.Product;
 import jakarta.persistence.Column;
 import lombok.Builder;
@@ -8,13 +9,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class ProductDTO {
     private Long id;
-    private String category;
+    private CategoryDTO mainCategory;
+    private CategoryDTO subCategory;
     private String name;
     private Integer price;
     private String brand;
@@ -27,9 +30,10 @@ public class ProductDTO {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public ProductDTO(Long id, String category, String name, Integer price, String brand, String detail, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public ProductDTO(Long id, CategoryDTO mainCategory, CategoryDTO subCategory, String name, Integer price, String brand, String detail, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
-        this.category = category;
+        this.mainCategory = mainCategory;
+        this.subCategory = subCategory;
         this.name = name;
         this.price = price;
         this.brand = brand;
@@ -44,7 +48,8 @@ public class ProductDTO {
     public Product toEntity(){
         return Product.builder()
                 .id(id)
-                .category(category)
+                .mainCategory(categoryToEntity(mainCategory))
+                .subCategory(categoryToEntity(subCategory))
                 .name(name)
                 .price(price)
                 .brand(brand)
@@ -55,5 +60,10 @@ public class ProductDTO {
                 .updatedBy(updatedBy)
                 .updatedAt(updatedAt)
                 .build();
+    }
+
+    private Category categoryToEntity(CategoryDTO category){
+        if(category == null) return null;
+        return category.toEntity();
     }
 }
