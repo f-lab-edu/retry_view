@@ -35,7 +35,7 @@ public class JWTVerifyFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String uri = request.getRequestURI();
-        return FilterUtil.excludeUrlPatterns.contains(uri);
+        return FilterUtil.isExcludeUrlPatterns(uri);
     }
 
     private boolean isAllowMethod(String method){
