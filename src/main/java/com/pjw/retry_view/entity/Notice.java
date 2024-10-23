@@ -49,13 +49,12 @@ public class Notice {
         this.updatedAt = updatedAt;
     }
 
-    public static Notice newNoticeFromReq(WriteNoticeRequest req, List<NoticeImage> images){
+    public static Notice newNoticeFromReq(String content, Long createdBy, List<NoticeImage> images){
         return Notice.builder()
-                .id(req.getId())
-                .content(req.getContent())
+                .content(content)
                 .viewCount(0L)
                 .noticeImage(images)
-                .createdBy(req.getCreatedBy())
+                .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build()
                 .changeNoticeImage();

@@ -23,7 +23,7 @@ public class NoticeService {
 
     public NoticeDTO saveNotice(WriteNoticeRequest req){
         List<NoticeImage> images = req.getImages().stream().map(NoticeImage::getNoticeImage).toList();
-        Notice notice = Notice.newNoticeFromReq(req, images);
+        Notice notice = Notice.newNoticeFromReq(req.getContent(), req.getCreatedBy(), images);
         return noticeRepository.save(notice).toDTO();
     }
 
