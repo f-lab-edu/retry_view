@@ -1,6 +1,9 @@
 # Retry View
 제품 리뷰 + 중고 물품 거래 서비스 API
 
+### ERD
+https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
+
 ### 회원 가입/탈퇴 기능
 
 ### 리뷰 기능
