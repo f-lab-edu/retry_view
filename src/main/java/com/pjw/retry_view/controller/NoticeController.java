@@ -23,7 +23,7 @@ public class NoticeController {
     }
 
     @PostMapping
-    public NoticeDTO writeNotice(@RequestBody @Valid WriteNoticeRequest notice){
+    public NoticeDTO saveNotice(@RequestBody @Valid WriteNoticeRequest notice){
         return noticeService.saveNotice(notice);
     }
 }
