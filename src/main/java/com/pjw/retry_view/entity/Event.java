@@ -61,21 +61,22 @@ public class Event {
                 .build();
     }
 
-    public void updateEvent(WriteEventRequest req){
-        this.content = req.getContent();
-        this.startAt = req.getStartAt();
-        this.endAt = req.getEndAt();
-        this.updatedBy = req.getUpdatedBy();
+    public void updateEvent(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long updatedBy){
+        this.content =content;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.updatedBy = updatedBy;
         this.updatedAt = ZonedDateTime.now();
     }
 
-    public static Event newEventFromReq(WriteEventRequest req){
+    public static Event newOne(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy){
         return Event.builder()
-                .id(req.getId())
-                .content(req.getContent())
+                .content(content)
                 .viewCount(0L)
+                .startAt(startAt)
+                .endAt(endAt)
                 .eventImage(new ArrayList<EventImage>())
-                .createdBy(req.getCreatedBy())
+                .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }

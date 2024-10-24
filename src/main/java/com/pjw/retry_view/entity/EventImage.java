@@ -38,7 +38,7 @@ public class EventImage {
         this.event = event;
     }
 
-    public static EventImage getEventImage(Long imageId, String imageUrl, Long createdBy){
+    public static EventImage newOne(Long imageId, String imageUrl, Long createdBy){
         return EventImage.builder()
                 .id(imageId)
                 .imageUrl(imageUrl)
