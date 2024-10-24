@@ -49,7 +49,7 @@ public class Notice {
         this.updatedAt = updatedAt;
     }
 
-    public static Notice newNoticeFromReq(String content, Long createdBy, List<NoticeImage> images){
+    public static Notice newOne(String content, Long createdBy, List<NoticeImage> images){
         return Notice.builder()
                 .content(content)
                 .viewCount(0L)
