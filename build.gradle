@@ -13,6 +13,10 @@ java {
 	}
 }
 
+bootJar{
+	archiveFileName="${rootProject.name}.jar"
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -43,8 +47,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.3.3'
+
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
