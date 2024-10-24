@@ -2,7 +2,6 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.dto.CategoryDTO;
 import com.pjw.retry_view.dto.ProductDTO;
-import com.pjw.retry_view.request.ProductRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,29 +57,31 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public static Product newProductFromReq(ProductRequest req, Category mainCategory, Category subCategory){
+    public static Product newOne(Category mainCategory, Category subCategory, String name, Integer price, String detail, String brand, String imageUrl, Long createdBy){
         return Product.builder()
                 .mainCategory(mainCategory)
                 .subCategory(subCategory)
-                .name(req.getName())
-                .price(req.getPrice())
-                .detail(req.getDetail())
-                .brand(req.getBrand())
-                .imageUrl(req.getImageUrl())
+                .name(name)
+                .price(price)
+                .detail(detail)
+                .brand(brand)
+                .imageUrl(imageUrl)
+                .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }
 
-    public static Product updateProductFromReq(ProductRequest req, Category mainCategory, Category subCategory){
+    public static Product updateProduct(Long id, Category mainCategory, Category subCategory, String name, Integer price, String detail, String brand, String imageUrl, Long updatedBy){
         return Product.builder()
-                .id(req.getId())
+                .id(id)
                 .mainCategory(mainCategory)
                 .subCategory(subCategory)
-                .name(req.getName())
-                .price(req.getPrice())
-                .detail(req.getDetail())
-                .brand(req.getBrand())
-                .imageUrl(req.getImageUrl())
+                .name(name)
+                .price(price)
+                .detail(detail)
+                .brand(brand)
+                .imageUrl(imageUrl)
+                .updatedBy(updatedBy)
                 .updatedAt(ZonedDateTime.now())
                 .build();
     }

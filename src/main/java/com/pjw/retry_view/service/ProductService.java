@@ -30,13 +30,14 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(ResolutionException::new).toDTO();
     }
 
+    @Transactional
     public ProductDTO saveProduct(ProductRequest req){
         Category mainCategory = categoryRepository.findById(req.getMainCategoryId()).orElse(null);
         Category subCategory = null;
         if(req.getSubCategoryId() != null) {
             subCategory = categoryRepository.findById(req.getSubCategoryId()).orElse(null);
         }
-        Product product = Product.newProductFromReq(req, mainCategory, subCategory);
+        Product product = Product.newOne(mainCategory, subCategory, req.getName(), req.getPrice(), req.getDetail(), req.getBrand(), req.getImageUrl(), req.getCreatedBy());
         return productRepository.save(product).toDTO();
     }
 
@@ -47,10 +48,11 @@ public class ProductService {
         if(req.getSubCategoryId() != null) {
             categoryRepository.findById(req.getSubCategoryId()).orElse(null);
         }
-        Product product = Product.newProductFromReq(req, mainCategory, subCategory);
+        Product product = Product.updateProduct(req.getId(), mainCategory, subCategory, req.getName(), req.getPrice(), req.getDetail(), req.getBrand(), req.getImageUrl(), req.getUpdatedBy());
         return productRepository.save(product).toDTO();
     }
 
+    @Transactional
     public void deleteProduct(Long id){
         productRepository.deleteById(id);
     }

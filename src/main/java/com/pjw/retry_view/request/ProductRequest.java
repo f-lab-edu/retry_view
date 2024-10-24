@@ -18,4 +18,7 @@ public class ProductRequest {
     private String brand;
     private String detail;
     private String imageUrl;
+
+    private Long createdBy;
+    private Long updatedBy;
 }
