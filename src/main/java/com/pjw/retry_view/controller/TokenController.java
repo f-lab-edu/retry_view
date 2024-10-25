@@ -33,7 +33,11 @@ public class TokenController {
 
     @GetMapping("/test")
     public ResponseEntity<String> test(){
-        redisService.setValues(RefreshTokenDTO.getRefreshToken("qkrwldnjs","tokenTEST", Duration.ofDays(7L)));
-        return new ResponseEntity<>(redisService.getValue("qkrwldnjs").getRefreshToken(), HttpStatus.OK);
+        String key = "key";
+        String value = "qkrwldnjs";
+        Duration duration = Duration.ofDays(7L);
+        RefreshTokenDTO token = RefreshTokenDTO.getRefreshToken(key, value, Duration.ofDays(1));
+        redisService.setValues(token.getKey(), value, duration);
+        return new ResponseEntity<>(token.getRefreshToken(), HttpStatus.OK);
     }
 }
