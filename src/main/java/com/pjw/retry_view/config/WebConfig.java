@@ -1,5 +1,6 @@
 package com.pjw.retry_view.config;
 
+import com.pjw.retry_view.converter.CategoryTypeEnumConverter;
 import com.pjw.retry_view.converter.UserStateEnumConverter;
 import com.pjw.retry_view.filter.JWTVerifyFilter;
 import com.pjw.retry_view.filter.UserAuthorizationFilter;
@@ -44,5 +45,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         WebMvcConfigurer.super.addFormatters(registry);
         registry.addConverter(new UserStateEnumConverter());
+        registry.addConverter(new CategoryTypeEnumConverter());
     }
 }
