@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.CategoryDTO;
 import com.pjw.retry_view.dto.CategoryType;
 import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,14 +21,17 @@ public class CategoryService {
         return categoryRepository.findByTypeAndGroupId(type, groupId).stream().map(Category::toDTO).toList();
     }
 
+    @Transactional
     public CategoryDTO saveCategory(CategoryDTO req){
         return categoryRepository.save(req.toEntity()).toDTO();
     }
 
+    @Transactional
     public CategoryDTO updateCategory(CategoryDTO req){
         return categoryRepository.save(req.toEntity()).toDTO();
     }
 
+    @Transactional
     public void deleteCategory(Long id){
         categoryRepository.deleteById(id);
     }
