@@ -19,8 +19,6 @@ public class JWTService {
         this.userRepository = userRepository;
     }
 
-
-
     @Transactional
     public JWToken renewAccessToken(String refreshToken) throws InvalidTokenException {
         if (JWTUtil.isValidateToken(refreshToken)) {
@@ -28,7 +26,7 @@ public class JWTService {
         }
 
         UserDTO user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
-        UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId(), user.getRole());
+        UserInfo userInfo = new UserInfo(user.getId(), user.getName(), user.getLoginId(), user.getRole());
 
         boolean isExpired = JWTUtil.isTokenExpired(refreshToken);
         if (isExpired) {
