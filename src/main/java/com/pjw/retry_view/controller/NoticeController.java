@@ -22,8 +22,23 @@ public class NoticeController {
         return noticeService.getNoticeList();
     }
 
+    @GetMapping("/{id}")
+    public NoticeDTO getNotice(@PathVariable(name = "id") Long id){
+        return noticeService.getNotice(id);
+    }
+
     @PostMapping
     public NoticeDTO saveNotice(@RequestBody @Valid WriteNoticeRequest notice){
         return noticeService.saveNotice(notice);
+    }
+
+    @PutMapping("/{id}")
+    public NoticeDTO updateNotice(@RequestBody @Valid WriteNoticeRequest notice, @PathVariable(name = "id") Long id){
+        return noticeService.updateNotice(notice, id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteNotice(@PathVariable(name = "id") Long id){
+        noticeService.deleteNotice(id);
     }
 }

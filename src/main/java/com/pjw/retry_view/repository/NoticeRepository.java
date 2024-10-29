@@ -12,4 +12,5 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     public List<Notice> findAll();
     public Optional<Notice> findById(Long id);
     public Notice save(Notice notice);
+    public void deleteById(Long id);
 }
