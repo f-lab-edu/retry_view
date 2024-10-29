@@ -35,7 +35,7 @@ public class Board {
     private Long viewCount;
     @Column(name = "price")
     private Long price;
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardImage> boardImage = new ArrayList<>();
 
     @Column(name = "created_by")
@@ -78,18 +78,26 @@ public class Board {
         this.updatedAt = updatedAt;
     }
 
-    public static Board newBoardFromReq(WriteBoardRequest req, List<BoardImage> images){
+    public static Board newOne(BoardType type, Long productId, String content, Long price, Long createdBy){
         return Board.builder()
-                .id(req.getId())
-                .type(req.getType())
-                .productId(req.getProductId())
-                .content(req.getContent())
+                .type(type)
+                .productId(productId)
+                .content(content)
                 .viewCount(0L)
-                .price(req.getPrice())
-                .boardImage(images)
-                .createdBy(req.getCreatedBy())
+                .price(price)
+                .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
+    }
+
+    public void updateBoard(Long id, BoardType type, Long productId, String content, Long price, Long updatedBy){
+        this.id = id;
+        this.type = type;
+        this.productId = productId;
+        this.content = content;
+        this.price = price;
+        this.updatedBy = updatedBy;
+        this.updatedAt = ZonedDateTime.now();
     }
 
     public void changeBoardImage(List<BoardImage> images){
