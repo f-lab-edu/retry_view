@@ -1,9 +1,7 @@
 package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.dto.EventDTO;
-import com.pjw.retry_view.dto.EventImageDTO;
-import com.pjw.retry_view.request.WriteBoardRequest;
-import com.pjw.retry_view.request.WriteEventRequest;
+import com.pjw.retry_view.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,8 +32,9 @@ public class Event {
     private ZonedDateTime startAt;
     @Column(name = "end_at")
     private ZonedDateTime endAt;
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private List<EventImage> eventImage = new ArrayList<>();
+
+    @Transient
+    private List<Image> images = new ArrayList<>();
 
     @Column(name = "created_by")
     private Long createdBy;
@@ -75,28 +74,27 @@ public class Event {
                 .viewCount(0L)
                 .startAt(startAt)
                 .endAt(endAt)
-                .eventImage(new ArrayList<EventImage>())
                 .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }
 
     @Builder
-    public Event(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<EventImage> eventImage, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Event(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.content = content;
         this.viewCount = viewCount;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.eventImage = eventImage;
+        this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
         this.updatedAt = updatedAt;
     }
 
-    private List<EventImageDTO> imagesToDTO(){
-        if(CollectionUtils.isEmpty(eventImage)) return null;
-        return eventImage.stream().map(EventImage::toDTO).toList();
+    private List<ImageDTO> imagesToDTO(){
+        if(CollectionUtils.isEmpty(images)) return null;
+        return images.stream().map(Image::toDTO).toList();
     }
 }

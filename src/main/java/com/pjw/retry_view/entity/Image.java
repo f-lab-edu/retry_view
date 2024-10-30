@@ -1,6 +1,8 @@
 package com.pjw.retry_view.entity;
 
-import com.pjw.retry_view.dto.EventImageDTO;
+import com.pjw.retry_view.converter.ImageTypeConverter;
+import com.pjw.retry_view.dto.ImageDTO;
+import com.pjw.retry_view.dto.ImageType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,14 +15,16 @@ import java.time.ZonedDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "event_image")
-public class EventImage {
+@Table(name = "image")
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @Column(name = "type")
+    @Convert(converter = ImageTypeConverter.class)
+    private ImageType type;
+    @Column(name = "parent_id")
+    private Long parentId;
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -33,24 +37,26 @@ public class EventImage {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public void changeEvent(Event event){
-        event.getEventImage().add(this);
-        this.event = event;
-    }
-
-    public static EventImage newOne(Long imageId, String imageUrl, Long createdBy){
-        return EventImage.builder()
+    public static Image newOne(Long imageId, ImageType type, Long parentId, String imageUrl, Long createdBy){
+        return Image.builder()
                 .id(imageId)
+                .type(type)
+                .parentId(parentId)
                 .imageUrl(imageUrl)
                 .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }
 
+    public void changeParentId(Long parentId){
+        this.parentId = parentId;
+    }
+
     @Builder
-    public EventImage(Long id, Event event, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Image(Long id, ImageType type, Long parentId, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
-        this.event = event;
+        this.type = type;
+        this.parentId = parentId;
         this.imageUrl = imageUrl;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
@@ -58,28 +64,16 @@ public class EventImage {
         this.updatedAt = updatedAt;
     }
 
-    public EventImageDTO toDTO(){
-        return EventImageDTO.builder()
+    public ImageDTO toDTO(){
+        return ImageDTO.builder()
                 .id(id)
-                .eventId(event.getId())
+                .type(type)
+                .parentId(parentId)
                 .imageUrl(imageUrl)
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
                 .updatedAt(updatedAt)
                 .build();
-    }
-
-    @Override
-    public String toString() {
-        return "EventImage{" +
-                "id=" + id +
-                ", event=" + event +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", createdBy=" + createdBy +
-                ", createdAt=" + createdAt +
-                ", updatedBy=" + updatedBy +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }
