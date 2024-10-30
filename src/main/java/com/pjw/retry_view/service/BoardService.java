@@ -9,6 +9,7 @@ import com.pjw.retry_view.repository.BoardRepository;
 import com.pjw.retry_view.repository.ImageRepository;
 import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteBoardRequest;
+import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -66,7 +67,7 @@ public class BoardService {
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.BOARD, id).stream().map(Image::getId).toList();
-        List<Long> deleteImageIds = getDeleteImageIds(imageIds, oldImageIds);
+        List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
             board.getImages().removeIf(img->deleteImageIds.contains(img.getId()));
@@ -90,14 +91,4 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
-    public List<Long> getDeleteImageIds(List<Long> images, List<Long> oldImageIds){
-        if(CollectionUtils.isEmpty(images) || CollectionUtils.isEmpty(oldImageIds)) return null;
-        List<Long> deleteImageIds = new ArrayList<>();
-        for(Long id : oldImageIds){
-            if(!images.contains(id)){
-                deleteImageIds.add(id);
-            }
-        }
-        return deleteImageIds;
-    }
 }

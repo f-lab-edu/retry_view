@@ -10,6 +10,7 @@ import com.pjw.retry_view.repository.ImageRepository;
 import com.pjw.retry_view.repository.NoticeRepository;
 import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteNoticeRequest;
+import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -64,10 +65,10 @@ public class NoticeService {
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.EVENT, id).stream().map(Image::getId).toList();
-        List<Long> deleteImageIds = getDeleteImageIds(imageIds, oldImageIds);
+        List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
-            //notice.getImages().removeIf(img->deleteImageIds.contains(img.getId()));
+            notice.getImages().removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
         for(Image noticeImage : reqImages){
@@ -87,17 +88,6 @@ public class NoticeService {
         List<Image> images = imageRepository.findByTypeAndParentId(ImageType.NOTICE, id);
         imageRepository.deleteByIds(notice.getImages().stream().map(Image::getId).toList());
         noticeRepository.deleteById(id);
-    }
-
-    public List<Long> getDeleteImageIds(List<Long> images, List<Long> oldImageIds){
-        if(CollectionUtils.isEmpty(images) || CollectionUtils.isEmpty(oldImageIds)) return null;
-        List<Long> deleteImageIds = new ArrayList<>();
-        for(Long id : oldImageIds){
-            if(!images.contains(id)){
-                deleteImageIds.add(id);
-            }
-        }
-        return deleteImageIds;
     }
 
 }
