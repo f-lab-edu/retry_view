@@ -68,6 +68,10 @@ public class Notice {
         this.updatedAt = ZonedDateTime.now();
     }
 
+    public void changeImage(List<Image> images){
+        this.images = images;
+    }
+
     public NoticeDTO toDTO(){
         return NoticeDTO.builder()
                 .id(id)

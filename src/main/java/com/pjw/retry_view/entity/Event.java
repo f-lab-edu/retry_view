@@ -68,6 +68,10 @@ public class Event {
         this.updatedAt = ZonedDateTime.now();
     }
 
+    public void changeImage(List<Image> images){
+        this.images = images;
+    }
+
     public static Event newOne(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy){
         return Event.builder()
                 .content(content)

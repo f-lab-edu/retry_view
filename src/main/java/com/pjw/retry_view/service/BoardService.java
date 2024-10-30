@@ -56,21 +56,21 @@ public class BoardService {
             imageRepository.save(boardImage);
         }
 
-        board.changeBoardImage(images);
+        board.changeImage(images);
         return board.toDTO();
     }
 
     @Transactional
     public BoardDTO updateBoard(WriteBoardRequest req, Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResolutionException::new);
-        List<Image> reqImages = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.BOARD, board.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.BOARD, board.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.BOARD, id).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
-            board.getImages().removeIf(img->deleteImageIds.contains(img.getId()));
+            reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
         for(Image boardImage : reqImages){
@@ -80,14 +80,15 @@ public class BoardService {
             }
         }
 
+        board.changeImage(reqImages);
         board.updateBoard(id, req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getUpdatedBy());
         return boardRepository.save(board).toDTO();
     }
 
     @Transactional
     public void deleteBoard(Long id){
-        Board board = boardRepository.findById(id).orElseThrow(ResolutionException::new);
-        imageRepository.deleteByIds(board.getImages().stream().map(Image::getId).toList());
+        List<Image> images = imageRepository.findByTypeAndParentId(ImageType.BOARD, id);
+        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
         boardRepository.deleteById(id);
     }
 

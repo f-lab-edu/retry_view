@@ -54,20 +54,22 @@ public class EventService {
             eventImage.changeParentId(event.getId());
             imageRepository.save(eventImage);
         }
+
+        event.changeImage(images);
         return event.toDTO();
     }
 
     @Transactional
     public EventDTO updateEvent(WriteEventRequest req, Long id){
         Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> reqImages = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.EVENT, id).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
-            event.getImages().removeIf(img->deleteImageIds.contains(img.getId()));
+            reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
         for(Image eventImage : reqImages){
@@ -77,14 +79,15 @@ public class EventService {
             }
         }
 
+        event.changeImage(reqImages);
         event.updateEvent(req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
         return eventRepository.save(event).toDTO();
     }
 
     @Transactional
     public void deleteEvent(Long id){
-        Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        imageRepository.deleteByIds(event.getImages().stream().map(Image::getId).toList());
+        List<Image> images = imageRepository.findByTypeAndParentId(ImageType.EVENT, id);
+        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
         eventRepository.deleteById(id);
     }
 

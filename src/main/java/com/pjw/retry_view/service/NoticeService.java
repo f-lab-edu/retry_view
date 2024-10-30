@@ -55,20 +55,22 @@ public class NoticeService {
             noticeImage.changeParentId(notice.getId());
             imageRepository.save(noticeImage);
         }
+
+        notice.changeImage(images);
         return notice.toDTO();
     }
 
     @Transactional
     public NoticeDTO updateNotice(WriteNoticeRequest req, Long id){
         Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> reqImages = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.NOTICE, notice.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.NOTICE, notice.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.EVENT, id).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
-            notice.getImages().removeIf(img->deleteImageIds.contains(img.getId()));
+            reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
         for(Image noticeImage : reqImages){
@@ -77,16 +79,16 @@ public class NoticeService {
                 imageRepository.save(noticeImage);
             }
         }
-        
+
+        notice.changeImage(reqImages);
         notice.updateNotice(req.getContent(), req.getUpdatedBy());
         return notice.toDTO();
     }
 
     @Transactional
     public void deleteNotice(Long id){
-        Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         List<Image> images = imageRepository.findByTypeAndParentId(ImageType.NOTICE, id);
-        imageRepository.deleteByIds(notice.getImages().stream().map(Image::getId).toList());
+        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
         noticeRepository.deleteById(id);
     }
 

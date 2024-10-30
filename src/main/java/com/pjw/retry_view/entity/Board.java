@@ -100,7 +100,7 @@ public class Board {
         this.updatedAt = ZonedDateTime.now();
     }
 
-    public void changeBoardImage(List<Image> images){
+    public void changeImage(List<Image> images){
         this.images = images;
     }
 
