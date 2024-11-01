@@ -5,6 +5,7 @@ import com.pjw.retry_view.dto.NoticeImageDTO;
 import com.pjw.retry_view.request.WriteNoticeRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.CollectionUtils;
@@ -13,6 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "notice")
@@ -49,24 +51,19 @@ public class Notice {
         this.updatedAt = updatedAt;
     }
 
-    public static Notice newOne(String content, Long createdBy, List<NoticeImage> images){
+    public static Notice newOne(String content, Long createdBy){
         return Notice.builder()
                 .content(content)
                 .viewCount(0L)
-                .noticeImage(images)
                 .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
-                .build()
-                .changeNoticeImage();
+                .build();
     }
 
-    public Notice changeNoticeImage(){
-        this.noticeImage.forEach((image)->{
-            image.setNotice(this);
-            image.setCreatedBy(this.createdBy);
-            image.setCreatedAt(ZonedDateTime.now());
-        });
-        return this;
+    public void updateNotice(String content, Long updateBy){
+        this.content = content;
+        this.updatedBy = updateBy;
+        this.updatedAt = ZonedDateTime.now();
     }
 
     public NoticeDTO toDTO(){

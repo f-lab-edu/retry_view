@@ -32,9 +32,14 @@ public class BoardImage {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public static BoardImage getBoardImage(Board board, String imageUrl, Long createdBy){
+    public void changeBoard(Board board){
+        board.getBoardImage().add(this);
+        this.board = board;
+    }
+
+    public static BoardImage newOne(Long imageId, String imageUrl, Long createdBy){
         return BoardImage.builder()
-                .board(board)
+                .id(imageId)
                 .imageUrl(imageUrl)
                 .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())

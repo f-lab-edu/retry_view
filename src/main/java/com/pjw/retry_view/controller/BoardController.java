@@ -22,8 +22,24 @@ public class BoardController {
         return boardService.getBoardList();
     }
 
+    @GetMapping("/{id}")
+    public BoardDTO getBoard(@PathVariable(name = "id") Long id){
+        return boardService.getBoard(id);
+    }
+
     @PostMapping
     public BoardDTO writeBoard(@RequestBody @Valid WriteBoardRequest board){
         return boardService.saveBoard(board);
     }
+
+    @PutMapping("/{id}")
+    public BoardDTO updateBoard(@RequestBody @Valid WriteBoardRequest board, @PathVariable(name = "id") Long id){
+        return boardService.updateBoard(board, id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard(@PathVariable(name = "id") Long id){
+        boardService.deleteBoard(id);
+    }
+
 }

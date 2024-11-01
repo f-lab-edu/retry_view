@@ -13,14 +13,27 @@ import java.util.List;
 @Getter
 @Setter
 public class WriteNoticeRequest {
-    private Long id;
     @NotEmpty(message = "내용은 필수 입력값입니다.")
     private String content;
-    private List<String> images;
+    private List<Image> images;
     private Long createdBy;
+    private Long updatedBy;
 
-    private List<NoticeImageDTO> gg(){
-        if(CollectionUtils.isEmpty(images)) return null;
-        return images.stream().map(NoticeImageDTO::getImageDTO).toList();
+    @Getter
+    @Setter
+    public static class Image {
+        private Long id;
+        private String imageUrl;
+
+        public Image(){}
+
+        public Image(String imageUrl){
+            this.imageUrl = imageUrl;
+        }
+
+        public Image(Long id, String imageUrl){
+            this.id = id;
+            this.imageUrl = imageUrl;
+        }
     }
 }

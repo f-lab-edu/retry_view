@@ -41,9 +41,17 @@ public class NoticeImage {
         this.updatedAt = updatedAt;
     }
 
-    public static NoticeImage getNoticeImage(String url){
+    public void changeNotice(Notice notice){
+        notice.getNoticeImage().add(this);
+        this.notice = notice;
+    }
+
+    public static NoticeImage newOne(Long id, String url, Long createdBy){
         return NoticeImage.builder()
+                .id(id)
                 .imageUrl(url)
+                .createdBy(createdBy)
+                .createdAt(ZonedDateTime.now())
                 .build();
     }
 
