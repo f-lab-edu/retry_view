@@ -8,8 +8,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -19,6 +22,7 @@ public class JWTUtil {
     private static SecretKey secretKey;
     private static final long ACCESS_TOKEN_EXPIRED = 1000 * 60 * 60; // 1h
     private static final long REFRESH_TOKEN_EXPIRED = 1000 * 60 * 60 * 24 * 7;
+    private static final String USER_INFO_ID= "id";
     private static final String USER_INFO_NAME = "name";
     private static final String USER_INFO_LOGIN_ID = "loginId";
     private static final String USER_INFO_ROLE = "role";
@@ -36,6 +40,7 @@ public class JWTUtil {
     public static String createAccessToken(UserInfo userInfo){
         long currentTimeMillis = System.currentTimeMillis();
         Map<String, Object> claims = new HashMap<>();
+        claims.put(USER_INFO_ID, userInfo.getId());
         claims.put(USER_INFO_NAME, userInfo.getName());
         claims.put(USER_INFO_LOGIN_ID, userInfo.getLoginId());
         claims.put(USER_INFO_ROLE, userInfo.getRole().getCode());
@@ -71,6 +76,16 @@ public class JWTUtil {
         Claims claims = getClaims(token);
         String authCode = claims.get(USER_INFO_ROLE,String.class);
         return UserAuth.getValue(authCode);
+    }
+
+    public static Long getUserId(){
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        String jwt = request.getHeader("Authorization");
+
+        if(!isValidateToken(jwt)) return null;
+
+        Object obj = JWTUtil.getClaims(jwt).get(USER_INFO_ID);
+        return Objects.nonNull(obj) ? Long.parseLong(obj.toString()) : null;
     }
 
     public static boolean isValidateToken(String token){

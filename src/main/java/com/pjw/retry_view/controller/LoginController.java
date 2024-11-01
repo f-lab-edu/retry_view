@@ -31,7 +31,7 @@ public class LoginController {
     public ResponseEntity<LoginResponse> userLogin(@RequestBody @Valid LoginRequest loginReq){
         UserDTO user = userService.userLogin(loginReq);
 
-        UserInfo userInfo = new UserInfo(user.getName(), user.getLoginId(), user.getRole());
+        UserInfo userInfo = new UserInfo(user.getId(), user.getName(), user.getLoginId(), user.getRole());
 
         LoginResponse response = new LoginResponse();
         String refreshToken = JWTUtil.createRefreshToken();
