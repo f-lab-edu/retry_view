@@ -52,6 +52,6 @@ dependencies {
 
 }
 
-//tasks.named('test') { test
+//tasks.named('test') {
 //	useJUnitPlatform()
 //}
