@@ -10,4 +10,4 @@ ENV USER_PROFILE dev
 EXPOSE 8080
 
 # redis-server /etc/redis.conf
-CMD ["java", "-Dspring.profiles.active=${USE_PROFILE}", "-jar", "/app.jar"]
+CMD ["java", "-Dspring.profiles.active=${USER_PROFILE}", "-jar", "/app.jar"]
