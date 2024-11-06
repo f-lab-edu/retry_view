@@ -5,7 +5,7 @@ name: retry-view-project
 
 services:
   api:
-    image: pjiwon7/retry-view-api:0.1
+    image: pjiwon7/retry-view:1.0
     ports:
     - 8080:8080
     - 443:443
