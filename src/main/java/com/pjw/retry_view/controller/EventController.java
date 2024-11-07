@@ -32,9 +32,9 @@ public class EventController {
         return eventService.saveEvent(event);
     }
 
-    @PutMapping
-    public EventDTO updateEvent(@RequestBody @Valid WriteEventRequest event){
-        return eventService.updateEvent(event);
+    @PutMapping("/{id}")
+    public EventDTO updateEvent(@RequestBody @Valid WriteEventRequest event, @PathVariable(name = "id")Long id){
+        return eventService.updateEvent(event, id);
     }
 
     @DeleteMapping("/{id}")

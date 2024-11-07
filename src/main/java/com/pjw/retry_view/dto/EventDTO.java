@@ -23,10 +23,10 @@ public class EventDTO {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    private List<EventImageDTO> images;
+    private List<ImageDTO> images;
 
     @Builder
-    public EventDTO(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<EventImageDTO> images) {
+    public EventDTO(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageDTO> images) {
         this.id = id;
         this.content = content;
         this.viewCount = viewCount;

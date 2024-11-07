@@ -1,14 +1,15 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.BoardDTO;
+import com.pjw.retry_view.dto.ImageType;
 import com.pjw.retry_view.entity.Board;
-import com.pjw.retry_view.entity.BoardImage;
-import com.pjw.retry_view.entity.EventImage;
+import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
-import com.pjw.retry_view.repository.BoardImageRepository;
 import com.pjw.retry_view.repository.BoardRepository;
+import com.pjw.retry_view.repository.ImageRepository;
+import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteBoardRequest;
-import com.pjw.retry_view.request.WriteEventRequest;
+import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,75 +22,74 @@ import java.util.Objects;
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final BoardImageRepository boardImageRepository;
+    private final ImageRepository imageRepository;
 
-    public BoardService(BoardRepository boardRepository, BoardImageRepository boardImageRepository){
+    public BoardService(BoardRepository boardRepository, ImageRepository imageRepository){
         this.boardRepository = boardRepository;
-        this.boardImageRepository = boardImageRepository;
+        this.imageRepository = imageRepository;
     }
 
     public List<BoardDTO> getBoardList(){
-        return boardRepository.findAll().stream().map(Board::toDTO).toList();
+        List<Board> boardList = boardRepository.findAll();
+        for(Board board : boardList){
+            List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.BOARD, board.getId());
+            board.setImages(imageList);
+        }
+        return boardList.stream().map(Board::toDTO).toList();
     }
 
     public BoardDTO getBoard(Long id){
-        return boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new).toDTO();
+        Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.BOARD, id);
+        board.setImages(imageList);
+        return board.toDTO();
     }
 
     @Transactional
     public BoardDTO saveBoard(WriteBoardRequest req){
         Board board = Board.newOne(req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getCreatedBy());
-        List<BoardImage> images = req.getImages().stream().map(img -> BoardImage.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         boardRepository.save(board);
+        List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, ImageType.BOARD, board.getId(),  img.getImageUrl(), req.getCreatedBy())).toList();
 
-        for(BoardImage boardImage : images){
-            boardImage.changeBoard(board);
-            boardImageRepository.save(boardImage);
+        for(Image boardImage : images){
+            boardImage.changeParentId(board.getId());
+            imageRepository.save(boardImage);
         }
 
-        board.changeBoardImage(images);
+        board.changeImage(images);
         return board.toDTO();
     }
 
     @Transactional
     public BoardDTO updateBoard(WriteBoardRequest req, Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResolutionException::new);
-        List<BoardImage> reqImages = req.getImages().stream().map(img -> BoardImage.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.BOARD, board.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
-        List<Long> imageIds = req.getImages().stream().map(WriteBoardRequest.Image::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = board.getBoardImage().stream().map(BoardImage::getId).toList();
-        List<Long> deleteImageIds = getDeleteImageIds(imageIds, oldImageIds);
+        List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
+        List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.BOARD, id).stream().map(Image::getId).toList();
+        List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
-            boardImageRepository.deleteByIds(deleteImageIds);
-            board.getBoardImage().removeIf(img->deleteImageIds.contains(img.getId()));
+            imageRepository.deleteByIds(deleteImageIds);
+            reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
-        for(BoardImage boardImage : reqImages){
+        for(Image boardImage : reqImages){
             if(boardImage.getId() == null) {
-                boardImage.changeBoard(board);
-                boardImageRepository.save(boardImage);
+                boardImage.changeParentId(board.getId());
+                imageRepository.save(boardImage);
             }
         }
 
+        board.changeImage(reqImages);
         board.updateBoard(id, req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getUpdatedBy());
         return boardRepository.save(board).toDTO();
     }
 
     @Transactional
     public void deleteBoard(Long id){
-        Board board = boardRepository.findById(id).orElseThrow(ResolutionException::new);
-        boardImageRepository.deleteByIds(board.getBoardImage().stream().map(BoardImage::getId).toList());
+        List<Image> images = imageRepository.findByTypeAndParentId(ImageType.BOARD, id);
+        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
         boardRepository.deleteById(id);
     }
 
-    public List<Long> getDeleteImageIds(List<Long> images, List<Long> oldImageIds){
-        if(CollectionUtils.isEmpty(images) || CollectionUtils.isEmpty(oldImageIds)) return null;
-        List<Long> deleteImageIds = new ArrayList<>();
-        for(Long id : oldImageIds){
-            if(!images.contains(id)){
-                deleteImageIds.add(id);
-            }
-        }
-        return deleteImageIds;
-    }
 }

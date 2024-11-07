@@ -1,12 +1,12 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.dto.NoticeDTO;
-import com.pjw.retry_view.dto.NoticeImageDTO;
-import com.pjw.retry_view.request.WriteNoticeRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.CollectionUtils;
 
@@ -14,6 +14,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -27,8 +28,9 @@ public class Notice {
     @Column(name = "view_count")
     @ColumnDefault("0")
     private Long viewCount;
-    @OneToMany(mappedBy = "notice", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<NoticeImage> noticeImage = new ArrayList<>();
+
+    @Transient
+    private List<Image> images = new ArrayList<>();
 
     @Column(name = "created_by")
     private Long createdBy;
@@ -40,11 +42,11 @@ public class Notice {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public Notice(Long id, String content, Long viewCount, List<NoticeImage> noticeImage, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Notice(Long id, String content, Long viewCount, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.content = content;
         this.viewCount = viewCount;
-        this.noticeImage = noticeImage;
+        this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
@@ -66,6 +68,10 @@ public class Notice {
         this.updatedAt = ZonedDateTime.now();
     }
 
+    public void changeImage(List<Image> images){
+        this.images = images;
+    }
+
     public NoticeDTO toDTO(){
         return NoticeDTO.builder()
                 .id(id)
@@ -79,8 +85,8 @@ public class Notice {
                 .build();
     }
 
-    private List<NoticeImageDTO> imagesToDTO(){
-        if(CollectionUtils.isEmpty(noticeImage)) return null;
-        return noticeImage.stream().map(NoticeImage::toDTO).toList();
+    private List<ImageDTO> imagesToDTO(){
+        if(CollectionUtils.isEmpty(images)) return null;
+        return images.stream().map(Image::toDTO).toList();
     }
 }

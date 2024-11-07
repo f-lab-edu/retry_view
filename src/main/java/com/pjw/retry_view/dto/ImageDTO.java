@@ -6,9 +6,10 @@ import lombok.Getter;
 import java.time.ZonedDateTime;
 
 @Getter
-public class NoticeImageDTO {
+public class ImageDTO {
     private Long id;
-    private Long boardId;
+    private ImageType type;
+    private Long parentId;
     private String imageUrl;
 
     private Long createdBy;
@@ -16,14 +17,15 @@ public class NoticeImageDTO {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    public static NoticeImageDTO getImageDTO(String imageUrl){
-        return NoticeImageDTO.builder().imageUrl(imageUrl).build();
+    public static ImageDTO newOne(Long id, ImageType type, Long parentId, String imageUrl, Long createdBy){
+        return ImageDTO.builder().build();
     }
 
     @Builder
-    public NoticeImageDTO(Long id, Long boardId, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public ImageDTO(Long id, ImageType type, Long parentId, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
-        this.boardId = boardId;
+        this.type = type;
+        this.parentId = parentId;
         this.imageUrl = imageUrl;
         this.createdBy = createdBy;
         this.createdAt = createdAt;

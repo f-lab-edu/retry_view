@@ -14,7 +14,7 @@ public class NoticeDTO {
     private Long id;
     private String content;
     private Long viewCount;
-    private List<NoticeImageDTO> images;
+    private List<ImageDTO> images;
     private Long createdBy;
     private ZonedDateTime createdAt;
     private Long updatedBy;
@@ -22,7 +22,7 @@ public class NoticeDTO {
 
 
     @Builder
-    public NoticeDTO(Long id, String content, Long viewCount, List<NoticeImageDTO> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public NoticeDTO(Long id, String content, Long viewCount, List<ImageDTO> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.content = content;
         this.viewCount = viewCount;

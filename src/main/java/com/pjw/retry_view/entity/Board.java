@@ -2,9 +2,8 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.BoardTypeEnumConverter;
 import com.pjw.retry_view.dto.BoardDTO;
-import com.pjw.retry_view.dto.BoardImageDTO;
 import com.pjw.retry_view.dto.BoardType;
-import com.pjw.retry_view.request.WriteBoardRequest;
+import com.pjw.retry_view.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -35,8 +34,9 @@ public class Board {
     private Long viewCount;
     @Column(name = "price")
     private Long price;
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-    private List<BoardImage> boardImage = new ArrayList<>();
+
+    @Transient
+    private List<Image> images = new ArrayList<>();
 
     @Column(name = "created_by")
     private Long createdBy;
@@ -64,14 +64,14 @@ public class Board {
     }
 
     @Builder
-    public Board(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, List<BoardImage> boardImage, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Board(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.type = type;
         this.productId = productId;
         this.content = content;
         this.viewCount = viewCount;
         this.price = price;
-        this.boardImage = boardImage;
+        this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
@@ -100,12 +100,12 @@ public class Board {
         this.updatedAt = ZonedDateTime.now();
     }
 
-    public void changeBoardImage(List<BoardImage> images){
-        this.boardImage = images;
+    public void changeImage(List<Image> images){
+        this.images = images;
     }
 
-    private List<BoardImageDTO> imagesToDTO(){
-        if(CollectionUtils.isEmpty(boardImage)) return null;
-        return boardImage.stream().map(BoardImage::toDTO).toList();
+    private List<ImageDTO> imagesToDTO(){
+        if(CollectionUtils.isEmpty(images)) return null;
+        return images.stream().map(Image::toDTO).toList();
     }
 }

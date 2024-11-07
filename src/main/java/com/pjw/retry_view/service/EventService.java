@@ -1,12 +1,15 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.EventDTO;
+import com.pjw.retry_view.dto.ImageType;
 import com.pjw.retry_view.entity.Event;
-import com.pjw.retry_view.entity.EventImage;
+import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
-import com.pjw.retry_view.repository.EventImageRepository;
+import com.pjw.retry_view.repository.ImageRepository;
 import com.pjw.retry_view.repository.EventRepository;
+import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteEventRequest;
+import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -18,73 +21,74 @@ import java.util.Objects;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
-    private final EventImageRepository eventImageRepository;
+    private final ImageRepository imageRepository;
 
-    public EventService(EventRepository eventRepository, EventImageRepository eventImageRepository) {
+    public EventService(EventRepository eventRepository, ImageRepository imageRepository) {
         this.eventRepository = eventRepository;
-        this.eventImageRepository = eventImageRepository;
+        this.imageRepository = imageRepository;
     }
 
     public List<EventDTO> getEventList(){
-        return eventRepository.findAll().stream().map(Event::toDTO).toList();
+        List<Event> eventList = eventRepository.findAll();
+        for(Event event: eventList){
+            List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.EVENT, event.getId());
+            event.setImages(imageList);
+        }
+        return eventList.stream().map(Event::toDTO).toList();
     }
 
     public EventDTO getEvent(Long id){
-        return eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new).toDTO();
+        Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.EVENT, event.getId());
+        event.setImages(imageList);
+        return event.toDTO();
     }
 
     @Transactional
     public EventDTO saveEvent(WriteEventRequest req){
         Event event = Event.newOne(req.getContent(), req.getStartAt(), req.getEndAt(), req.getCreatedBy());
-        List<EventImage> images = req.getImages().stream().map(img -> EventImage.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
         eventRepository.save(event);
+        List<Image> images = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
 
-        for(EventImage eventImage : images){
-            eventImage.changeEvent(event);
-            eventImageRepository.save(eventImage);
+        for(Image eventImage : images){
+            eventImage.changeParentId(event.getId());
+            imageRepository.save(eventImage);
         }
+
+        event.changeImage(images);
         return event.toDTO();
     }
 
     @Transactional
-    public EventDTO updateEvent(WriteEventRequest req){
-        Event event = eventRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
-        List<EventImage> reqImages = req.getImages().stream().map(img -> EventImage.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
+    public EventDTO updateEvent(WriteEventRequest req, Long id){
+        Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
-        List<Long> imageIds = req.getImages().stream().map(WriteEventRequest.Image::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = event.getEventImage().stream().map(EventImage::getId).toList();
-        List<Long> deleteImageIds = getDeleteImageIds(imageIds, oldImageIds);
+        List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
+        List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.EVENT, id).stream().map(Image::getId).toList();
+        List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
-            eventImageRepository.deleteByIds(deleteImageIds);
-            event.getEventImage().removeIf(img->deleteImageIds.contains(img.getId()));
+            imageRepository.deleteByIds(deleteImageIds);
+            reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
-        for(EventImage eventImage : reqImages){
+        for(Image eventImage : reqImages){
             if(eventImage.getId() == null) {
-                eventImage.changeEvent(event);
-                eventImageRepository.save(eventImage);
+                eventImage.changeParentId(event.getId());
+                imageRepository.save(eventImage);
             }
         }
 
+        event.changeImage(reqImages);
         event.updateEvent(req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
         return eventRepository.save(event).toDTO();
     }
 
     @Transactional
     public void deleteEvent(Long id){
-        Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        eventImageRepository.deleteByIds(event.getEventImage().stream().map(EventImage::getId).toList());
+        List<Image> images = imageRepository.findByTypeAndParentId(ImageType.EVENT, id);
+        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
         eventRepository.deleteById(id);
     }
 
-    public List<Long> getDeleteImageIds(List<Long> images, List<Long> oldImageIds){
-        if(CollectionUtils.isEmpty(images) || CollectionUtils.isEmpty(oldImageIds)) return null;
-        List<Long> deleteImageIds = new ArrayList<>();
-        for(Long id : oldImageIds){
-            if(!images.contains(id)){
-                deleteImageIds.add(id);
-            }
-        }
-        return deleteImageIds;
-    }
 }

@@ -21,10 +21,10 @@ public class BoardDTO {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    private List<BoardImageDTO> images;
+    private List<ImageDTO> images;
 
     @Builder
-    public BoardDTO(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<BoardImageDTO> images) {
+    public BoardDTO(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageDTO> images) {
         this.id = id;
         this.type = type;
         this.productId = productId;
