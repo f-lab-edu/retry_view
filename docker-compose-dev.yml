@@ -26,7 +26,7 @@ services:
     - retry-view-network
     volumes:
       - ./redis/data:/data
-      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+      - ./redis/conf:/usr/local/conf
     restart: always
 
 networks:
