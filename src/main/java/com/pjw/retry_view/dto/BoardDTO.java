@@ -12,6 +12,7 @@ public class BoardDTO {
     private Long id;
     private BoardType type;
     private Long productId;
+    private String title;
     private String content;
     private Long viewCount;
     private Long price;

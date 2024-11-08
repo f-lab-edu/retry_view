@@ -23,6 +23,8 @@ public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "view_count")
@@ -42,8 +44,9 @@ public class Notice {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public Notice(Long id, String content, Long viewCount, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Notice(Long id, String title, String content, Long viewCount, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
+        this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.images = images;
@@ -53,8 +56,9 @@ public class Notice {
         this.updatedAt = updatedAt;
     }
 
-    public static Notice newOne(String content, Long createdBy){
+    public static Notice newOne(String title, String content, Long createdBy){
         return Notice.builder()
+                .title(title)
                 .content(content)
                 .viewCount(0L)
                 .createdBy(createdBy)
@@ -62,7 +66,8 @@ public class Notice {
                 .build();
     }
 
-    public void updateNotice(String content, Long updateBy){
+    public void updateNotice(String title, String content, Long updateBy){
+        this.title = title;
         this.content = content;
         this.updatedBy = updateBy;
         this.updatedAt = ZonedDateTime.now();

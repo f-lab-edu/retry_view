@@ -47,7 +47,7 @@ public class NoticeService {
 
     @Transactional
     public NoticeDTO saveNotice(WriteNoticeRequest req){
-        Notice notice = Notice.newOne(req.getContent(), req.getCreatedBy());
+        Notice notice = Notice.newOne(req.getTitle(), req.getContent(), req.getCreatedBy());
         noticeRepository.save(notice);
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, ImageType.NOTICE, notice.getId(),  img.getImageUrl(), req.getCreatedBy())).toList();
 
@@ -81,7 +81,7 @@ public class NoticeService {
         }
 
         notice.changeImage(reqImages);
-        notice.updateNotice(req.getContent(), req.getUpdatedBy());
+        notice.updateNotice(req.getTitle(), req.getContent(), req.getUpdatedBy());
         return notice.toDTO();
     }
 

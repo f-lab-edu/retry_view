@@ -46,7 +46,7 @@ public class EventService {
 
     @Transactional
     public EventDTO saveEvent(WriteEventRequest req){
-        Event event = Event.newOne(req.getContent(), req.getStartAt(), req.getEndAt(), req.getCreatedBy());
+        Event event = Event.newOne(req.getTitle(), req.getContent(), req.getStartAt(), req.getEndAt(), req.getCreatedBy());
         eventRepository.save(event);
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
 
@@ -80,7 +80,7 @@ public class EventService {
         }
 
         event.changeImage(reqImages);
-        event.updateEvent(req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
+        event.updateEvent(req.getTitle(), req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
         return eventRepository.save(event).toDTO();
     }
 

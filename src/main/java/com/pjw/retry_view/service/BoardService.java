@@ -47,7 +47,7 @@ public class BoardService {
 
     @Transactional
     public BoardDTO saveBoard(WriteBoardRequest req){
-        Board board = Board.newOne(req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getCreatedBy());
+        Board board = Board.newOne(req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), req.getCreatedBy());
         boardRepository.save(board);
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, ImageType.BOARD, board.getId(),  img.getImageUrl(), req.getCreatedBy())).toList();
 
@@ -81,7 +81,7 @@ public class BoardService {
         }
 
         board.changeImage(reqImages);
-        board.updateBoard(id, req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getUpdatedBy());
+        board.updateBoard(id, req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), req.getUpdatedBy());
         return boardRepository.save(board).toDTO();
     }
 

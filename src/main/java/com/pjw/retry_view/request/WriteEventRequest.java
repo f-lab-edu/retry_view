@@ -12,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 public class WriteEventRequest implements Serializable {
+    @NotEmpty(message = "제목은 필수 입력값입니다.")
+    private String title;
     @NotEmpty(message = "내용은 필수 입력값입니다.")
     private String content;
     private List<ImageRequest> images;

@@ -27,6 +27,8 @@ public class Board {
     private BoardType type;
     @Column(name = "product_id")
     private Long productId;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "view_count")
@@ -64,10 +66,11 @@ public class Board {
     }
 
     @Builder
-    public Board(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Board(Long id, BoardType type, Long productId, String title, String content, Long viewCount, Long price, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.type = type;
         this.productId = productId;
+        this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.price = price;
@@ -78,10 +81,11 @@ public class Board {
         this.updatedAt = updatedAt;
     }
 
-    public static Board newOne(BoardType type, Long productId, String content, Long price, Long createdBy){
+    public static Board newOne(BoardType type, Long productId, String title, String content, Long price, Long createdBy){
         return Board.builder()
                 .type(type)
                 .productId(productId)
+                .title(title)
                 .content(content)
                 .viewCount(0L)
                 .price(price)
@@ -90,10 +94,11 @@ public class Board {
                 .build();
     }
 
-    public void updateBoard(Long id, BoardType type, Long productId, String content, Long price, Long updatedBy){
+    public void updateBoard(Long id, BoardType type, Long productId, String title, String content, Long price, Long updatedBy){
         this.id = id;
         this.type = type;
         this.productId = productId;
+        this.title = title;
         this.content = content;
         this.price = price;
         this.updatedBy = updatedBy;

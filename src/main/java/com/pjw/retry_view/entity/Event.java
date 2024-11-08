@@ -23,6 +23,8 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "view_count")
@@ -60,7 +62,8 @@ public class Event {
                 .build();
     }
 
-    public void updateEvent(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long updatedBy){
+    public void updateEvent(String title, String content, ZonedDateTime startAt, ZonedDateTime endAt, Long updatedBy){
+        this.title = title;
         this.content =content;
         this.startAt = startAt;
         this.endAt = endAt;
@@ -72,8 +75,9 @@ public class Event {
         this.images = images;
     }
 
-    public static Event newOne(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy){
+    public static Event newOne(String title, String content, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy){
         return Event.builder()
+                .title(title)
                 .content(content)
                 .viewCount(0L)
                 .startAt(startAt)
@@ -84,8 +88,9 @@ public class Event {
     }
 
     @Builder
-    public Event(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Event(Long id, String title, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
+        this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.startAt = startAt;
