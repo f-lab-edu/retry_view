@@ -37,18 +37,15 @@ public class BoardService {
     public List<BoardDTO> getBoardList(Long cursor, SearchType searchType, String content){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
 
-        List<Board> boardList = null;
-        switch (SearchType.getValue(String.valueOf(searchType))) {
-            case TITLE:
-                content = "%"+content+"%";
-                boardList = boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(cursor, content, pageable);
-                break;
-            case TYPE:
-                boardList = boardRepository.findByIdLessThanAndTypeOrderByIdDesc(cursor, BoardType.getValue(content), pageable);
-                break;
-            default:
-                boardList = boardRepository.findAllOrderByIdDesc(pageable);
-        }
+        List<Board> boardList = switch (SearchType.getValue(String.valueOf(searchType))) {
+            case TITLE -> {
+                content = "%" + content + "%";
+                yield boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(cursor, content, pageable);
+            }
+            case TYPE ->
+                    boardRepository.findByIdLessThanAndTypeOrderByIdDesc(cursor, BoardType.getValue(content), pageable);
+            default -> boardRepository.findAllOrderByIdDesc(pageable);
+        };
 
         for(Board board : boardList){
             List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.BOARD, board.getId());

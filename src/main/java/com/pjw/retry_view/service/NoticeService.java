@@ -11,6 +11,8 @@ import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteNoticeRequest;
 import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -22,14 +24,23 @@ import java.util.Objects;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final ImageRepository imageRepository;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     public NoticeService(NoticeRepository noticeRepository, ImageRepository imageRepository) {
         this.noticeRepository = noticeRepository;
         this.imageRepository = imageRepository;
     }
 
-    public List<NoticeDTO> getNoticeList(){
-        List<Notice> noticeList = noticeRepository.findAll();
+    public List<NoticeDTO> getNoticeList(Long cursor){
+        Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+
+        List<Notice> noticeList = null;
+        if(!Objects.isNull(cursor) && cursor > 0L){
+            noticeList = noticeRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+        }else{
+            noticeList = noticeRepository.findAllOrderByIdDesc(pageable);
+        }
+
         for(Notice notice: noticeList){
             List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.NOTICE, notice.getId());
             notice.setImages(imageList);
