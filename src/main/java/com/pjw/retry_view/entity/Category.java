@@ -2,7 +2,7 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.CategoryTypeEnumConverter;
 import com.pjw.retry_view.dto.CategoryDTO;
-import com.pjw.retry_view.dto.CategoryType;
+import com.pjw.retry_view.enums.CategoryType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

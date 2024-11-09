@@ -1,6 +1,6 @@
 package com.pjw.retry_view.converter;
 
-import com.pjw.retry_view.dto.UserAuth;
+import com.pjw.retry_view.enums.UserAuth;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.AttributeConverter;
 

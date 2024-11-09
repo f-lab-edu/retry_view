@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.EventDTO;
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.enums.ImageType;
 import com.pjw.retry_view.entity.Event;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.exception.ResourceNotFoundException;

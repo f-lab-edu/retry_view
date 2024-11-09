@@ -1,8 +1,6 @@
 package com.pjw.retry_view.converter;
 
-import com.pjw.retry_view.dto.BoardType;
-import com.pjw.retry_view.dto.CategoryType;
-import com.pjw.retry_view.dto.UserState;
+import com.pjw.retry_view.enums.CategoryType;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.AttributeConverter;
 import org.springframework.core.convert.converter.Converter;

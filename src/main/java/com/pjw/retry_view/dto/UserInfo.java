@@ -1,5 +1,6 @@
 package com.pjw.retry_view.dto;
 
+import com.pjw.retry_view.enums.UserAuth;
 import lombok.Getter;
 import lombok.Setter;
 

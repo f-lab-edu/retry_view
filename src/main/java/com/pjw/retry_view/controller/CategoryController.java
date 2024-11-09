@@ -1,7 +1,7 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.CategoryDTO;
-import com.pjw.retry_view.dto.CategoryType;
+import com.pjw.retry_view.enums.CategoryType;
 import com.pjw.retry_view.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

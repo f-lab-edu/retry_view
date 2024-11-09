@@ -1,7 +1,6 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.UserDTO;
-import com.pjw.retry_view.dto.UserState;
 import com.pjw.retry_view.entity.User;
 import com.pjw.retry_view.exception.UserNotFoundException;
 import com.pjw.retry_view.repository.UserRepository;

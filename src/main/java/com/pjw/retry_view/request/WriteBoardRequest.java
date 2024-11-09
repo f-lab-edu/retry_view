@@ -1,17 +1,16 @@
 package com.pjw.retry_view.request;
 
-import com.pjw.retry_view.dto.BoardType;
+import com.pjw.retry_view.enums.BoardType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
-public class WriteBoardRequest implements Serializable {
+public class WriteBoardRequest {
     private BoardType type;
     private Long productId;
     @NotEmpty(message = "제목은 필수 입력값입니다.")

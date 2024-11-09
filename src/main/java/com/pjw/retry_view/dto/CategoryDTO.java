@@ -1,6 +1,7 @@
 package com.pjw.retry_view.dto;
 
 import com.pjw.retry_view.entity.Category;
+import com.pjw.retry_view.enums.CategoryType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

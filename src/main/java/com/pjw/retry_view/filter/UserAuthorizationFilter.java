@@ -1,6 +1,6 @@
 package com.pjw.retry_view.filter;
 
-import com.pjw.retry_view.dto.UserAuth;
+import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.util.FilterUtil;
 import com.pjw.retry_view.util.JWTUtil;
 import jakarta.servlet.FilterChain;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class UserAuthorizationFilter extends OncePerRequestFilter {
