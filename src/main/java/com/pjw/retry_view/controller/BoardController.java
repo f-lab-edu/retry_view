@@ -1,6 +1,7 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.BoardDTO;
+import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.request.WriteBoardRequest;
 import com.pjw.retry_view.service.BoardService;
 import jakarta.validation.Valid;
@@ -18,8 +19,12 @@ public class BoardController {
     }
 
     @GetMapping
-    public List<BoardDTO> getBoardList(){
-        return boardService.getBoardList();
+    public List<BoardDTO> getBoardList(
+                @RequestParam(name = "cursor", required = false) Long cursor,
+                @RequestParam(name = "searchType", required = false) SearchType searchType,
+                @RequestParam(name = "content", required = false) String content
+    ){
+        return boardService.getBoardList(cursor, searchType, content);
     }
 
     @GetMapping("/{id}")

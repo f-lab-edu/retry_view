@@ -1,9 +1,11 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.BoardDTO;
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.enums.BoardType;
+import com.pjw.retry_view.enums.ImageType;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.Image;
+import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.BoardRepository;
 import com.pjw.retry_view.repository.ImageRepository;
@@ -11,6 +13,8 @@ import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteBoardRequest;
 import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -23,14 +27,29 @@ import java.util.Objects;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+    private static final int DEFAULT_PAGE_SIZE = 3;
 
     public BoardService(BoardRepository boardRepository, ImageRepository imageRepository){
         this.boardRepository = boardRepository;
         this.imageRepository = imageRepository;
     }
 
-    public List<BoardDTO> getBoardList(){
-        List<Board> boardList = boardRepository.findAll();
+    public List<BoardDTO> getBoardList(Long cursor, SearchType searchType, String content){
+        Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+
+        List<Board> boardList = null;
+        switch (SearchType.getValue(String.valueOf(searchType))) {
+            case TITLE:
+                content = "%"+content+"%";
+                boardList = boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(cursor, content, pageable);
+                break;
+            case TYPE:
+                boardList = boardRepository.findByIdLessThanAndTypeOrderByIdDesc(cursor, BoardType.getValue(content), pageable);
+                break;
+            default:
+                boardList = boardRepository.findAllOrderByIdDesc(pageable);
+        }
+
         for(Board board : boardList){
             List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.BOARD, board.getId());
             board.setImages(imageList);

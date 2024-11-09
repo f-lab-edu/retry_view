@@ -2,7 +2,7 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.BoardTypeEnumConverter;
 import com.pjw.retry_view.dto.BoardDTO;
-import com.pjw.retry_view.dto.BoardType;
+import com.pjw.retry_view.enums.BoardType;
 import com.pjw.retry_view.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.*;
