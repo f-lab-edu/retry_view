@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.BoardDTO;
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
@@ -32,7 +32,9 @@ public class BoardService {
     public List<BoardDTO> getBoardList(){
         List<Board> boardList = boardRepository.findAll();
         for(Board board : boardList){
-            List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.BOARD, board.getId());
+            if(CollectionUtils.isEmpty(board.getImageIds())) continue;
+
+            List<Image> imageList = imageRepository.findByIds(board.getImageIds());
             board.setImages(imageList);
         }
         return boardList.stream().map(Board::toDTO).toList();
@@ -40,33 +42,32 @@ public class BoardService {
 
     public BoardDTO getBoard(Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.BOARD, id);
+        List<Image> imageList = imageRepository.findByIds(board.getImageIds());
         board.setImages(imageList);
         return board.toDTO();
     }
 
     @Transactional
     public BoardDTO saveBoard(WriteBoardRequest req){
-        Board board = Board.newOne(req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getCreatedBy());
-        boardRepository.save(board);
-        List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, ImageType.BOARD, board.getId(),  img.getImageUrl(), req.getCreatedBy())).toList();
-
+        List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         for(Image boardImage : images){
-            boardImage.changeParentId(board.getId());
             imageRepository.save(boardImage);
         }
 
-        board.changeImage(images);
-        return board.toDTO();
+        List<Long> imageIds = images.stream().map(Image::getId).toList();
+        Board board = Board.newOne(req.getType(), req.getProductId(), req.getContent(), req.getPrice(), imageIds, req.getCreatedBy());
+        BoardDTO result = boardRepository.save(board).toDTO();
+        result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
+        return result;
     }
 
     @Transactional
     public BoardDTO updateBoard(WriteBoardRequest req, Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResolutionException::new);
-        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.BOARD, board.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.BOARD, id).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepository.findByIds(board.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
@@ -75,20 +76,21 @@ public class BoardService {
 
         for(Image boardImage : reqImages){
             if(boardImage.getId() == null) {
-                boardImage.changeParentId(board.getId());
                 imageRepository.save(boardImage);
             }
         }
 
-        board.changeImage(reqImages);
-        board.updateBoard(id, req.getType(), req.getProductId(), req.getContent(), req.getPrice(), req.getUpdatedBy());
-        return boardRepository.save(board).toDTO();
+        List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
+        board.updateBoard(id, req.getType(), req.getProductId(), req.getContent(), req.getPrice(), updateImageIds, req.getUpdatedBy());
+        BoardDTO result = boardRepository.save(board).toDTO();
+        result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
+        return result;
     }
 
     @Transactional
     public void deleteBoard(Long id){
-        List<Image> images = imageRepository.findByTypeAndParentId(ImageType.BOARD, id);
-        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
+        Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        if(CollectionUtils.isEmpty(board.getImageIds())) imageRepository.deleteByIds(board.getImageIds());
         boardRepository.deleteById(id);
     }
 
