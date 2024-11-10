@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.EventDTO;
-import com.pjw.retry_view.enums.ImageType;
+import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.entity.Event;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
@@ -42,7 +42,9 @@ public class EventService {
         }
 
         for(Event event: eventList){
-            List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.EVENT, event.getId());
+            if(CollectionUtils.isEmpty(event.getImageIds())) continue;
+
+            List<Image> imageList = imageRepository.findByIds(event.getImageIds());
             event.setImages(imageList);
         }
         return eventList.stream().map(Event::toDTO).toList();
@@ -50,33 +52,33 @@ public class EventService {
 
     public EventDTO getEvent(Long id){
         Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.EVENT, event.getId());
+        List<Image> imageList = imageRepository.findByIds(event.getImageIds());
         event.setImages(imageList);
         return event.toDTO();
     }
 
     @Transactional
     public EventDTO saveEvent(WriteEventRequest req){
-        Event event = Event.newOne(req.getTitle(), req.getContent(), req.getStartAt(), req.getEndAt(), req.getCreatedBy());
-        eventRepository.save(event);
-        List<Image> images = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
+        List<Image> images = req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
 
         for(Image eventImage : images){
-            eventImage.changeParentId(event.getId());
             imageRepository.save(eventImage);
         }
 
-        event.changeImage(images);
-        return event.toDTO();
+        List<Long> imageIds = images.stream().map(Image::getId).toList();
+        Event event = Event.newOne(req.getContent(), imageIds, req.getStartAt(), req.getEndAt(), req.getCreatedBy());
+        EventDTO result = eventRepository.save(event).toDTO();
+        result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
+        return result;
     }
 
     @Transactional
     public EventDTO updateEvent(WriteEventRequest req, Long id){
         Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByTypeAndParentId(ImageType.EVENT, id).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepository.findByIds(event.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
@@ -85,20 +87,21 @@ public class EventService {
 
         for(Image eventImage : reqImages){
             if(eventImage.getId() == null) {
-                eventImage.changeParentId(event.getId());
                 imageRepository.save(eventImage);
             }
         }
 
-        event.changeImage(reqImages);
-        event.updateEvent(req.getTitle(), req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
-        return eventRepository.save(event).toDTO();
+        List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
+        event.updateEvent(req.getContent(), updateImageIds, req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
+        EventDTO result = eventRepository.save(event).toDTO();
+        result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
+        return result;
     }
 
     @Transactional
     public void deleteEvent(Long id){
-        List<Image> images = imageRepository.findByTypeAndParentId(ImageType.EVENT, id);
-        imageRepository.deleteByIds(images.stream().map(Image::getId).toList());
+        Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        if(CollectionUtils.isEmpty(event.getImageIds())) imageRepository.deleteByIds(event.getImageIds());
         eventRepository.deleteById(id);
     }
 
