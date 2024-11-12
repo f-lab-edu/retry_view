@@ -1,6 +1,6 @@
 package com.pjw.retry_view.converter;
 
-import com.pjw.retry_view.dto.BoardType;
+import com.pjw.retry_view.enums.BoardType;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.AttributeConverter;
 

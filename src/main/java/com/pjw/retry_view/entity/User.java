@@ -2,10 +2,10 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.UserAutnEnumConverter;
 import com.pjw.retry_view.converter.UserStateEnumConverter;
-import com.pjw.retry_view.dto.Gender;
-import com.pjw.retry_view.dto.UserAuth;
+import com.pjw.retry_view.enums.Gender;
+import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserDTO;
-import com.pjw.retry_view.dto.UserState;
+import com.pjw.retry_view.enums.UserState;
 import jakarta.persistence.*;
 import lombok.*;
 

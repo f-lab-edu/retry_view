@@ -1,6 +1,6 @@
 package com.pjw.retry_view.converter;
 
-import com.pjw.retry_view.dto.UserState;
+import com.pjw.retry_view.enums.UserState;
 import jakarta.persistence.AttributeConverter;
 import org.springframework.core.convert.converter.Converter;
 

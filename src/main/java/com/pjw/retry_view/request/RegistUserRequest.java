@@ -1,9 +1,8 @@
 package com.pjw.retry_view.request;
 
-import com.pjw.retry_view.dto.Gender;
-import com.pjw.retry_view.dto.UserAuth;
+import com.pjw.retry_view.enums.Gender;
 import com.pjw.retry_view.dto.UserDTO;
-import com.pjw.retry_view.dto.UserState;
+import com.pjw.retry_view.enums.UserState;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

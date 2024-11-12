@@ -1,6 +1,9 @@
 package com.pjw.retry_view.dto;
 
 import com.pjw.retry_view.entity.User;
+import com.pjw.retry_view.enums.Gender;
+import com.pjw.retry_view.enums.UserAuth;
+import com.pjw.retry_view.enums.UserState;
 import lombok.*;
 
 import java.io.Serializable;

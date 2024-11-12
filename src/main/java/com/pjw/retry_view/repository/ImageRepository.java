@@ -1,6 +1,6 @@
 package com.pjw.retry_view.repository;
 
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.enums.ImageType;
 import com.pjw.retry_view.entity.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

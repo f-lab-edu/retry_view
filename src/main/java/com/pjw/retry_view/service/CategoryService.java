@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.CategoryDTO;
-import com.pjw.retry_view.dto.CategoryType;
+import com.pjw.retry_view.enums.CategoryType;
 import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.repository.CategoryRepository;
 import jakarta.transaction.Transactional;

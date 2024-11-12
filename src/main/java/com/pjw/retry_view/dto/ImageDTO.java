@@ -1,5 +1,6 @@
 package com.pjw.retry_view.dto;
 
+import com.pjw.retry_view.enums.ImageType;
 import lombok.Builder;
 import lombok.Getter;
 

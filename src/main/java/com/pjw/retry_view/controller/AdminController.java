@@ -1,6 +1,6 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.UserAuth;
+import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.request.RegistUserRequest;
 import com.pjw.retry_view.response.RegistUserResponse;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")

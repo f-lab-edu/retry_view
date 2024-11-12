@@ -18,8 +18,8 @@ public class NoticeController {
     }
 
     @GetMapping
-    public List<NoticeDTO> getNoticeList(){
-        return noticeService.getNoticeList();
+    public List<NoticeDTO> getNoticeList(@RequestParam(name = "cursor", required = false) Long cursor){
+        return noticeService.getNoticeList(cursor);
     }
 
     @GetMapping("/{id}")

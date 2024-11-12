@@ -18,8 +18,8 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventDTO> getEventList(){
-        return eventService.getEventList();
+    public List<EventDTO> getEventList(@RequestParam(name = "cursor", required = false) Long cursor){
+        return eventService.getEventList(cursor);
     }
 
     @GetMapping("/{id}")

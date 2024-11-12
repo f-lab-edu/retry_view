@@ -1,5 +1,6 @@
 package com.pjw.retry_view.dto;
 
+import com.pjw.retry_view.enums.BoardType;
 import lombok.*;
 
 import java.time.ZonedDateTime;
@@ -12,6 +13,7 @@ public class BoardDTO {
     private Long id;
     private BoardType type;
     private Long productId;
+    private String title;
     private String content;
     private Long viewCount;
     private Long price;

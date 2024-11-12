@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.EventDTO;
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.enums.ImageType;
 import com.pjw.retry_view.entity.Event;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
@@ -11,6 +11,8 @@ import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteEventRequest;
 import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -22,14 +24,23 @@ import java.util.Objects;
 public class EventService {
     private final EventRepository eventRepository;
     private final ImageRepository imageRepository;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     public EventService(EventRepository eventRepository, ImageRepository imageRepository) {
         this.eventRepository = eventRepository;
         this.imageRepository = imageRepository;
     }
 
-    public List<EventDTO> getEventList(){
-        List<Event> eventList = eventRepository.findAll();
+    public List<EventDTO> getEventList(Long cursor){
+        Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+
+        List<Event> eventList = null;
+        if(!Objects.isNull(cursor) && cursor > 0L){
+            eventList = eventRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+        }else{
+            eventList = eventRepository.findAllOrderByIdDesc(pageable);
+        }
+
         for(Event event: eventList){
             List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.EVENT, event.getId());
             event.setImages(imageList);
@@ -46,7 +57,7 @@ public class EventService {
 
     @Transactional
     public EventDTO saveEvent(WriteEventRequest req){
-        Event event = Event.newOne(req.getContent(), req.getStartAt(), req.getEndAt(), req.getCreatedBy());
+        Event event = Event.newOne(req.getTitle(), req.getContent(), req.getStartAt(), req.getEndAt(), req.getCreatedBy());
         eventRepository.save(event);
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(img.getId(), ImageType.EVENT, event.getId(), img.getImageUrl(), req.getCreatedBy())).toList();
 
@@ -80,7 +91,7 @@ public class EventService {
         }
 
         event.changeImage(reqImages);
-        event.updateEvent(req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
+        event.updateEvent(req.getTitle(), req.getContent(), req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
         return eventRepository.save(event).toDTO();
     }
 

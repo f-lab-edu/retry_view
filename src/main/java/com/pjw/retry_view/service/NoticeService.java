@@ -1,8 +1,7 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.enums.ImageType;
 import com.pjw.retry_view.dto.NoticeDTO;
-import com.pjw.retry_view.entity.Event;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Notice;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
@@ -12,6 +11,8 @@ import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteNoticeRequest;
 import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -23,14 +24,23 @@ import java.util.Objects;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final ImageRepository imageRepository;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     public NoticeService(NoticeRepository noticeRepository, ImageRepository imageRepository) {
         this.noticeRepository = noticeRepository;
         this.imageRepository = imageRepository;
     }
 
-    public List<NoticeDTO> getNoticeList(){
-        List<Notice> noticeList = noticeRepository.findAll();
+    public List<NoticeDTO> getNoticeList(Long cursor){
+        Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+
+        List<Notice> noticeList = null;
+        if(!Objects.isNull(cursor) && cursor > 0L){
+            noticeList = noticeRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+        }else{
+            noticeList = noticeRepository.findAllOrderByIdDesc(pageable);
+        }
+
         for(Notice notice: noticeList){
             List<Image> imageList = imageRepository.findByTypeAndParentId(ImageType.NOTICE, notice.getId());
             notice.setImages(imageList);
@@ -47,7 +57,7 @@ public class NoticeService {
 
     @Transactional
     public NoticeDTO saveNotice(WriteNoticeRequest req){
-        Notice notice = Notice.newOne(req.getContent(), req.getCreatedBy());
+        Notice notice = Notice.newOne(req.getTitle(), req.getContent(), req.getCreatedBy());
         noticeRepository.save(notice);
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, ImageType.NOTICE, notice.getId(),  img.getImageUrl(), req.getCreatedBy())).toList();
 
@@ -81,7 +91,7 @@ public class NoticeService {
         }
 
         notice.changeImage(reqImages);
-        notice.updateNotice(req.getContent(), req.getUpdatedBy());
+        notice.updateNotice(req.getTitle(), req.getContent(), req.getUpdatedBy());
         return notice.toDTO();
     }
 
