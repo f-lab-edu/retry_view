@@ -66,7 +66,7 @@ public class EventService {
         }
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
-        Event event = Event.newOne(req.getContent(), imageIds, req.getStartAt(), req.getEndAt(), req.getCreatedBy());
+        Event event = Event.newOne(req.getTitle(), req.getContent(), imageIds, req.getStartAt(), req.getEndAt(), req.getCreatedBy());
         EventDTO result = eventRepository.save(event).toDTO();
         result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
         return result;
@@ -92,7 +92,7 @@ public class EventService {
         }
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
-        event.updateEvent(req.getContent(), updateImageIds, req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
+        event.updateEvent(req.getTitle(), req.getContent(), updateImageIds, req.getStartAt(), req.getEndAt(), req.getUpdatedBy());
         EventDTO result = eventRepository.save(event).toDTO();
         result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
         return result;

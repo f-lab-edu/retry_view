@@ -65,7 +65,7 @@ public class NoticeService {
         }
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
-        Notice notice = Notice.newOne(req.getContent(), imageIds, req.getCreatedBy());
+        Notice notice = Notice.newOne(req.getTitle(), req.getContent(), imageIds, req.getCreatedBy());
         NoticeDTO result = noticeRepository.save(notice).toDTO();
         result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
         return result;
@@ -91,7 +91,7 @@ public class NoticeService {
         }
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
-        notice.updateNotice(req.getContent(), updateImageIds, req.getUpdatedBy());
+        notice.updateNotice(req.getTitle(), req.getContent(), updateImageIds, req.getUpdatedBy());
         NoticeDTO result = noticeRepository.save(notice).toDTO();
         result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
         return result;

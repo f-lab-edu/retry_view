@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.BoardDTO;
 import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.Image;
+import com.pjw.retry_view.enums.BoardType;
 import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.BoardRepository;
@@ -70,7 +71,7 @@ public class BoardService {
         }
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
-        Board board = Board.newOne(req.getType(), req.getProductId(), req.getContent(), req.getPrice(), imageIds, req.getCreatedBy());
+        Board board = Board.newOne(req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), imageIds, req.getCreatedBy());
         BoardDTO result = boardRepository.save(board).toDTO();
         result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
         return result;
@@ -96,7 +97,7 @@ public class BoardService {
         }
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
-        board.updateBoard(id, req.getType(), req.getProductId(), req.getContent(), req.getPrice(), updateImageIds, req.getUpdatedBy());
+        board.updateBoard(id, req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), updateImageIds, req.getUpdatedBy());
         BoardDTO result = boardRepository.save(board).toDTO();
         result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
         return result;
