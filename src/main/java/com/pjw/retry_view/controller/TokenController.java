@@ -4,6 +4,8 @@ import com.pjw.retry_view.dto.RefreshTokenDTO;
 import com.pjw.retry_view.response.JWToken;
 import com.pjw.retry_view.service.JWTService;
 import com.pjw.retry_view.service.RedisService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.Duration;
 
+@Tag(name = "JWT관리 API 컨트롤러", description = "")
 @Controller
 @RequestMapping("/token")
 public class TokenController {
     private final JWTService jwtService;
-    @Autowired
-    private RedisService redisService;
+    private final RedisService redisService;
 
-    public TokenController(JWTService jwtService) {
+    public TokenController(JWTService jwtService, RedisService redisService) {
         this.jwtService = jwtService;
+        this.redisService = redisService;
     }
 
+    @Operation(summary = "refresh 토큰 갱신 API", description = "")
     @PostMapping
     public JWToken renewAccessToken(@RequestBody JWToken token){
         return jwtService.renewAccessToken(token.getRefreshToken());

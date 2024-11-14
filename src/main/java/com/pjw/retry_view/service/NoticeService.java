@@ -38,7 +38,7 @@ public class NoticeService {
         if(!Objects.isNull(cursor) && cursor > 0L){
             noticeList = noticeRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
         }else{
-            noticeList = noticeRepository.findAllOrderByIdDesc(pageable);
+            noticeList = noticeRepository.findAllByOrderByIdDesc(pageable);
         }
 
         for(Notice notice: noticeList){

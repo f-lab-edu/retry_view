@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    public List<Event> findAllOrderByIdDesc(Pageable pageable);
+    public List<Event> findAllByOrderByIdDesc(Pageable pageable);
     public List<Event> findByIdLessThanOrderByIdDesc(Long id, Pageable pageable);
     public Optional<Event> findById(Long id);
     public Event save(Event Event);

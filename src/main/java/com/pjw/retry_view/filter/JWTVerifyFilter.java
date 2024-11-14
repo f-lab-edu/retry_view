@@ -1,6 +1,5 @@
 package com.pjw.retry_view.filter;
 
-import com.pjw.retry_view.service.JWTService;
 import com.pjw.retry_view.util.FilterUtil;
 import com.pjw.retry_view.util.JWTUtil;
 import jakarta.servlet.*;
@@ -20,14 +19,14 @@ public class JWTVerifyFilter extends OncePerRequestFilter {
         String method = request.getMethod();
         String jwt = request.getHeader("Authorization");
 
-        System.out.println("Method: "+method+", JWT: "+jwt);
+        System.out.println("Method: "+method+", uri: "+request.getRequestURI()+", JWT: "+jwt);
         if(isAllowMethod(method) && JWTUtil.isValidateToken(jwt)){
             String loginId = JWTUtil.getClaims(jwt).get("loginId").toString();
             request.setAttribute("loginId", loginId);
             filterChain.doFilter(request,response);
         }else{
             // accessToken 재발급받게 하기
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            HttpServletResponse httpServletResponse = response;
             httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다.");
         }
     }

@@ -5,6 +5,8 @@ import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.request.RegistUserRequest;
 import com.pjw.retry_view.response.RegistUserResponse;
 import com.pjw.retry_view.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
+@Tag(name = "유저 관리 API 컨트롤러", description = "유저 관리 API")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -23,17 +26,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "유저 목록 조회 API", description = "")
     @GetMapping
     public String getUsers() {
         return "MainController : " + userService.getUserList().stream().map(UserDTO::toString).collect(Collectors.joining(", "));
     }
 
-    @GetMapping("/info")
-    public String getUserInfo(HttpServletRequest req) {
-        String loginId = req.getAttribute("loginId").toString();
-        return "Login User Info : " + userService.getUserInfo(loginId);
-    }
-
+    @Operation(summary = "일반 회원가입 API", description = "")
     @PostMapping("/regist")
     public ResponseEntity<RegistUserResponse> registUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
         RegistUserResponse response = new RegistUserResponse();
@@ -54,6 +53,7 @@ public class UserController {
         return new ResponseEntity<RegistUserResponse>(response, httpStatus);
     }
 
+    @Operation(summary = "일반 탈퇴 API", description = "")
     @DeleteMapping("/withdraw")
     public ResponseEntity<String> withdrawUser(HttpServletRequest req){
         String loginId = req.getAttribute("loginId").toString();
