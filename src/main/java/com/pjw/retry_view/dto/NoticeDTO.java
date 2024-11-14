@@ -4,11 +4,13 @@ import com.pjw.retry_view.entity.Notice;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class NoticeDTO {
     private Long id;

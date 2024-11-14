@@ -1,5 +1,6 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.converter.ImageIdsConverter;
 import com.pjw.retry_view.dto.EventDTO;
 import com.pjw.retry_view.dto.ImageDTO;
 import jakarta.persistence.*;
@@ -23,6 +24,8 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "view_count")
@@ -32,6 +35,9 @@ public class Event {
     private ZonedDateTime startAt;
     @Column(name = "end_at")
     private ZonedDateTime endAt;
+    @Column(name = "image_ids")
+    @Convert(converter = ImageIdsConverter.class)
+    private List<Long> imageIds;
 
     @Transient
     private List<Image> images = new ArrayList<>();
@@ -60,21 +66,21 @@ public class Event {
                 .build();
     }
 
-    public void updateEvent(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long updatedBy){
+    public void updateEvent(String title, String content, List<Long> imageIds, ZonedDateTime startAt, ZonedDateTime endAt, Long updatedBy){
+        this.title = title;
         this.content =content;
+        this.imageIds = imageIds;
         this.startAt = startAt;
         this.endAt = endAt;
         this.updatedBy = updatedBy;
         this.updatedAt = ZonedDateTime.now();
     }
 
-    public void changeImage(List<Image> images){
-        this.images = images;
-    }
-
-    public static Event newOne(String content, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy){
+    public static Event newOne(String title, String content, List<Long> imageIds, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy){
         return Event.builder()
+                .title(title)
                 .content(content)
+                .imageIds(imageIds)
                 .viewCount(0L)
                 .startAt(startAt)
                 .endAt(endAt)
@@ -84,9 +90,11 @@ public class Event {
     }
 
     @Builder
-    public Event(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Event(Long id, String title, String content, List<Long> imageIds, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
+        this.title = title;
         this.content = content;
+        this.imageIds = imageIds;
         this.viewCount = viewCount;
         this.startAt = startAt;
         this.endAt = endAt;
@@ -99,6 +107,6 @@ public class Event {
 
     private List<ImageDTO> imagesToDTO(){
         if(CollectionUtils.isEmpty(images)) return null;
-        return images.stream().map(Image::toDTO).toList();
+        return images.stream().map(ImageDTO::fromEntity).toList();
     }
 }

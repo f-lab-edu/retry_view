@@ -1,6 +1,6 @@
 package com.pjw.retry_view.util;
 
-import com.pjw.retry_view.dto.UserAuth;
+import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
@@ -80,7 +80,7 @@ public class JWTUtil {
 
     public static Long getUserId(){
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader(AUTH_KEY);
 
         if(!isValidateToken(jwt)) return null;
 

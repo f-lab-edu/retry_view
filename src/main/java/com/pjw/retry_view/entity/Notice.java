@@ -1,5 +1,6 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.converter.ImageIdsConverter;
 import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.dto.NoticeDTO;
 import jakarta.persistence.*;
@@ -23,11 +24,16 @@ public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "view_count")
     @ColumnDefault("0")
     private Long viewCount;
+    @Column(name = "image_ids")
+    @Convert(converter = ImageIdsConverter.class)
+    private List<Long> imageIds;
 
     @Transient
     private List<Image> images = new ArrayList<>();
@@ -42,10 +48,12 @@ public class Notice {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public Notice(Long id, String content, Long viewCount, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Notice(Long id, String title, String content, Long viewCount, List<Long> imageIds, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
+        this.title = title;
         this.content = content;
         this.viewCount = viewCount;
+        this.imageIds = imageIds;
         this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
@@ -53,23 +61,23 @@ public class Notice {
         this.updatedAt = updatedAt;
     }
 
-    public static Notice newOne(String content, Long createdBy){
+    public static Notice newOne(String title, String content, List<Long> imageIds, Long createdBy){
         return Notice.builder()
+                .title(title)
                 .content(content)
+                .imageIds(imageIds)
                 .viewCount(0L)
                 .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }
 
-    public void updateNotice(String content, Long updateBy){
+    public void updateNotice(String title, String content, List<Long> imageIds, Long updateBy){
+        this.title = title;
         this.content = content;
+        this.imageIds = imageIds;
         this.updatedBy = updateBy;
         this.updatedAt = ZonedDateTime.now();
-    }
-
-    public void changeImage(List<Image> images){
-        this.images = images;
     }
 
     public NoticeDTO toDTO(){
@@ -87,6 +95,6 @@ public class Notice {
 
     private List<ImageDTO> imagesToDTO(){
         if(CollectionUtils.isEmpty(images)) return null;
-        return images.stream().map(Image::toDTO).toList();
+        return images.stream().map(ImageDTO::fromEntity).toList();
     }
 }

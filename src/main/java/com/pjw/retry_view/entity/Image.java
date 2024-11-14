@@ -2,7 +2,7 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.ImageTypeConverter;
 import com.pjw.retry_view.dto.ImageDTO;
-import com.pjw.retry_view.dto.ImageType;
+import com.pjw.retry_view.enums.ImageType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +20,6 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "type")
-    @Convert(converter = ImageTypeConverter.class)
-    private ImageType type;
-    @Column(name = "parent_id")
-    private Long parentId;
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -37,26 +32,18 @@ public class Image {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public static Image newOne(Long imageId, ImageType type, Long parentId, String imageUrl, Long createdBy){
+    public static Image newOne(Long imageId, String imageUrl, Long createdBy){
         return Image.builder()
                 .id(imageId)
-                .type(type)
-                .parentId(parentId)
                 .imageUrl(imageUrl)
                 .createdBy(createdBy)
                 .createdAt(ZonedDateTime.now())
                 .build();
     }
 
-    public void changeParentId(Long parentId){
-        this.parentId = parentId;
-    }
-
     @Builder
-    public Image(Long id, ImageType type, Long parentId, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Image(Long id, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
-        this.type = type;
-        this.parentId = parentId;
         this.imageUrl = imageUrl;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
@@ -64,16 +51,4 @@ public class Image {
         this.updatedAt = updatedAt;
     }
 
-    public ImageDTO toDTO(){
-        return ImageDTO.builder()
-                .id(id)
-                .type(type)
-                .parentId(parentId)
-                .imageUrl(imageUrl)
-                .createdBy(createdBy)
-                .createdAt(createdAt)
-                .updatedBy(updatedBy)
-                .updatedAt(updatedAt)
-                .build();
-    }
 }
