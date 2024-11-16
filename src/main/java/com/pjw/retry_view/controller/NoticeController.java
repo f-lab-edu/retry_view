@@ -1,9 +1,11 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.NoticeDTO;
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.request.WriteNoticeRequest;
 import com.pjw.retry_view.service.NoticeService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +30,14 @@ public class NoticeController {
     }
 
     @PostMapping
-    public NoticeDTO saveNotice(@RequestBody @Valid WriteNoticeRequest notice){
+    public NoticeDTO saveNotice(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteNoticeRequest notice){
+        notice.setCreatedBy(userDetail.getId());
         return noticeService.saveNotice(notice);
     }
 
     @PutMapping("/{id}")
-    public NoticeDTO updateNotice(@RequestBody @Valid WriteNoticeRequest notice, @PathVariable(name = "id") Long id){
+    public NoticeDTO updateNotice(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteNoticeRequest notice, @PathVariable(name = "id") Long id){
+        notice.setUpdatedBy(userDetail.getId());
         return noticeService.updateNotice(notice, id);
     }
 

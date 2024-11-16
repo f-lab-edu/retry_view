@@ -1,8 +1,6 @@
 package com.pjw.retry_view.response;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class JWToken {

@@ -1,10 +1,12 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.BoardDTO;
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.request.WriteBoardRequest;
 import com.pjw.retry_view.service.BoardService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,12 +35,14 @@ public class BoardController {
     }
 
     @PostMapping
-    public BoardDTO writeBoard(@RequestBody @Valid WriteBoardRequest board){
+    public BoardDTO writeBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
+        board.setCreatedBy(userDetail.getId());
         return boardService.saveBoard(board);
     }
 
     @PutMapping("/{id}")
-    public BoardDTO updateBoard(@RequestBody @Valid WriteBoardRequest board, @PathVariable(name = "id") Long id){
+    public BoardDTO updateBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board, @PathVariable(name = "id") Long id){
+        board.setUpdatedBy(userDetail.getId());
         return boardService.updateBoard(board, id);
     }
 

@@ -45,7 +45,7 @@ public class UserController {
         } else {
             UserDTO user = userReq.toUserDTO();
             user.setRole(UserAuth.USER);
-            UserDTO registUser = userService.saveUser(user);
+            UserDTO registUser = userService.registUser(user);
             response.setName(registUser.getName());
             response.setLoginId(registUser.getLoginId());
             response.setNickname(registUser.getNickname());

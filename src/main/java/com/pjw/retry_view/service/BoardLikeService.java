@@ -31,10 +31,9 @@ public class BoardLikeService {
     }
 
     @Transactional
-    public void saveBoardLike(Long boardId){
+    public void saveBoardLike(Long boardId, Long userId){
         // HASH_KEY, boardId, set(userIds)
         HashOperations<String, String, String> hashOper = redisTemplate.opsForHash();
-        Long userId = JWTUtil.getUserId();
 
         LikeId id = LikeId.newOne(userId, boardId);
         BoardLike boardLike = boardLikeRepository.findById(id).orElse(null);
@@ -71,8 +70,7 @@ public class BoardLikeService {
     }
 
     @Transactional
-    public void deleteBoardLike(Long boardId){
-        Long userId = JWTUtil.getUserId();
+    public void deleteBoardLike(Long boardId, Long userId){
         if(isBoardLikedWithRedis(userId, boardId)) deleteBoardLikeWithRedis(userId, boardId);
         else boardLikeRepository.deleteById(LikeId.newOne(userId, boardId));
     }
