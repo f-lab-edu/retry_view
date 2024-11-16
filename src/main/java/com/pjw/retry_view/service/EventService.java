@@ -38,7 +38,7 @@ public class EventService {
         if(!Objects.isNull(cursor) && cursor > 0L){
             eventList = eventRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
         }else{
-            eventList = eventRepository.findAllOrderByIdDesc(pageable);
+            eventList = eventRepository.findAllByOrderByIdDesc(pageable);
         }
 
         for(Event event: eventList){
