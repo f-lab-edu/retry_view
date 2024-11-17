@@ -1,6 +1,5 @@
 package com.pjw.retry_view.repository;
 
-import com.pjw.retry_view.enums.ImageType;
 import com.pjw.retry_view.entity.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,9 +11,7 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    @Modifying
-    @Query("select e from Image e where e.id in :ids")
-    public List<Image> findByIds(@Param("ids") List<Long> ids);
+    public List<Image> findByIdIn(List<Long> ids);
     public Image save(Image image);
     @Modifying
     @Query("delete from Image ei where ei.id in :ids")

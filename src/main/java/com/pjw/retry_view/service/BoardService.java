@@ -50,7 +50,7 @@ public class BoardService {
         for(Board board : boardList){
             if(CollectionUtils.isEmpty(board.getImageIds())) continue;
 
-            List<Image> imageList = imageRepository.findByIds(board.getImageIds());
+            List<Image> imageList = imageRepository.findByIdIn(board.getImageIds());
             board.setImages(imageList);
         }
         return boardList.stream().map(Board::toDTO).toList();
@@ -58,7 +58,7 @@ public class BoardService {
 
     public BoardDTO getBoard(Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> imageList = imageRepository.findByIds(board.getImageIds());
+        List<Image> imageList = imageRepository.findByIdIn(board.getImageIds());
         board.setImages(imageList);
         return board.toDTO();
     }
@@ -83,7 +83,7 @@ public class BoardService {
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByIds(board.getImageIds()).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepository.findByIdIn(board.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);
