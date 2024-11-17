@@ -1,7 +1,9 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.BoardLikeDTO;
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.service.BoardLikeService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +28,13 @@ public class BoardLikeController {
 
     @Operation(summary = "게시글 좋아요 API", description = "")
     @PostMapping("/{boardId}")
-    public void saveLike(@PathVariable(name = "boardId") Long boardId){
-       boardLikeService.saveBoardLike(boardId);
+    public void saveLike(@AuthenticationPrincipal UserDetail userDetail, @PathVariable(name = "boardId") Long boardId){
+        boardLikeService.saveBoardLike(boardId, userDetail.getId());
     }
 
     @Operation(summary = "게시글 좋아요 취소 API", description = "")
     @DeleteMapping("/{boardId}")
-    public void deleteLike(@PathVariable(name = "boardId") Long boardId){
-        boardLikeService.deleteBoardLike(boardId);
+    public void deleteLike(@AuthenticationPrincipal UserDetail userDetail, @PathVariable(name = "boardId") Long boardId){
+        boardLikeService.deleteBoardLike(boardId, userDetail.getId());
     }
 }

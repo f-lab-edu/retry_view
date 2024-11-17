@@ -1,5 +1,6 @@
 package com.pjw.retry_view.util;
 
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.exception.InvalidTokenException;
@@ -10,6 +11,8 @@ import io.jsonwebtoken.security.SecurityException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -76,6 +79,18 @@ public class JWTUtil {
         Claims claims = getClaims(token);
         String authCode = claims.get(USER_INFO_ROLE,String.class);
         return UserAuth.getValue(authCode);
+    }
+
+    public static Authentication getAuthentication(String token){
+        if(!isValidateToken(token)) return null;
+        Claims claims = getClaims(token);
+        UserDetail userDetail = UserDetail.builder()
+                .id(Long.parseLong(String.valueOf(claims.get(USER_INFO_ID))))
+                .name(String.valueOf(claims.get(USER_INFO_NAME)))
+                .role(UserAuth.getValue(String.valueOf(claims.get(USER_INFO_ROLE))))
+                .loginId(String.valueOf(claims.get(USER_INFO_LOGIN_ID)))
+                .build();
+        return new UsernamePasswordAuthenticationToken(userDetail, "", userDetail.getAuthorities());
     }
 
     public static Long getUserId(){

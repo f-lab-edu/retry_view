@@ -1,11 +1,13 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.EventDTO;
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.request.WriteEventRequest;
 import com.pjw.retry_view.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,13 +36,15 @@ public class EventController {
 
     @Operation(summary = "이벤트 게시글 작성 API", description = "")
     @PostMapping
-    public EventDTO writeEvent(@RequestBody @Valid WriteEventRequest event){
+    public EventDTO writeEvent(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteEventRequest event){
+        event.setCreatedBy(userDetail.getId());
         return eventService.saveEvent(event);
     }
 
     @Operation(summary = "이벤트 게시글 수정 조회 API", description = "")
     @PutMapping("/{id}")
-    public EventDTO updateEvent(@RequestBody @Valid WriteEventRequest event, @PathVariable(name = "id")Long id){
+    public EventDTO updateEvent(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteEventRequest event, @PathVariable(name = "id")Long id){
+        event.setUpdatedBy(userDetail.getId());
         return eventService.updateEvent(event, id);
     }
 

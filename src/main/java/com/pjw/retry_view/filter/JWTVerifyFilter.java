@@ -6,6 +6,8 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,11 +25,13 @@ public class JWTVerifyFilter extends OncePerRequestFilter {
         if(isAllowMethod(method) && JWTUtil.isValidateToken(jwt)){
             String loginId = JWTUtil.getClaims(jwt).get("loginId").toString();
             request.setAttribute("loginId", loginId);
+            Authentication authentication = JWTUtil.getAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             filterChain.doFilter(request,response);
         }else{
             // accessToken 재발급받게 하기
-            HttpServletResponse httpServletResponse = response;
-            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다.");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 토큰입니다.");
         }
     }
 
