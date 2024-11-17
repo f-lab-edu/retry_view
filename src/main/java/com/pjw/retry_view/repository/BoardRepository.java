@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    public List<Board> findAllOrderByIdDesc(Pageable pageable);
+    public List<Board> findAllByOrderByIdDesc(Pageable pageable);
     public List<Board> findByIdLessThanAndTitleLikeOrderByIdDesc(Long id, String title, Pageable pageable);
     public List<Board> findByIdLessThanAndTypeOrderByIdDesc(Long id, BoardType type, Pageable pageable);
     public Optional<Board> findById(Long id);

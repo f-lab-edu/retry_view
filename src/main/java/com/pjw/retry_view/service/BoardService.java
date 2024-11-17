@@ -44,7 +44,7 @@ public class BoardService {
             }
             case TYPE ->
                     boardRepository.findByIdLessThanAndTypeOrderByIdDesc(cursor, BoardType.getValue(content), pageable);
-            default -> boardRepository.findAllOrderByIdDesc(pageable);
+            default -> boardRepository.findAllByOrderByIdDesc(pageable);
         };
 
         for(Board board : boardList){

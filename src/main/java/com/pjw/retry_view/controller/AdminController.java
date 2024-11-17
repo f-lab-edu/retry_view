@@ -5,12 +5,15 @@ import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.request.RegistUserRequest;
 import com.pjw.retry_view.response.RegistUserResponse;
 import com.pjw.retry_view.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "관리자 계정 관리 API 컨트롤러", description = "")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -20,6 +23,7 @@ public class AdminController {
         this.userService = userService;
     }
 
+    @Operation(summary = "관리자 계정 생성 API", description = "")
     @PostMapping("/regist")
     public ResponseEntity<RegistUserResponse> registAdminUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
         RegistUserResponse response = new RegistUserResponse();
