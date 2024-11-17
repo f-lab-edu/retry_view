@@ -44,7 +44,7 @@ public class NoticeService {
         for(Notice notice: noticeList){
             if(CollectionUtils.isEmpty(notice.getImageIds())) continue;
 
-            List<Image> imageList = imageRepository.findByIds(notice.getImageIds());
+            List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
             notice.setImages(imageList);
         }
         return noticeList.stream().map(Notice::toDTO).toList();
@@ -52,7 +52,7 @@ public class NoticeService {
 
     public NoticeDTO getNotice(Long id){
         Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> imageList = imageRepository.findByIds(notice.getImageIds());
+        List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
         notice.setImages(imageList);
         return notice.toDTO();
     }
@@ -77,7 +77,7 @@ public class NoticeService {
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByIds(notice.getImageIds()).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepository.findByIdIn(notice.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);

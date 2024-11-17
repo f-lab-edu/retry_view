@@ -21,7 +21,7 @@ public class JWTVerifyFilter extends OncePerRequestFilter {
         String method = request.getMethod();
         String jwt = request.getHeader("Authorization");
 
-        System.out.println("Method: "+method+", JWT: "+jwt);
+        System.out.println("Method: "+method+", uri: "+request.getRequestURI()+", JWT: "+jwt);
         if(isAllowMethod(method) && JWTUtil.isValidateToken(jwt)){
             String loginId = JWTUtil.getClaims(jwt).get("loginId").toString();
             request.setAttribute("loginId", loginId);
