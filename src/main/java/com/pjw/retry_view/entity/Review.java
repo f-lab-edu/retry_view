@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "board")
+@Table(name = "review")
 @Entity
 public class Review {
     @Id
@@ -21,7 +21,7 @@ public class Review {
     private Long id;
     @Column(name = "product_id")
     private Long productId;
-    @Column(name = "score")
+    @Column(name = "score", nullable = true)
     private Integer score;
     @Column(name = "comment")
     private String comment;
@@ -38,8 +38,7 @@ public class Review {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public void updateReview(Long id, Long productId, Integer score, String comment, List<Long> imageIds, Long updatedBy){
-        this.id = id;
+    public void updateReview(Long productId, Integer score, String comment, List<Long> imageIds, Long updatedBy){
         this.productId = productId;
         this.score = score;
         this.comment = comment;

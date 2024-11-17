@@ -1,6 +1,7 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.Reviews;
+import com.pjw.retry_view.dto.ReviewView;
+import com.pjw.retry_view.request.DeleteRequest;
 import com.pjw.retry_view.request.ReviewRequest;
 import com.pjw.retry_view.service.ReviewService;
 import jakarta.validation.Valid;
@@ -18,27 +19,27 @@ public class ReviewController {
     }
 
     @GetMapping("/{productId}")
-    public List<Reviews> getReviewListByProductId(@PathVariable("productId") Long productId){
-        return reviewService.getReviewListByProductId(productId);
+    public List<ReviewView> getReviewListByProductId(@RequestParam(name = "cursor", required = false) Long cursor, @PathVariable("productId") Long productId){
+        return reviewService.getReviewListByProductId(cursor,productId);
     }
 
     @GetMapping("/users/{createdBy}")
-    public List<Reviews> getReviewListByCreatedBy(@PathVariable("createdBy") Long createdBy){
-        return reviewService.getReviewListByCreatedBy(createdBy);
+    public List<ReviewView> getReviewListByCreatedBy(@RequestParam(name = "cursor", required = false) Long cursor, @PathVariable("createdBy") Long createdBy){
+        return reviewService.getReviewListByCreatedBy(cursor,createdBy);
     }
 
     @PostMapping
-    public Reviews saveReview(@RequestBody @Valid ReviewRequest review){
+    public ReviewView saveReview(@RequestBody @Valid ReviewRequest review){
         return reviewService.saveReview(review);
     }
 
-    @PutMapping("/{id}")
-    public Reviews updateReview(@PathVariable("id") Long id, @RequestBody @Valid ReviewRequest review){
-        return reviewService.updateReview(review, id);
+    @PutMapping
+    public ReviewView updateReview(@RequestBody @Valid ReviewRequest review){
+        return reviewService.updateReview(review);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteReview(@PathVariable("id") Long id){
-        reviewService.deleteById(id);
+    @DeleteMapping
+    public void deleteReview(@RequestBody DeleteRequest req){
+        reviewService.deleteById(req.getId());
     }
 }

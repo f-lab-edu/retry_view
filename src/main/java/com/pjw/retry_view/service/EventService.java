@@ -44,7 +44,7 @@ public class EventService {
         for(Event event: eventList){
             if(CollectionUtils.isEmpty(event.getImageIds())) continue;
 
-            List<Image> imageList = imageRepository.findByIds(event.getImageIds());
+            List<Image> imageList = imageRepository.findByIdIn(event.getImageIds());
             event.setImages(imageList);
         }
         return eventList.stream().map(Event::toDTO).toList();
@@ -52,7 +52,7 @@ public class EventService {
 
     public EventDTO getEvent(Long id){
         Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> imageList = imageRepository.findByIds(event.getImageIds());
+        List<Image> imageList = imageRepository.findByIdIn(event.getImageIds());
         event.setImages(imageList);
         return event.toDTO();
     }
@@ -78,7 +78,7 @@ public class EventService {
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByIds(event.getImageIds()).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepository.findByIdIn(event.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
             imageRepository.deleteByIds(deleteImageIds);

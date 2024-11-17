@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    public List<Review> findByProductId(Long productId, Pageable pageable);
-    public List<Review> findByCreatedBy(Long createdBy, Pageable pageable);
+    public List<Review> findByIdLessThanAndProductIdOrderByIdDesc(Long id, Long productId, Pageable pageable);
+    public List<Review> findByIdLessThanAndCreatedByOrderByIdDesc(Long id, Long createdBy, Pageable pageable);
     public Optional<Review> findById(Long id);
     public Review save(Review review);
     public void deleteById(Long id);

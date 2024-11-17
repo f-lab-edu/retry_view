@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Reviews {
+public class ReviewView {
     private Long id;
     private Long productId;
     private Integer score;
@@ -25,8 +25,8 @@ public class Reviews {
 
     private List<ImageDTO> images;
 
-    public static Reviews fromEntity(Review review){
-        return Reviews.builder()
+    public static ReviewView fromEntity(Review review){
+        return ReviewView.builder()
                 .id(review.getId())
                 .productId(review.getProductId())
                 .score(review.getScore())
@@ -39,7 +39,7 @@ public class Reviews {
     }
 
     @Builder
-    public Reviews(Long id, Long productId, Integer score, String comment, List<ImageDTO> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public ReviewView(Long id, Long productId, Integer score, String comment, List<ImageDTO> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.productId = productId;
         this.score = score;
