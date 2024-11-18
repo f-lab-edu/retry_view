@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -39,7 +38,7 @@ public class SecurityConfig {
                 sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             })
             .authorizeHttpRequests(authorizeRequest -> {
-                authorizeRequest.requestMatchers("/login","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                authorizeRequest.requestMatchers("/login","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**", "/favicon.ico").permitAll()
                 .requestMatchers("/admin**").hasRole(UserAuth.ADMIN.getCode())
                 .requestMatchers("/**").hasAuthority(UserAuth.USER.getCode())
                 .anyRequest().authenticated();
