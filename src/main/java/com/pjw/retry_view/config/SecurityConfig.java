@@ -39,9 +39,9 @@ public class SecurityConfig {
                 sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             })
             .authorizeHttpRequests(authorizeRequest -> {
-                authorizeRequest.requestMatchers("/login","/users/regist","/ws","/chat/msg").permitAll()
-                .requestMatchers("/**").hasAuthority(UserAuth.USER.getCode())
+                authorizeRequest.requestMatchers("/login","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .requestMatchers("/admin**").hasRole(UserAuth.ADMIN.getCode())
+                .requestMatchers("/**").hasAuthority(UserAuth.USER.getCode())
                 .anyRequest().authenticated();
             })
             .exceptionHandling(exceptionConfig -> {
