@@ -2,6 +2,7 @@ package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.NoticeDTO;
 import com.pjw.retry_view.dto.UserDetail;
+import com.pjw.retry_view.request.DeleteRequest;
 import com.pjw.retry_view.request.WriteNoticeRequest;
 import com.pjw.retry_view.service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,15 +43,15 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 게시글 수정 API", description = "")
-    @PutMapping("/{id}")
-    public NoticeDTO updateNotice(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteNoticeRequest notice, @PathVariable(name = "id") Long id){
+    @PutMapping
+    public NoticeDTO updateNotice(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteNoticeRequest notice){
         notice.setUpdatedBy(userDetail.getId());
-        return noticeService.updateNotice(notice, id);
+        return noticeService.updateNotice(notice);
     }
 
     @Operation(summary = "공지사항 게시글 삭제 API", description = "")
-    @DeleteMapping("/{id}")
-    public void deleteNotice(@PathVariable(name = "id") Long id){
-        noticeService.deleteNotice(id);
+    @DeleteMapping
+    public void deleteNotice(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid DeleteRequest req){
+        noticeService.deleteNotice(req.getId(), userDetail.getId());
     }
 }

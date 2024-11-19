@@ -6,6 +6,7 @@ import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.enums.BoardType;
 import com.pjw.retry_view.enums.SearchType;
+import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.BoardRepository;
 import com.pjw.retry_view.repository.ImageRepository;
@@ -65,6 +66,9 @@ public class BoardService {
 
     @Transactional
     public BoardDTO saveBoard(WriteBoardRequest req){
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         for(Image boardImage : images){
             imageRepository.save(boardImage);
@@ -78,9 +82,16 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDTO updateBoard(WriteBoardRequest req, Long id){
-        Board board = boardRepository.findById(id).orElseThrow(ResolutionException::new);
+    public BoardDTO updateBoard(WriteBoardRequest req){
+        Board board = boardRepository.findById(req.getId()).orElseThrow(ResolutionException::new);
+
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
+
+        if(Long.compare(board.getCreatedBy(), req.getUpdatedBy()) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByIdIn(board.getImageIds()).stream().map(Image::getId).toList();
@@ -97,15 +108,19 @@ public class BoardService {
         }
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
-        board.updateBoard(id, req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), updateImageIds, req.getUpdatedBy());
+        board.updateBoard(req.getId(), req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), updateImageIds, req.getUpdatedBy());
         BoardDTO result = boardRepository.save(board).toDTO();
         result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
         return result;
     }
 
     @Transactional
-    public void deleteBoard(Long id){
+    public void deleteBoard(Long id, Long userId){
         Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        if(Long.compare(board.getCreatedBy(), userId) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
         if(CollectionUtils.isEmpty(board.getImageIds())) imageRepository.deleteByIds(board.getImageIds());
         boardRepository.deleteById(id);
     }

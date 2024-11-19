@@ -1,10 +1,12 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.ReviewView;
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.request.DeleteRequest;
 import com.pjw.retry_view.request.ReviewRequest;
 import com.pjw.retry_view.service.ReviewService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,23 +25,25 @@ public class ReviewController {
         return reviewService.getReviewListByProductId(cursor,productId);
     }
 
-    @GetMapping("/users/{createdBy}")
-    public List<ReviewView> getReviewListByCreatedBy(@RequestParam(name = "cursor", required = false) Long cursor, @PathVariable("createdBy") Long createdBy){
-        return reviewService.getReviewListByCreatedBy(cursor,createdBy);
+    @GetMapping("/users")
+    public List<ReviewView> getReviewListByCreatedBy(@AuthenticationPrincipal UserDetail userDetail, @RequestParam(name = "cursor", required = false) Long cursor){
+        return reviewService.getReviewListByCreatedBy(cursor, userDetail.getId());
     }
 
     @PostMapping
-    public ReviewView saveReview(@RequestBody @Valid ReviewRequest review){
+    public ReviewView saveReview(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid ReviewRequest review){
+        review.setCreatedBy(userDetail.getId());
         return reviewService.saveReview(review);
     }
 
     @PutMapping
-    public ReviewView updateReview(@RequestBody @Valid ReviewRequest review){
+    public ReviewView updateReview(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid ReviewRequest review){
+        review.setUpdatedBy(userDetail.getId());
         return reviewService.updateReview(review);
     }
 
     @DeleteMapping
-    public void deleteReview(@RequestBody DeleteRequest req){
-        reviewService.deleteById(req.getId());
+    public void deleteReview(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid DeleteRequest req){
+        reviewService.deleteById(req.getId(), userDetail.getId());
     }
 }

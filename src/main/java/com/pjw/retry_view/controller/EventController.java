@@ -2,6 +2,7 @@ package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.EventDTO;
 import com.pjw.retry_view.dto.UserDetail;
+import com.pjw.retry_view.request.DeleteRequest;
 import com.pjw.retry_view.request.WriteEventRequest;
 import com.pjw.retry_view.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,15 +43,15 @@ public class EventController {
     }
 
     @Operation(summary = "이벤트 게시글 수정 조회 API", description = "")
-    @PutMapping("/{id}")
-    public EventDTO updateEvent(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteEventRequest event, @PathVariable(name = "id")Long id){
+    @PutMapping
+    public EventDTO updateEvent(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteEventRequest event){
         event.setUpdatedBy(userDetail.getId());
-        return eventService.updateEvent(event, id);
+        return eventService.updateEvent(event);
     }
 
     @Operation(summary = "이벤트 게시글 삭제 API", description = "")
-    @DeleteMapping("/{id}")
-    public void deleteEvent(@PathVariable(name = "id")Long id){
-        eventService.deleteEvent(id);
+    @DeleteMapping
+    public void deleteEvent(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid DeleteRequest req){
+        eventService.deleteEvent(req.getId(), userDetail.getId());
     }
 }

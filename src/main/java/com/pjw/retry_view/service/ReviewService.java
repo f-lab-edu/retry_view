@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.dto.ReviewView;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Review;
+import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.ImageRepository;
 import com.pjw.retry_view.repository.ReviewRepository;
@@ -73,6 +74,9 @@ public class ReviewService {
 
     @Transactional
     public ReviewView saveReview(ReviewRequest req){
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         for(Image reviewImage : images){
             imageRepository.save(reviewImage);
@@ -88,8 +92,14 @@ public class ReviewService {
     @Transactional
     public ReviewView updateReview(ReviewRequest req){
         Review review = reviewRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
-        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
+        if(Long.compare(review.getCreatedBy(), req.getUpdatedBy()) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByIdIn(review.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
@@ -112,8 +122,12 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteById(Long id){
+    public void deleteById(Long id, Long userId){
         Review review = reviewRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        if(Long.compare(review.getCreatedBy(), userId) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
         if(CollectionUtils.isEmpty(review.getImageIds())) imageRepository.deleteByIds(review.getImageIds());
         reviewRepository.deleteById(id);
     }

@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.dto.NoticeDTO;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Notice;
+import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.ImageRepository;
 import com.pjw.retry_view.repository.NoticeRepository;
@@ -59,6 +60,9 @@ public class NoticeService {
 
     @Transactional
     public NoticeDTO saveNotice(WriteNoticeRequest req){
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         for(Image noticeImage : images){
             imageRepository.save(noticeImage);
@@ -72,10 +76,16 @@ public class NoticeService {
     }
 
     @Transactional
-    public NoticeDTO updateNotice(WriteNoticeRequest req, Long id){
-        Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
+    public NoticeDTO updateNotice(WriteNoticeRequest req){
+        Notice notice = noticeRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
 
+        if(Long.compare(notice.getCreatedBy(), req.getUpdatedBy()) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
+        List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
         List<Long> oldImageIds = imageRepository.findByIdIn(notice.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
@@ -98,8 +108,12 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteNotice(Long id){
+    public void deleteNotice(Long id, Long userId){
         Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        if(Long.compare(notice.getCreatedBy(), userId) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
         if(CollectionUtils.isEmpty(notice.getImageIds())) imageRepository.deleteByIds(notice.getImageIds());
         noticeRepository.deleteById(id);
     }
