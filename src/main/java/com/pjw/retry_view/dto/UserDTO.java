@@ -1,6 +1,7 @@
 package com.pjw.retry_view.dto;
 
 import com.pjw.retry_view.entity.User;
+import com.pjw.retry_view.entity.UserId;
 import com.pjw.retry_view.enums.Gender;
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.enums.UserState;
@@ -40,7 +41,7 @@ public class UserDTO implements Serializable {
 
     public User toEntity(){
         return User.builder()
-                .id(id)
+                .userId(UserId.of(id))
                 .name(name)
                 .gender(gender)
                 .phone(phone)

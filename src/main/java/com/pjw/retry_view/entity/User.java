@@ -14,14 +14,11 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "user")
 @Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private UserId userId;
     @Column(name = "name")
     private String name;
     @Column(name = "gender")
@@ -67,9 +64,29 @@ public class User {
         this.updatedAt = ZonedDateTime.now();
     }
 
+    @Builder
+    public User(UserId userId, String name, Gender gender, String phone, String address, UserAuth role, String loginId, String password, String nickname, String type, UserState state, String refreshToken, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+        this.userId = userId;
+        this.name = name;
+        this.gender = gender;
+        this.phone = phone;
+        this.address = address;
+        this.role = role;
+        this.loginId = loginId;
+        this.password = password;
+        this.nickname = nickname;
+        this.type = type;
+        this.state = state;
+        this.refreshToken = refreshToken;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.updatedBy = updatedBy;
+        this.updatedAt = updatedAt;
+    }
+
     public UserDTO toDTO(){
         return UserDTO.builder()
-                .id(id)
+                .id(userId.getId())
                 .name(name)
                 .gender(gender)
                 .phone(phone)
