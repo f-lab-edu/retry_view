@@ -1,7 +1,7 @@
 # Retry View
 제품 리뷰 + 중고 물품 거래 서비스 API
 
-![RetryView](https://github.com/user-attachments/assets/8236563b-a441-4074-b948-0d1a2791e1c1)
+![RetryView (1)](https://github.com/user-attachments/assets/fc23d38e-8811-4530-aa01-7d8c0fe109b8)
 
 ### ERD
 https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
