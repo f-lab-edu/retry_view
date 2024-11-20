@@ -25,7 +25,7 @@ jobs:
 
       - name: init with Gradle
         uses: gradle/gradle-build-action@v2
-#      - run: gradle init
+      - run: gradle wrapper
       - name: Build with Gradle
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
