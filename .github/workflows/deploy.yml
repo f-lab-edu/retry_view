@@ -18,6 +18,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Properties setting
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/application-dev.properties
+      - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
+      - run: cat ./src/main/resources/application-dev.properties
+
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
