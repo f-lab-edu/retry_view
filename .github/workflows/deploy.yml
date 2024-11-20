@@ -24,12 +24,12 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-        working-directory: .
+        run: chmod +x ./gradlew
+        working-directory: retry-view
 
       - name: Build with Gradle Wrapper
         run: ./gradlew clean build
-        working-directory: .
+        working-directory: retry-view
 
       - name: Login to Docker hub
         uses: docker/login-action@v1
