@@ -12,7 +12,7 @@ services:
     depends_on:
     - redis
     build:
-      context: ./app
+      context: .
       dockerfile: Dockerfile
       # args:
     networks:
