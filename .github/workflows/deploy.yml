@@ -45,6 +45,13 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USER }}/retry-view:1.0
 
+      - name: Get Current Time
+        uses: josStorer/get-current-time@v2.0.0
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
+
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v20
         with:
