@@ -11,9 +11,9 @@ services:
     - 443:443
     depends_on:
     - redis
-    build:
-      context: .
-      dockerfile: Dockerfile
+#    build:
+#      context: ./app
+#      dockerfile: Dockerfile
       # args:
     networks:
     - retry-view-network
