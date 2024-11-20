@@ -23,7 +23,7 @@ jobs:
       - run: touch ./src/main/resources/application-dev.properties
       - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
       - run: cat ./src/main/resources/application-dev.properties
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: application-dev.properties
           path: ./src/main/resources/application-dev.properties
