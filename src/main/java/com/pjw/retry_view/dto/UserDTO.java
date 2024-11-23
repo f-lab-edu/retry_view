@@ -19,6 +19,7 @@ public class UserDTO implements Serializable {
     private String name;
     private Gender gender;
     private String phone;
+    private String email;
     private String address;
     private UserAuth role;
     private String loginId;
@@ -44,6 +45,7 @@ public class UserDTO implements Serializable {
                 .name(name)
                 .gender(gender)
                 .phone(phone)
+                .email(email)
                 .address(address)
                 .role(role)
                 .loginId(loginId)
@@ -66,6 +68,7 @@ public class UserDTO implements Serializable {
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", role='" + role + '\'' +
                 ", loginId='" + loginId + '\'' +
