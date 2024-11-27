@@ -1,37 +1,44 @@
 package com.pjw.retry_view.filter;
 
-import com.pjw.retry_view.service.JWTService;
+import com.pjw.retry_view.util.FilterUtil;
+import com.pjw.retry_view.util.JWTUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
-public class JWTVerifyFilter implements Filter {
-    private final JWTService jwtService;
-    public JWTVerifyFilter(JWTService jwtService){
-        this.jwtService = jwtService;
+public class JWTVerifyFilter extends OncePerRequestFilter {
+
+    @Override
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String method = request.getMethod();
+        String jwt = request.getHeader("Authorization");
+
+        System.out.println("Method: "+method+", uri: "+request.getRequestURI()+", JWT: "+jwt);
+        if(isAllowMethod(method) && JWTUtil.isValidateToken(jwt)){
+            String loginId = JWTUtil.getClaims(jwt).get("loginId").toString();
+            request.setAttribute("loginId", loginId);
+            Authentication authentication = JWTUtil.getAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            filterChain.doFilter(request,response);
+        }else{
+            // accessToken 재발급받게 하기
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 토큰입니다.");
+        }
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
-        String method = httpServletRequest.getMethod();
-        String jwt = httpServletRequest.getHeader("Authorization");
-
-        System.out.println("Method: "+method+", JWT: "+jwt);
-        if(isAllowMethod(method) && jwtService.validateToken(jwt)){
-            String loginId = jwtService.getClaims(jwt).get("loginId").toString();
-            servletRequest.setAttribute("loginId", loginId);
-            filterChain.doFilter(servletRequest,servletResponse);
-        }else{
-            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다.");
-        }
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String uri = request.getRequestURI();
+        return FilterUtil.isExcludeUrlPatterns(uri);
     }
 
     private boolean isAllowMethod(String method){

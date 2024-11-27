@@ -1,4 +1,4 @@
-package com.pjw.retry_view.dto;
+package com.pjw.retry_view.enums;
 
 import lombok.Getter;
 

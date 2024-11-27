@@ -35,7 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
-/src/main/resources/application.properties
+/src/main/resources/*.properties
 /gradlew
 /gradlew.bat
 /gradle/

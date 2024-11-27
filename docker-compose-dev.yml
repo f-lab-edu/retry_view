@@ -1,0 +1,34 @@
+#docker-compose.yml
+# Use root/example as user/password credentials
+version: '3.5'
+name: retry-view-project
+
+services:
+  api:
+    image: pjiwon7/retry-view:1.0
+    ports:
+    - 8080:8080
+    - 443:443
+    depends_on:
+    - redis
+#    build:
+#      context: ./app
+#      dockerfile: Dockerfile
+      # args:
+    networks:
+    - retry-view-network
+  redis:
+    image: redis:7.4.1
+    ports:
+    - 6379:6379
+    command: redis-server
+    networks:
+    - retry-view-network
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf:/usr/local/conf
+    restart: always
+
+networks:
+  retry-view-network:
+    external: true
