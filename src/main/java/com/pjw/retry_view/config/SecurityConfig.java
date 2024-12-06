@@ -40,7 +40,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorizeRequest -> {
                 authorizeRequest.requestMatchers("/login","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**", "/favicon.ico").permitAll()
                 .requestMatchers("/admin**").hasRole(UserAuth.ADMIN.getCode())
-                .requestMatchers("/**").hasAuthority(UserAuth.USER.getCode())
+                .requestMatchers("/**").hasAnyAuthority(UserAuth.USER.getCode(), UserAuth.ADMIN.getCode())
                 .anyRequest().authenticated();
             })
             .exceptionHandling(exceptionConfig -> {
