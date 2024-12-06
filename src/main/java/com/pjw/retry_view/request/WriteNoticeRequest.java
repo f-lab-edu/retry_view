@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class WriteNoticeRequest {
+    private Long id;
     @NotEmpty(message = "제목은 필수 입력값입니다.")
     private String title;
     @NotEmpty(message = "내용은 필수 입력값입니다.")

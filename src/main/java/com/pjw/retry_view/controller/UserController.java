@@ -1,5 +1,6 @@
 package com.pjw.retry_view.controller;
 
+import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.request.RegistUserRequest;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,7 @@ public class UserController {
 
     @Operation(summary = "일반 회원가입 API", description = "")
     @PostMapping("/regist")
-    public ResponseEntity<RegistUserResponse> registUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
+    public RegistUserResponse registUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
         RegistUserResponse response = new RegistUserResponse();
         HttpStatus httpStatus = HttpStatus.OK;
 
@@ -50,13 +52,13 @@ public class UserController {
             response.setNickname(registUser.getNickname());
         }
 
-        return new ResponseEntity<RegistUserResponse>(response, httpStatus);
+        return response;
     }
 
     @Operation(summary = "일반 탈퇴 API", description = "")
     @DeleteMapping("/withdraw")
-    public ResponseEntity<String> withdrawUser(HttpServletRequest req){
-        String loginId = req.getAttribute("loginId").toString();
+    public ResponseEntity<String> withdrawUser(@AuthenticationPrincipal UserDetail userDetail){
+        String loginId = userDetail.getUsername();
         userService.withdrawUser(loginId);
         return ResponseEntity.ok("Success");
     }

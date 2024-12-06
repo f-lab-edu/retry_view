@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.EventDTO;
 import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.entity.Event;
 import com.pjw.retry_view.entity.Image;
+import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.ImageRepository;
 import com.pjw.retry_view.repository.EventRepository;
@@ -73,8 +74,15 @@ public class EventService {
     }
 
     @Transactional
-    public EventDTO updateEvent(WriteEventRequest req, Long id){
-        Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    public EventDTO updateEvent(WriteEventRequest req){
+        if(CollectionUtils.isEmpty(req.getImages())) {
+            req.setImages(new ArrayList<>());
+        }
+        Event event = eventRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
+
+        if(Long.compare(event.getCreatedBy(), req.getUpdatedBy()) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
 
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
@@ -99,8 +107,12 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(Long id){
+    public void deleteEvent(Long id, Long userId){
         Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        if(Long.compare(event.getCreatedBy(), userId) != 0)
+            throw new NotMyResourceException("접근 불가능한 리소스입니다.");
+
         if(CollectionUtils.isEmpty(event.getImageIds())) imageRepository.deleteByIds(event.getImageIds());
         eventRepository.deleteById(id);
     }
