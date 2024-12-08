@@ -58,6 +58,8 @@ dependencies {
 // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.18.1'
 
+// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client
+	implementation 'org.springframework.security:spring-security-oauth2-client:6.3.3'
 
 }
 

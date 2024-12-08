@@ -25,6 +25,8 @@ public class User {
     private Gender gender;
     @Column(name = "phone")
     private String phone;
+    @Column(name = "email")
+    private String email;
     @Column(name = "address")
     private String address;
     @Column(name = "role")
@@ -57,6 +59,7 @@ public class User {
         this.state = UserState.WITHDRAW;
         this.name = null;
         this.gender = null;
+        this.email = null;
         this.phone = null;
         this.address = null;
         this.password = null;
@@ -90,6 +93,7 @@ public class User {
                 .name(name)
                 .gender(gender)
                 .phone(phone)
+                .email(email)
                 .address(address)
                 .role(role)
                 .loginId(loginId)

@@ -2,6 +2,8 @@ package com.pjw.retry_view.config;
 
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.filter.JWTVerifyFilter;
+import com.pjw.retry_view.handler.OAuth2SuccessHandler;
+import com.pjw.retry_view.service.OAuthUserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +29,13 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final OAuthUserService oAuthUserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    public SecurityConfig(OAuthUserService oAuthUserService, OAuth2SuccessHandler oAuth2SuccessHandler) {
+        this.oAuthUserService = oAuthUserService;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -38,10 +47,16 @@ public class SecurityConfig {
                 sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             })
             .authorizeHttpRequests(authorizeRequest -> {
-                authorizeRequest.requestMatchers("/login","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**", "/favicon.ico").permitAll()
+                authorizeRequest.requestMatchers("/login/**","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**", "/favicon.ico", "/error").permitAll()
                 .requestMatchers("/admin**").hasRole(UserAuth.ADMIN.getCode())
                 .requestMatchers("/**").hasAnyAuthority(UserAuth.USER.getCode(), UserAuth.ADMIN.getCode())
                 .anyRequest().authenticated();
+            })
+            .oauth2Login(oAuth2LoginConfigurer -> { // OAuth2 설정
+                oAuth2LoginConfigurer
+                .userInfoEndpoint(userInfoEndpointConfig -> {
+                    userInfoEndpointConfig.userService(oAuthUserService);
+                }).successHandler(oAuth2SuccessHandler);
             })
             .exceptionHandling(exceptionConfig -> {
                 exceptionConfig.authenticationEntryPoint(authenticationEntryPoint())
@@ -56,6 +71,7 @@ public class SecurityConfig {
         return new AuthenticationEntryPoint() {
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
         };

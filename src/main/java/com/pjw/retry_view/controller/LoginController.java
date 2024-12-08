@@ -5,7 +5,6 @@ import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.request.LoginRequest;
 import com.pjw.retry_view.response.LoginResponse;
-import com.pjw.retry_view.service.JWTService;
 import com.pjw.retry_view.service.UserService;
 import com.pjw.retry_view.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
