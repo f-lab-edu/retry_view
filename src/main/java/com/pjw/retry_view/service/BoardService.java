@@ -37,12 +37,11 @@ public class BoardService {
 
     public List<BoardDTO> getBoardList(Long cursor, SearchType searchType, String content){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+        if(Objects.isNull(searchType)) searchType = SearchType.ALL;
 
-        List<Board> boardList = switch (SearchType.getValue(String.valueOf(searchType))) {
-            case TITLE -> {
-                content = "%" + content + "%";
-                yield boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(cursor, content, pageable);
-            }
+        List<Board> boardList = switch (searchType) {
+            case TITLE ->
+                boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(cursor, "%" + content + "%", pageable);
             case TYPE ->
                     boardRepository.findByIdLessThanAndTypeOrderByIdDesc(cursor, BoardType.getValue(content), pageable);
             default -> boardRepository.findAllByOrderByIdDesc(pageable);
