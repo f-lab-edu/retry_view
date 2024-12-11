@@ -1,5 +1,6 @@
 package com.pjw.retry_view.dto;
 
+import com.pjw.retry_view.entity.User;
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.enums.UserState;
 import lombok.Builder;
@@ -94,6 +95,17 @@ public class UserDetail implements UserDetails, OAuth2User {
     @Override
     public boolean isEnabled() {
         return org.springframework.security.core.userdetails.UserDetails.super.isEnabled();
+    }
+
+    public static UserDetail from(User user){
+        return UserDetail.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .role(user.getRole())
+                .loginId(user.getLoginId())
+                .password(user.getPassword())
+                .state(user.getState())
+                .build();
     }
 
 }

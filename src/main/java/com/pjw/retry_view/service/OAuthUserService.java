@@ -27,35 +27,23 @@ public class OAuthUserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         Map<String, Object> params = super.loadUser(userRequest).getAttributes();
+//        System.out.println("OAuth parmeters : "+params);
         OAuth2User oauthUser = super.loadUser(userRequest);
-        System.out.println("OAuth parmeters : "+params);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String loginId = registrationId+"_"+oauthUser.getAttribute("sub");
         String email = oauthUser.getAttribute("email");
         String name = oauthUser.getAttribute("name");
 
-        Optional<User> optionUser = userRepository.findByLoginId(loginId);
-        User user;
-        if(optionUser.isEmpty()){
-            user = User.builder()
-                    .name(name)
-                    .loginId(loginId)
-                    .email(email)
-                    .role(UserAuth.USER)
-                    .state(UserState.NORMAL)
-                    .build();
-            userRepository.save(user);
-        }else{
-            user = optionUser.get();
-        }
+        User user = userRepository.findByLoginId(loginId).orElse(User.builder()
+                .name(name)
+                .loginId(loginId)
+                .email(email)
+                .role(UserAuth.USER)
+                .state(UserState.NORMAL)
+                .build());
 
-        return UserDetail.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .role(user.getRole())
-                .loginId(user.getLoginId())
-                .password(user.getPassword())
-                .state(user.getState())
-                .build();
+        //TODO - 로그인 시간 업데이트
+        userRepository.save(user);
+        return UserDetail.from(user);
     }
 }
