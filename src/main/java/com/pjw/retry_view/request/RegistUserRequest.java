@@ -15,8 +15,10 @@ public class RegistUserRequest {
     private String name;
     @NotNull(message = "성별은 필수 입력값입니다.")
     private Gender gender;
-    @NotNull(message = "연락처 필수 입력값입니다.")
+    @NotNull(message = "연락처는 필수 입력값입니다.")
     private String phone;
+    @NotNull(message = "이메일은 필수 입력값입니다.")
+    private String email;
     @NotNull(message = "주소는 필수 입력값입니다.")
     private String address;
     @NotNull(message = "아이디는 필수 입력값입니다.")
@@ -33,6 +35,7 @@ public class RegistUserRequest {
                 .name(name)
                 .gender(gender)
                 .phone(phone)
+                .email(email)
                 .address(address)
                 .loginId(loginId)
                 .password(password)
