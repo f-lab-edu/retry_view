@@ -1,11 +1,14 @@
 package com.pjw.retry_view.dto;
 
+import com.pjw.retry_view.entity.Event;
+import com.pjw.retry_view.entity.Image;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,6 +28,22 @@ public class EventDTO {
 
     private List<ImageDTO> images;
 
+    public static EventDTO from(Event event, List<Image> images){
+        if(images == null) images = new ArrayList<>();
+
+        return EventDTO.builder()
+                .id(event.getId())
+                .content(event.getContent())
+                .viewCount(event.getViewCount())
+                .startAt(event.getStartAt())
+                .endAt(event.getEndAt())
+                .images(images.stream().map(ImageDTO::fromEntity).toList())
+                .createdBy(event.getCreatedBy())
+                .createdAt(event.getCreatedAt())
+                .updatedBy(event.getUpdatedBy())
+                .updatedAt(event.getUpdatedAt())
+                .build();
+    }
     @Builder
     public EventDTO(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageDTO> images) {
         this.id = id;

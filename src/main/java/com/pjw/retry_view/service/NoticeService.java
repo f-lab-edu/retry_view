@@ -42,20 +42,20 @@ public class NoticeService {
             noticeList = noticeRepository.findAllByOrderByIdDesc(pageable);
         }
 
+        List<NoticeDTO> dtoList = new ArrayList<>();
         for(Notice notice: noticeList){
             if(CollectionUtils.isEmpty(notice.getImageIds())) continue;
 
             List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
-            notice.setImages(imageList);
+            dtoList.add(NoticeDTO.from(notice, imageList));
         }
-        return noticeList.stream().map(Notice::toDTO).toList();
+        return dtoList;
     }
 
     public NoticeDTO getNotice(Long id){
         Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
-        notice.setImages(imageList);
-        return notice.toDTO();
+        return NoticeDTO.from(notice, imageList);
     }
 
     @Transactional

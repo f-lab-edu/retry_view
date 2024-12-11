@@ -2,17 +2,14 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.ImageIdsConverter;
 import com.pjw.retry_view.dto.EventDTO;
-import com.pjw.retry_view.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.CollectionUtils;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,9 +36,6 @@ public class Event {
     @Convert(converter = ImageIdsConverter.class)
     private List<Long> imageIds;
 
-    @Transient
-    private List<Image> images = new ArrayList<>();
-
     @Column(name = "created_by")
     private Long createdBy;
     @Column(name = "created_at")
@@ -58,7 +52,6 @@ public class Event {
                 .viewCount(viewCount)
                 .startAt(startAt)
                 .endAt(endAt)
-                .images(imagesToDTO())
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
@@ -90,7 +83,7 @@ public class Event {
     }
 
     @Builder
-    public Event(Long id, String title, String content, List<Long> imageIds, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Event(Long id, String title, String content, List<Long> imageIds, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -98,15 +91,10 @@ public class Event {
         this.viewCount = viewCount;
         this.startAt = startAt;
         this.endAt = endAt;
-        this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
         this.updatedAt = updatedAt;
     }
 
-    private List<ImageDTO> imagesToDTO(){
-        if(CollectionUtils.isEmpty(images)) return null;
-        return images.stream().map(ImageDTO::fromEntity).toList();
-    }
 }

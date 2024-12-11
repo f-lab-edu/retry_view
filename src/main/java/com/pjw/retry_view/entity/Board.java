@@ -4,14 +4,14 @@ import com.pjw.retry_view.converter.BoardTypeEnumConverter;
 import com.pjw.retry_view.converter.ImageIdsConverter;
 import com.pjw.retry_view.dto.BoardDTO;
 import com.pjw.retry_view.enums.BoardType;
-import com.pjw.retry_view.dto.ImageDTO;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.CollectionUtils;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -41,9 +41,6 @@ public class Board {
     @Convert(converter = ImageIdsConverter.class)
     private List<Long> imageIds;
 
-    @Transient
-    private List<Image> images = new ArrayList<>();
-
     @Column(name = "created_by")
     private Long createdBy;
     @Column(name = "created_at")
@@ -62,7 +59,6 @@ public class Board {
                 .viewCount(viewCount)
                 .price(price)
                 //.imageIds(imageIds)
-                .images(imagesToDTO())
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
@@ -71,7 +67,7 @@ public class Board {
     }
 
     @Builder
-    public Board(Long id, BoardType type, Long productId, String title, String content, Long viewCount, Long price, List<Long> imageIds, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Board(Long id, BoardType type, Long productId, String title, String content, Long viewCount, Long price, List<Long> imageIds, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.type = type;
         this.productId = productId;
@@ -80,7 +76,6 @@ public class Board {
         this.viewCount = viewCount;
         this.price = price;
         this.imageIds = imageIds;
-        this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
@@ -113,8 +108,4 @@ public class Board {
         this.updatedAt = ZonedDateTime.now();
     }
 
-    private List<ImageDTO> imagesToDTO(){
-        if(CollectionUtils.isEmpty(images)) return null;
-        return images.stream().map(ImageDTO::fromEntity).toList();
-    }
 }

@@ -48,20 +48,20 @@ public class BoardService {
             default -> boardRepository.findAllByOrderByIdDesc(pageable);
         };
 
+        List<BoardDTO> dtoList = new ArrayList<>();
         for(Board board : boardList){
             if(CollectionUtils.isEmpty(board.getImageIds())) continue;
 
             List<Image> imageList = imageRepository.findByIdIn(board.getImageIds());
-            board.setImages(imageList);
+            dtoList.add(BoardDTO.from(board, imageList));
         }
-        return boardList.stream().map(Board::toDTO).toList();
+        return dtoList;
     }
 
     public BoardDTO getBoard(Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         List<Image> imageList = imageRepository.findByIdIn(board.getImageIds());
-        board.setImages(imageList);
-        return board.toDTO();
+        return BoardDTO.from(board, imageList);
     }
 
     @Transactional

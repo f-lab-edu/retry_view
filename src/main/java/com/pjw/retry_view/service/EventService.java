@@ -42,20 +42,20 @@ public class EventService {
             eventList = eventRepository.findAllByOrderByIdDesc(pageable);
         }
 
+        List<EventDTO> dtoList = new ArrayList<>();
         for(Event event: eventList){
             if(CollectionUtils.isEmpty(event.getImageIds())) continue;
 
             List<Image> imageList = imageRepository.findByIdIn(event.getImageIds());
-            event.setImages(imageList);
+            dtoList.add(EventDTO.from(event, imageList));
         }
-        return eventList.stream().map(Event::toDTO).toList();
+        return dtoList;
     }
 
     public EventDTO getEvent(Long id){
         Event event = eventRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         List<Image> imageList = imageRepository.findByIdIn(event.getImageIds());
-        event.setImages(imageList);
-        return event.toDTO();
+        return EventDTO.from(event, imageList);
     }
 
     @Transactional

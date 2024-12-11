@@ -1,7 +1,6 @@
 package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.ImageIdsConverter;
-import com.pjw.retry_view.dto.ImageDTO;
 import com.pjw.retry_view.dto.NoticeDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,10 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.CollectionUtils;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -35,9 +32,6 @@ public class Notice {
     @Convert(converter = ImageIdsConverter.class)
     private List<Long> imageIds;
 
-    @Transient
-    private List<Image> images = new ArrayList<>();
-
     @Column(name = "created_by")
     private Long createdBy;
     @Column(name = "created_at")
@@ -48,13 +42,12 @@ public class Notice {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public Notice(Long id, String title, String content, Long viewCount, List<Long> imageIds, List<Image> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public Notice(Long id, String title, String content, Long viewCount, List<Long> imageIds, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.imageIds = imageIds;
-        this.images = images;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
@@ -85,16 +78,10 @@ public class Notice {
                 .id(id)
                 .content(content)
                 .viewCount(viewCount)
-                .images(imagesToDTO())
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
                 .updatedAt(updatedAt)
                 .build();
-    }
-
-    private List<ImageDTO> imagesToDTO(){
-        if(CollectionUtils.isEmpty(images)) return null;
-        return images.stream().map(ImageDTO::fromEntity).toList();
     }
 }
