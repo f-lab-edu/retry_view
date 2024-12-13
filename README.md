@@ -1,19 +1,18 @@
 # Retry View
-제품 리뷰 + 중고 물품 거래 서비스 API
+제품에 대한 리뷰를 작성하고, 중고 물품 거래시 해당 물품의 리뷰도 서비스 API
 
 ![RetryView (1)](https://github.com/user-attachments/assets/fc23d38e-8811-4530-aa01-7d8c0fe109b8)
 
 
-### 사용기술
-SpringBoot
-JPA
-Redis
-MySQL
-Docker
-Jenkins
+### 기술
+Java, SpringBoot, JPA, Redis, MySQL, Docker, Jenkins
 
 
-### 회원 가입/탈퇴 기능
+### OAuth2를 이용한 SNS로그인
+구글,네이버 로그인
+
+### 대량 트래픽 
+
 
 ### 리뷰 기능
 제품 정보, 사용 후기, 별점, 작성자 정보 등을 제공
@@ -28,3 +27,4 @@ Jenkins
 
 ### ERD
 https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
+
