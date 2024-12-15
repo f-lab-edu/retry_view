@@ -68,11 +68,12 @@ public class User {
     }
 
     @Builder
-    public User(UserId userId, String name, Gender gender, String phone, String address, UserAuth role, String loginId, String password, String nickname, String type, UserState state, String refreshToken, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public User(UserId userId, String name, Gender gender, String phone, String email, String address, UserAuth role, String loginId, String password, String nickname, String type, UserState state, String refreshToken, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.userId = userId;
         this.name = name;
         this.gender = gender;
         this.phone = phone;
+        this.email = email;
         this.address = address;
         this.role = role;
         this.loginId = loginId;
