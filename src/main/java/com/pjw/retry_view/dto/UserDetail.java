@@ -99,7 +99,7 @@ public class UserDetail implements UserDetails, OAuth2User {
 
     public static UserDetail from(User user){
         return UserDetail.builder()
-                .id(user.getId())
+                .id(user.getUserId().getId())
                 .name(user.getName())
                 .role(user.getRole())
                 .loginId(user.getLoginId())
