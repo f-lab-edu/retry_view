@@ -11,7 +11,7 @@
 Java, SpringBoot, JPA, Redis, MySQL, Docker, Jenkins, AWS
 
 ### Swagger 주소
-(링크)
+[(링크)](http://ec2-15-164-72-162.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html)
 
 ### OAuth2를 이용한 SNS로그인
 일반적인 회원가입 외에도 Spring Security, OAith2를 이용하여 구글, 네이버 계정을 연동하여 회원가입/로그인을 할 수 있도록 구현하였습니다.
