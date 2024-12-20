@@ -15,6 +15,9 @@ https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
   
 
 ![RetryView drawio](https://github.com/user-attachments/assets/fae0fc9c-eedd-4855-8991-66b4b678046b)
+# 🧾 아키텍쳐 구조
+EC2 서버 2대를 사용하여 Jenkins를 사용한 빌드용 서버와 API 애플리케이션&Redis 가동용 서버로 나누어 설계하였습니다.
+또한 별도의 서버 세팅 시간을 줄이고, 로컬에서 실제 환경으로 테스트를 해봐야 하는 경우나 서버 이전 등을 용이하게 하기 위하여 Docker를 사용해서 환경을 분리해주었습니다.
 
 # ✨ OAuth2를 이용한 SNS로그인
 일반적인 회원가입 외에도 Spring Security, OAith2를 이용하여 구글, 네이버 계정을 연동하여 회원가입/로그인을 할 수 있도록 구현하였습니다. 
@@ -28,7 +31,9 @@ https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
 위의 기능을 작업하며 Redis의 Publish, Subscribe를 이용하여 메시지 큐처럼 사용할 수 있다는 것을 알게되었고, 이를 이용하여 채팅 기능을 구현하였습니다.
 작업하며 Redis를 DB로만 사용하는 것이 아닌 메시지 서버로도 사용할 수 있어 편리하지만, Redis의 특성상 데이터가 유실될 수 있기에 유실되어도 괜찮은 알림 등에만 사용하거나 실서비스에는 다른 방식으로 구현해야겠다는 생각이 들었습니다.
 
-
-### ERD
-https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
-
+# 멘토링을 진행하며 배운 점
+* Optional을 이용한 NullPointerException 예방하기
+* 클래스별 역할을 확실하게 구분할 것
+* Stream으로 코드 가독성을 높이는 방법
+* Jenkins, GitAction 등을 이용한 CI/CD 구축
+* 기타 등등...
