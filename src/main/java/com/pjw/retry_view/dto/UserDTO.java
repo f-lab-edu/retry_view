@@ -1,6 +1,10 @@
 package com.pjw.retry_view.dto;
 
 import com.pjw.retry_view.entity.User;
+import com.pjw.retry_view.entity.UserId;
+import com.pjw.retry_view.enums.Gender;
+import com.pjw.retry_view.enums.UserAuth;
+import com.pjw.retry_view.enums.UserState;
 import lombok.*;
 
 import java.io.Serializable;
@@ -16,26 +20,33 @@ public class UserDTO implements Serializable {
     private String name;
     private Gender gender;
     private String phone;
+    private String email;
     private String address;
-    private String role;
+    private UserAuth role;
     private String loginId;
     private String password;
     private String nickname;
     private String type;
-    private Integer state;
+    private UserState state;
     private String refreshToken;
 
-    private String createdBy;
+    private Long createdBy;
     private ZonedDateTime createdAt;
-    private String updatedBy;
+    private Long updatedBy;
     private ZonedDateTime updatedAt;
+
+    public void changeRefereshToken(String token){
+        this.refreshToken = token;
+        this.updatedAt = ZonedDateTime.now();
+    }
 
     public User toEntity(){
         return User.builder()
-                .id(id)
+                .userId(UserId.of(id))
                 .name(name)
                 .gender(gender)
                 .phone(phone)
+                .email(email)
                 .address(address)
                 .role(role)
                 .loginId(loginId)
@@ -58,6 +69,7 @@ public class UserDTO implements Serializable {
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", role='" + role + '\'' +
                 ", loginId='" + loginId + '\'' +
