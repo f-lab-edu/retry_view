@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.response.JWToken;
-import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserView;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.entity.User;
 import com.pjw.retry_view.exception.InvalidTokenException;
@@ -25,7 +25,7 @@ public class JWTService {
             throw new InvalidTokenException();
         }
 
-        UserDTO user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
+        UserView user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
         UserInfo userInfo = new UserInfo(user.getId(), user.getName(), user.getLoginId(), user.getRole());
 
         boolean isExpired = JWTUtil.isTokenExpired(refreshToken);

@@ -1,6 +1,6 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.ImageDTO;
+import com.pjw.retry_view.dto.ImageView;
 import com.pjw.retry_view.dto.ReviewView;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Review;
@@ -45,7 +45,7 @@ public class ReviewService {
 
             List<Image> reviewImage = imageList.stream().filter(img-> review.getImageIds().contains(img.getId())).toList();
             ReviewView reviewView = ReviewView.fromEntity(review);
-            reviewView.setImages(reviewImage.stream().map(ImageDTO::fromEntity).toList());
+            reviewView.setImages(reviewImage.stream().map(ImageView::fromEntity).toList());
 
             result.add(reviewView);
         }
@@ -65,7 +65,7 @@ public class ReviewService {
 
             List<Image> reviewImage = imageList.stream().filter(img-> review.getImageIds().contains(img.getId())).toList();
             ReviewView reviewView = ReviewView.fromEntity(review);
-            reviewView.setImages(reviewImage.stream().map(ImageDTO::fromEntity).toList());
+            reviewView.setImages(reviewImage.stream().map(ImageView::fromEntity).toList());
 
             result.add(reviewView);
         }
@@ -85,7 +85,7 @@ public class ReviewService {
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Review review = Review.newOne(req.getProductId(), req.getScore(), req.getComment(), imageIds, req.getCreatedBy());
         ReviewView result = ReviewView.fromEntity(reviewRepository.save(review));
-        result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
+        result.setImages(images.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
@@ -117,7 +117,7 @@ public class ReviewService {
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
         review.updateReview(req.getProductId(), req.getScore(), req.getComment(), updateImageIds, req.getUpdatedBy());
         ReviewView result = ReviewView.fromEntity(reviewRepository.save(review));
-        result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
+        result.setImages(reqImages.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 

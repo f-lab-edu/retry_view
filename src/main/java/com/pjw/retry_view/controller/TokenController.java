@@ -1,12 +1,11 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.RefreshTokenDTO;
+import com.pjw.retry_view.dto.RefreshToken;
 import com.pjw.retry_view.response.JWToken;
 import com.pjw.retry_view.service.JWTService;
 import com.pjw.retry_view.service.RedisService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,7 +39,7 @@ public class TokenController {
         String key = "key";
         String value = "qkrwldnjs";
         Duration duration = Duration.ofDays(7L);
-        RefreshTokenDTO token = RefreshTokenDTO.getRefreshToken(key, value, Duration.ofDays(1));
+        RefreshToken token = RefreshToken.getRefreshToken(key, value, Duration.ofDays(1));
         redisService.setValues(token.getKey(), value, duration);
         return new ResponseEntity<>(token.getRefreshToken(), HttpStatus.OK);
     }

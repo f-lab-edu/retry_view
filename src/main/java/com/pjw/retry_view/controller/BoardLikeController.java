@@ -1,6 +1,6 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.BoardLikeDTO;
+import com.pjw.retry_view.dto.BoardLikeView;
 import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.service.BoardLikeService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +22,7 @@ public class BoardLikeController {
 
     @Operation(summary = "유저가 '좋아요'표시한 게시글 목록 조회 API", description = "")
     @GetMapping
-    public List<BoardLikeDTO> getLikeList(){
+    public List<BoardLikeView> getLikeList(){
        return  boardLikeService.getUserBoardLikeList();
     }
 

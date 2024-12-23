@@ -1,6 +1,6 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.BoardDTO;
+import com.pjw.retry_view.dto.BoardView;
 import com.pjw.retry_view.dto.UserDetail;
 import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.request.DeleteRequest;
@@ -26,7 +26,7 @@ public class BoardController {
 
     @Operation(summary = "게시글 목록 조회 API", description = "")
     @GetMapping
-    public List<BoardDTO> getBoardList(
+    public List<BoardView> getBoardList(
                 @RequestParam(name = "cursor", required = false) Long cursor,
                 @RequestParam(name = "searchType", required = false) SearchType searchType,
                 @RequestParam(name = "content", required = false) String content
@@ -36,20 +36,20 @@ public class BoardController {
 
     @Operation(summary = "특정 게시글 조회 API", description = "")
     @GetMapping("/{id}")
-    public BoardDTO getBoard(@PathVariable(name = "id") Long id){
+    public BoardView getBoard(@PathVariable(name = "id") Long id){
         return boardService.getBoard(id);
     }
 
     @Operation(summary = "게시글 작성 API", description = "")
     @PostMapping
-    public BoardDTO writeBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
+    public BoardView writeBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
         board.setCreatedBy(userDetail.getId());
         return boardService.saveBoard(board);
     }
 
     @Operation(summary = "게시글 수정 API", description = "")
     @PutMapping
-    public BoardDTO updateBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
+    public BoardView updateBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
         board.setUpdatedBy(userDetail.getId());
         return boardService.updateBoard(board);
     }

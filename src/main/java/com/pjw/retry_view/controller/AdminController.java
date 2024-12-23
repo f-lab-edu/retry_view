@@ -1,7 +1,7 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.enums.UserAuth;
-import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserView;
 import com.pjw.retry_view.request.RegistUserRequest;
 import com.pjw.retry_view.response.RegistUserResponse;
 import com.pjw.retry_view.service.UserService;
@@ -33,9 +33,9 @@ public class AdminController {
             response.setBindingErrors(bindingResult.getAllErrors());
             httpStatus = HttpStatus.BAD_REQUEST;
         } else {
-            UserDTO user = userReq.toUserDTO();
+            UserView user = userReq.toUserDTO();
             user.setRole(UserAuth.ADMIN);
-            UserDTO registUser = userService.saveUser(user);
+            UserView registUser = userService.saveUser(user);
             response.setName(registUser.getName());
             response.setLoginId(registUser.getLoginId());
             response.setNickname(registUser.getNickname());

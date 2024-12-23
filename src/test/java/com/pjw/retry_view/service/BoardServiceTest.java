@@ -1,6 +1,6 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.BoardDTO;
+import com.pjw.retry_view.dto.BoardView;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.enums.BoardType;
 import com.pjw.retry_view.enums.SearchType;
@@ -43,7 +43,7 @@ public class BoardServiceTest {
 
         when(boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(anyLong(), anyString(), any(Pageable.class))).thenReturn(boardList);
 
-        List<BoardDTO> result = boardService.getBoardList(cursor, SearchType.TITLE, content);
+        List<BoardView> result = boardService.getBoardList(cursor, SearchType.TITLE, content);
 
         assertThat(result).hasSize(DEFAULT_PAGE_SIZE);
         assertThat(result.get(0).getTitle()).contains(content);
@@ -58,7 +58,7 @@ public class BoardServiceTest {
 
         when(boardRepository.findByIdLessThanAndTypeOrderByIdDesc(anyLong(), any(BoardType.class), any(Pageable.class))).thenReturn(boardList);
 
-        List<BoardDTO> result = boardService.getBoardList(cursor, SearchType.TYPE, content);
+        List<BoardView> result = boardService.getBoardList(cursor, SearchType.TYPE, content);
 
         assertThat(result).hasSize(DEFAULT_PAGE_SIZE);
         assertThat(result.get(0).getType()).isEqualTo(BoardType.SELL.getCode());
@@ -73,7 +73,7 @@ public class BoardServiceTest {
 
         when(boardRepository.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(boardList);
 
-        List<BoardDTO> result = boardService.getBoardList(cursor, SearchType.ALL, content);
+        List<BoardView> result = boardService.getBoardList(cursor, SearchType.ALL, content);
 
         assertThat(result).hasSize(DEFAULT_PAGE_SIZE);
     }

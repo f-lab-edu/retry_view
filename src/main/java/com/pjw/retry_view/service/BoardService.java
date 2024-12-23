@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.BoardDTO;
-import com.pjw.retry_view.dto.ImageDTO;
+import com.pjw.retry_view.dto.BoardView;
+import com.pjw.retry_view.dto.ImageView;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.enums.BoardType;
@@ -35,7 +35,7 @@ public class BoardService {
         this.imageRepository = imageRepository;
     }
 
-    public List<BoardDTO> getBoardList(Long cursor, SearchType searchType, String content){
+    public List<BoardView> getBoardList(Long cursor, SearchType searchType, String content){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
         if(Objects.isNull(searchType)) searchType = SearchType.ALL;
 
@@ -47,24 +47,24 @@ public class BoardService {
             default -> boardRepository.findAllByOrderByIdDesc(pageable);
         };
 
-        List<BoardDTO> dtoList = new ArrayList<>();
+        List<BoardView> dtoList = new ArrayList<>();
         for(Board board : boardList){
             if(CollectionUtils.isEmpty(board.getImageIds())) continue;
 
             List<Image> imageList = imageRepository.findByIdIn(board.getImageIds());
-            dtoList.add(BoardDTO.from(board, imageList));
+            dtoList.add(BoardView.from(board, imageList));
         }
         return dtoList;
     }
 
-    public BoardDTO getBoard(Long id){
+    public BoardView getBoard(Long id){
         Board board = boardRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         List<Image> imageList = imageRepository.findByIdIn(board.getImageIds());
-        return BoardDTO.from(board, imageList);
+        return BoardView.from(board, imageList);
     }
 
     @Transactional
-    public BoardDTO saveBoard(WriteBoardRequest req){
+    public BoardView saveBoard(WriteBoardRequest req){
         if(CollectionUtils.isEmpty(req.getImages())) {
             req.setImages(new ArrayList<>());
         }
@@ -75,13 +75,13 @@ public class BoardService {
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Board board = Board.newOne(req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), imageIds, req.getCreatedBy());
-        BoardDTO result = boardRepository.save(board).toDTO();
-        result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
+        BoardView result = boardRepository.save(board).toDTO();
+        result.setImages(images.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
     @Transactional
-    public BoardDTO updateBoard(WriteBoardRequest req){
+    public BoardView updateBoard(WriteBoardRequest req){
         Board board = boardRepository.findById(req.getId()).orElseThrow(ResolutionException::new);
 
         if(CollectionUtils.isEmpty(req.getImages())) {
@@ -108,8 +108,8 @@ public class BoardService {
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
         board.updateBoard(req.getId(), req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), updateImageIds, req.getUpdatedBy());
-        BoardDTO result = boardRepository.save(board).toDTO();
-        result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
+        BoardView result = boardRepository.save(board).toDTO();
+        result.setImages(reqImages.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 

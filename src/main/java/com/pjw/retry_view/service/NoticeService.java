@@ -1,7 +1,7 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.ImageDTO;
-import com.pjw.retry_view.dto.NoticeDTO;
+import com.pjw.retry_view.dto.ImageView;
+import com.pjw.retry_view.dto.NoticeView;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Notice;
 import com.pjw.retry_view.exception.NotMyResourceException;
@@ -32,7 +32,7 @@ public class NoticeService {
         this.imageRepository = imageRepository;
     }
 
-    public List<NoticeDTO> getNoticeList(Long cursor){
+    public List<NoticeView> getNoticeList(Long cursor){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
 
         List<Notice> noticeList = null;
@@ -42,24 +42,24 @@ public class NoticeService {
             noticeList = noticeRepository.findAllByOrderByIdDesc(pageable);
         }
 
-        List<NoticeDTO> dtoList = new ArrayList<>();
+        List<NoticeView> dtoList = new ArrayList<>();
         for(Notice notice: noticeList){
             if(CollectionUtils.isEmpty(notice.getImageIds())) continue;
 
             List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
-            dtoList.add(NoticeDTO.from(notice, imageList));
+            dtoList.add(NoticeView.from(notice, imageList));
         }
         return dtoList;
     }
 
-    public NoticeDTO getNotice(Long id){
+    public NoticeView getNotice(Long id){
         Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
-        return NoticeDTO.from(notice, imageList);
+        return NoticeView.from(notice, imageList);
     }
 
     @Transactional
-    public NoticeDTO saveNotice(WriteNoticeRequest req){
+    public NoticeView saveNotice(WriteNoticeRequest req){
         if(CollectionUtils.isEmpty(req.getImages())) {
             req.setImages(new ArrayList<>());
         }
@@ -70,13 +70,13 @@ public class NoticeService {
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Notice notice = Notice.newOne(req.getTitle(), req.getContent(), imageIds, req.getCreatedBy());
-        NoticeDTO result = noticeRepository.save(notice).toDTO();
-        result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
+        NoticeView result = noticeRepository.save(notice).toDTO();
+        result.setImages(images.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
     @Transactional
-    public NoticeDTO updateNotice(WriteNoticeRequest req){
+    public NoticeView updateNotice(WriteNoticeRequest req){
         Notice notice = noticeRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
 
         if(Long.compare(notice.getCreatedBy(), req.getUpdatedBy()) != 0)
@@ -102,8 +102,8 @@ public class NoticeService {
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
         notice.updateNotice(req.getTitle(), req.getContent(), updateImageIds, req.getUpdatedBy());
-        NoticeDTO result = noticeRepository.save(notice).toDTO();
-        result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
+        NoticeView result = noticeRepository.save(notice).toDTO();
+        result.setImages(reqImages.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 

@@ -3,7 +3,7 @@ package com.pjw.retry_view.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pjw.retry_view.dto.ChatMessageView;
-import com.pjw.retry_view.dto.MessageType;
+import com.pjw.retry_view.enums.MessageType;
 import com.pjw.retry_view.exception.ChatMessageParseException;
 import com.pjw.retry_view.request.MessageRequest;
 import com.pjw.retry_view.service.ChatMessageService;

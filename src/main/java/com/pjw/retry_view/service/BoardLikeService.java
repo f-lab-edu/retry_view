@@ -1,6 +1,6 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.BoardLikeDTO;
+import com.pjw.retry_view.dto.BoardLikeView;
 import com.pjw.retry_view.entity.BoardLike;
 import com.pjw.retry_view.entity.LikeId;
 import com.pjw.retry_view.repository.BoardLikeRepository;
@@ -25,7 +25,7 @@ public class BoardLikeService {
         this.redisTemplate = redisTemplate;
     }
 
-    public List<BoardLikeDTO> getUserBoardLikeList(){
+    public List<BoardLikeView> getUserBoardLikeList(){
         Long userId = JWTUtil.getUserId();
         return boardLikeRepository.findByIdUserId(userId).stream().map(BoardLike::toDTO).toList();
     }

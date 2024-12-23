@@ -1,6 +1,6 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.ProductDTO;
+import com.pjw.retry_view.dto.ProductView;
 import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.entity.Product;
 import com.pjw.retry_view.repository.CategoryRepository;
@@ -22,16 +22,16 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<ProductDTO> getProductList(){
+    public List<ProductView> getProductList(){
         return productRepository.findAll().stream().map(Product::toDTO).toList();
     }
 
-    public ProductDTO getProduct(Long id){
+    public ProductView getProduct(Long id){
         return productRepository.findById(id).orElseThrow(ResolutionException::new).toDTO();
     }
 
     @Transactional
-    public ProductDTO saveProduct(ProductRequest req){
+    public ProductView saveProduct(ProductRequest req){
         Category mainCategory = categoryRepository.findById(req.getMainCategoryId()).orElse(null);
         Category subCategory = null;
         if(req.getSubCategoryId() != null) {
@@ -42,7 +42,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO updateProduct(ProductRequest req){
+    public ProductView updateProduct(ProductRequest req){
         Category mainCategory = categoryRepository.findById(req.getMainCategoryId()).orElse(null);
         Category subCategory = null;
         if(req.getSubCategoryId() != null) {
