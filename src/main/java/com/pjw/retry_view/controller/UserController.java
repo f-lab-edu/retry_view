@@ -1,6 +1,8 @@
 package com.pjw.retry_view.controller;
 
 import com.pjw.retry_view.dto.UserDetail;
+import com.pjw.retry_view.enums.ApiResponseCodeExamples;
+import com.pjw.retry_view.enums.ErrorCode;
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserView;
 import com.pjw.retry_view.request.RegistUserRequest;
@@ -28,20 +30,20 @@ public class UserController {
     }
 
     @Operation(summary = "유저 목록 조회 API", description = "")
+    @ApiResponseCodeExamples({ErrorCode.INVALID_TOKEN})
     @GetMapping
     public String getUsers() {
         return "MainController : " + userService.getUserList().stream().map(UserView::toString).collect(Collectors.joining(", "));
     }
 
     @Operation(summary = "일반 회원가입 API", description = "")
+    @ApiResponseCodeExamples({ErrorCode.DUPLICATE_REQ})
     @PostMapping("/regist")
     public RegistUserResponse registUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
         RegistUserResponse response = new RegistUserResponse();
-        HttpStatus httpStatus = HttpStatus.OK;
 
         if (bindingResult.hasErrors()) {
             response.setBindingErrors(bindingResult.getAllErrors());
-            httpStatus = HttpStatus.BAD_REQUEST;
         } else {
             UserView user = userReq.toUserDTO();
             user.setRole(UserAuth.USER);
@@ -55,6 +57,7 @@ public class UserController {
     }
 
     @Operation(summary = "일반 탈퇴 API", description = "")
+    @ApiResponseCodeExamples({ErrorCode.USER_NOT_FOUND, ErrorCode.INVALID_TOKEN, ErrorCode.DUPLICATE_REQ})
     @DeleteMapping("/withdraw")
     public ResponseEntity<String> withdrawUser(@AuthenticationPrincipal UserDetail userDetail){
         String loginId = userDetail.getUsername();

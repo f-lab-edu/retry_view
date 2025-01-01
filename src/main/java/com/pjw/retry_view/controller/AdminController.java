@@ -1,5 +1,7 @@
 package com.pjw.retry_view.controller;
 
+import com.pjw.retry_view.enums.ApiResponseCodeExamples;
+import com.pjw.retry_view.enums.ErrorCode;
 import com.pjw.retry_view.enums.UserAuth;
 import com.pjw.retry_view.dto.UserView;
 import com.pjw.retry_view.request.RegistUserRequest;
@@ -24,6 +26,7 @@ public class AdminController {
     }
 
     @Operation(summary = "관리자 계정 생성 API", description = "")
+    @ApiResponseCodeExamples({ErrorCode.INVALID_TOKEN, ErrorCode.DUPLICATE_REQ})
     @PostMapping("/regist")
     public ResponseEntity<RegistUserResponse> registAdminUser(@RequestBody @Valid RegistUserRequest userReq, BindingResult bindingResult) {
         RegistUserResponse response = new RegistUserResponse();

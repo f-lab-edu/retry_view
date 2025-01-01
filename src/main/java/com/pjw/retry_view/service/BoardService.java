@@ -82,7 +82,7 @@ public class BoardService {
 
     @Transactional
     public BoardView updateBoard(WriteBoardRequest req){
-        Board board = boardRepository.findById(req.getId()).orElseThrow(ResolutionException::new);
+        Board board = boardRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
 
         if(CollectionUtils.isEmpty(req.getImages())) {
             req.setImages(new ArrayList<>());

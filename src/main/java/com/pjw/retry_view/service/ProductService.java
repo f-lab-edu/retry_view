@@ -3,13 +3,13 @@ package com.pjw.retry_view.service;
 import com.pjw.retry_view.dto.ProductView;
 import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.entity.Product;
+import com.pjw.retry_view.exception.ResourceNotFoundException;
 import com.pjw.retry_view.repository.CategoryRepository;
 import com.pjw.retry_view.repository.ProductRepository;
 import com.pjw.retry_view.request.ProductRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
 import java.util.List;
 
 @Service
@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     public ProductView getProduct(Long id){
-        return productRepository.findById(id).orElseThrow(ResolutionException::new).toDTO();
+        return productRepository.findById(id).orElseThrow(ResourceNotFoundException::new).toDTO();
     }
 
     @Transactional

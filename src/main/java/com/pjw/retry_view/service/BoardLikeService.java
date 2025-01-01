@@ -4,7 +4,6 @@ import com.pjw.retry_view.dto.BoardLikeView;
 import com.pjw.retry_view.entity.BoardLike;
 import com.pjw.retry_view.entity.LikeId;
 import com.pjw.retry_view.repository.BoardLikeRepository;
-import com.pjw.retry_view.util.JWTUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.data.redis.core.HashOperations;
@@ -25,8 +24,7 @@ public class BoardLikeService {
         this.redisTemplate = redisTemplate;
     }
 
-    public List<BoardLikeView> getUserBoardLikeList(){
-        Long userId = JWTUtil.getUserId();
+    public List<BoardLikeView> getUserBoardLikeList(Long userId){
         return boardLikeRepository.findByIdUserId(userId).stream().map(BoardLike::toDTO).toList();
     }
 
