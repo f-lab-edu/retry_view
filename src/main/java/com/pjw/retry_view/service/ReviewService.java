@@ -6,8 +6,8 @@ import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Review;
 import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
-import com.pjw.retry_view.repository.ImageRepository;
-import com.pjw.retry_view.repository.ReviewRepository;
+import com.pjw.retry_view.repositoryImpl.ImageRepositoryImpl;
+import com.pjw.retry_view.repositoryImpl.ReviewRepositoryImpl;
 import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.ReviewRequest;
 import com.pjw.retry_view.util.Utils;
@@ -23,23 +23,23 @@ import java.util.Objects;
 
 @Service
 public class ReviewService {
-    private final ReviewRepository reviewRepository;
-    private final ImageRepository imageRepository;
+    private final ReviewRepositoryImpl reviewRepositoryImpl;
+    private final ImageRepositoryImpl imageRepositoryImpl;
     private static final int DEFAULT_PAGE_SIZE = 3;
 
-    public ReviewService(ReviewRepository reviewRepository, ImageRepository imageRepository) {
-        this.reviewRepository = reviewRepository;
-        this.imageRepository = imageRepository;
+    public ReviewService(ReviewRepositoryImpl reviewRepositoryImpl, ImageRepositoryImpl imageRepositoryImpl) {
+        this.reviewRepositoryImpl = reviewRepositoryImpl;
+        this.imageRepositoryImpl = imageRepositoryImpl;
     }
 
     public List<ReviewView> getReviewListByProductId(Long cursor, Long productId){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
 
-        List<Review> reviewList = reviewRepository.findByIdLessThanAndProductIdOrderByIdDesc(cursor, productId, pageable);
+        List<Review> reviewList = reviewRepositoryImpl.findByIdLessThanAndProductIdOrderByIdDesc(cursor, productId, pageable);
         List<ReviewView> result = new ArrayList<>();
         List<Long> imageIds = new ArrayList<>();
         reviewList.forEach(review -> imageIds.addAll(review.getImageIds()));
-        List<Image> imageList = imageRepository.findByIdIn(imageIds);
+        List<Image> imageList = imageRepositoryImpl.findByIdIn(imageIds);
         for(Review review : reviewList){
             if(CollectionUtils.isEmpty(review.getImageIds())) continue;
 
@@ -55,11 +55,11 @@ public class ReviewService {
     public List<ReviewView> getReviewListByCreatedBy(Long cursor, Long createdBy){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
 
-        List<Review> reviewList = reviewRepository.findByIdLessThanAndCreatedByOrderByIdDesc(cursor, createdBy, pageable);
+        List<Review> reviewList = reviewRepositoryImpl.findByIdLessThanAndCreatedByOrderByIdDesc(cursor, createdBy, pageable);
         List<ReviewView> result = new ArrayList<>();
         List<Long> imageIds = new ArrayList<>();
         reviewList.forEach(review -> imageIds.addAll(review.getImageIds()));
-        List<Image> imageList = imageRepository.findByIdIn(imageIds);
+        List<Image> imageList = imageRepositoryImpl.findByIdIn(imageIds);
         for(Review review : reviewList){
             if(CollectionUtils.isEmpty(review.getImageIds())) continue;
 
@@ -79,19 +79,19 @@ public class ReviewService {
         }
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         for(Image reviewImage : images){
-            imageRepository.save(reviewImage);
+            imageRepositoryImpl.save(reviewImage);
         }
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Review review = Review.newOne(req.getProductId(), req.getScore(), req.getComment(), imageIds, req.getCreatedBy());
-        ReviewView result = ReviewView.fromEntity(reviewRepository.save(review));
+        ReviewView result = ReviewView.fromEntity(reviewRepositoryImpl.save(review));
         result.setImages(images.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
     @Transactional
     public ReviewView updateReview(ReviewRequest req){
-        Review review = reviewRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
+        Review review = reviewRepositoryImpl.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
 
         if(Long.compare(review.getCreatedBy(), req.getUpdatedBy()) != 0)
             throw new NotMyResourceException("접근 불가능한 리소스입니다.");
@@ -101,34 +101,34 @@ public class ReviewService {
         }
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByIdIn(review.getImageIds()).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepositoryImpl.findByIdIn(review.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
-            imageRepository.deleteByIds(deleteImageIds);
+            imageRepositoryImpl.deleteByIdIn(deleteImageIds);
             reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
         for(Image boardImage : reqImages){
             if(boardImage.getId() == null) {
-                imageRepository.save(boardImage);
+                imageRepositoryImpl.save(boardImage);
             }
         }
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
         review.updateReview(req.getProductId(), req.getScore(), req.getComment(), updateImageIds, req.getUpdatedBy());
-        ReviewView result = ReviewView.fromEntity(reviewRepository.save(review));
+        ReviewView result = ReviewView.fromEntity(reviewRepositoryImpl.save(review));
         result.setImages(reqImages.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
     @Transactional
     public void deleteById(Long id, Long userId){
-        Review review = reviewRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        Review review = reviewRepositoryImpl.findById(id).orElseThrow(ResourceNotFoundException::new);
 
         if(Long.compare(review.getCreatedBy(), userId) != 0)
             throw new NotMyResourceException("접근 불가능한 리소스입니다.");
 
-        if(CollectionUtils.isEmpty(review.getImageIds())) imageRepository.deleteByIds(review.getImageIds());
-        reviewRepository.deleteById(id);
+        if(CollectionUtils.isEmpty(review.getImageIds())) imageRepositoryImpl.deleteByIdIn(review.getImageIds());
+        reviewRepositoryImpl.deleteById(id);
     }
 }

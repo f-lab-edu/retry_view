@@ -4,8 +4,8 @@ import com.pjw.retry_view.dto.BoardView;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.enums.BoardType;
 import com.pjw.retry_view.enums.SearchType;
-import com.pjw.retry_view.repository.BoardRepository;
-import com.pjw.retry_view.repository.ImageRepository;
+import com.pjw.retry_view.repositoryImpl.BoardRepositoryImpl;
+import com.pjw.retry_view.repositoryImpl.ImageRepositoryImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +24,9 @@ import static org.assertj.core.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
     @Mock
-    BoardRepository boardRepository;
+    BoardRepositoryImpl boardRepositoryImpl;
     @Mock
-    ImageRepository imageRepository;
+    ImageRepositoryImpl imageRepositoryImpl;
 
     @InjectMocks
     BoardService boardService;
@@ -41,7 +41,7 @@ public class BoardServiceTest {
         String content = "title";
         List<Board> boardList = getTestBoardList();
 
-        when(boardRepository.findByIdLessThanAndTitleLikeOrderByIdDesc(anyLong(), anyString(), any(Pageable.class))).thenReturn(boardList);
+        when(boardRepositoryImpl.findByIdLessThanAndTitleLikeOrderByIdDesc(anyLong(), anyString(), any(Pageable.class))).thenReturn(boardList);
 
         List<BoardView> result = boardService.getBoardList(cursor, SearchType.TITLE, content);
 
@@ -56,7 +56,7 @@ public class BoardServiceTest {
         String content = "Sell";
         List<Board> boardList = getTestBoardList();
 
-        when(boardRepository.findByIdLessThanAndTypeOrderByIdDesc(anyLong(), any(BoardType.class), any(Pageable.class))).thenReturn(boardList);
+        when(boardRepositoryImpl.findByIdLessThanAndTypeOrderByIdDesc(anyLong(), any(BoardType.class), any(Pageable.class))).thenReturn(boardList);
 
         List<BoardView> result = boardService.getBoardList(cursor, SearchType.TYPE, content);
 
@@ -71,7 +71,7 @@ public class BoardServiceTest {
         String content = null;
         List<Board> boardList = getTestBoardList();
 
-        when(boardRepository.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(boardList);
+        when(boardRepositoryImpl.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(boardList);
 
         List<BoardView> result = boardService.getBoardList(cursor, SearchType.ALL, content);
 

@@ -3,7 +3,7 @@ package com.pjw.retry_view.service;
 import com.pjw.retry_view.dto.BoardLikeView;
 import com.pjw.retry_view.entity.BoardLike;
 import com.pjw.retry_view.entity.LikeId;
-import com.pjw.retry_view.repository.BoardLikeRepository;
+import com.pjw.retry_view.repositoryImpl.BoardLikeRepositoryImpl;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.data.redis.core.HashOperations;
@@ -15,17 +15,17 @@ import java.util.*;
 
 @Service
 public class BoardLikeService {
-    private final BoardLikeRepository boardLikeRepository;
+    private final BoardLikeRepositoryImpl boardLikeRepositoryImpl;
     private final RedisTemplate<String, String> redisTemplate;
     private static final String HASH_KEY = "Likes";
 
-    public BoardLikeService(BoardLikeRepository boardLikeRepository, RedisTemplate<String, String> redisTemplate) {
-        this.boardLikeRepository = boardLikeRepository;
+    public BoardLikeService(BoardLikeRepositoryImpl boardLikeRepositoryImpl, RedisTemplate<String, String> redisTemplate) {
+        this.boardLikeRepositoryImpl = boardLikeRepositoryImpl;
         this.redisTemplate = redisTemplate;
     }
 
     public List<BoardLikeView> getUserBoardLikeList(Long userId){
-        return boardLikeRepository.findByIdUserId(userId).stream().map(BoardLike::toDTO).toList();
+        return boardLikeRepositoryImpl.findByIdUserId(userId).stream().map(BoardLike::toDTO).toList();
     }
 
     @Transactional
@@ -34,7 +34,7 @@ public class BoardLikeService {
         HashOperations<String, String, String> hashOper = redisTemplate.opsForHash();
 
         LikeId id = LikeId.newOne(userId, boardId);
-        BoardLike boardLike = boardLikeRepository.findById(id).orElse(null);
+        BoardLike boardLike = boardLikeRepositoryImpl.findById(id).orElse(null);
         if(boardLike != null) return;
 
         String strBoardId = String.valueOf(boardId);
@@ -64,13 +64,13 @@ public class BoardLikeService {
 
             hashOper.delete(HASH_KEY, boardId);
         }
-        boardLikeRepository.saveAll(boardLikes);
+        boardLikeRepositoryImpl.saveAll(boardLikes);
     }
 
     @Transactional
     public void deleteBoardLike(Long boardId, Long userId){
         if(isBoardLikedWithRedis(userId, boardId)) deleteBoardLikeWithRedis(userId, boardId);
-        else boardLikeRepository.deleteById(LikeId.newOne(userId, boardId));
+        else boardLikeRepositoryImpl.deleteById(LikeId.newOne(userId, boardId));
     }
 
     @Transactional

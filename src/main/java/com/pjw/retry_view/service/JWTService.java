@@ -6,17 +6,17 @@ import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.entity.User;
 import com.pjw.retry_view.exception.InvalidTokenException;
 import com.pjw.retry_view.exception.UserNotFoundException;
-import com.pjw.retry_view.repository.UserRepository;
+import com.pjw.retry_view.repositoryImpl.UserRepositoryImpl;
 import com.pjw.retry_view.util.JWTUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JWTService {
-    private final UserRepository userRepository;
+    private final UserRepositoryImpl userRepositoryImpl;
 
-    public JWTService(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public JWTService(UserRepositoryImpl userRepositoryImpl){
+        this.userRepositoryImpl = userRepositoryImpl;
     }
 
     @Transactional
@@ -25,14 +25,14 @@ public class JWTService {
             throw new InvalidTokenException();
         }
 
-        UserView user = userRepository.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
+        UserView user = userRepositoryImpl.findByRefreshToken(refreshToken).map(User::toDTO).orElseThrow(UserNotFoundException::new);
         UserInfo userInfo = new UserInfo(user.getId(), user.getName(), user.getLoginId(), user.getRole());
 
         boolean isExpired = JWTUtil.isTokenExpired(refreshToken);
         if (isExpired) {
             refreshToken = JWTUtil.createRefreshToken();
             user.setRefreshToken(refreshToken);
-            userRepository.save(user.toEntity());
+            userRepositoryImpl.save(user.toEntity());
             return JWToken.getJWT(JWTUtil.createAccessToken(userInfo), refreshToken);
         }
 
