@@ -14,7 +14,7 @@ Java, SpringBoot, JPA, Redis, MySQL, Docker, Jenkins, AWS
 https://www.erdcloud.com/d/WdiQSSJiKy4n6YFQr
   
 
-![RetryView drawio](https://github.com/user-attachments/assets/fae0fc9c-eedd-4855-8991-66b4b678046b)
+![RetryView (2)](https://github.com/user-attachments/assets/4d12470a-c0a8-4dfa-962a-2ab6b6f6f903)
 # 🧾 아키텍쳐 구조
 EC2 서버 2대를 사용하여 Jenkins를 사용한 빌드용 서버와 API 애플리케이션&Redis 가동용 서버로 나누어 설계하였습니다.
 또한 별도의 서버 세팅 시간을 줄이고, 로컬에서 실제 환경으로 테스트를 해봐야 하는 경우나 서버 이전 등을 용이하게 하기 위하여 Docker를 사용해서 환경을 분리해주었습니다.
