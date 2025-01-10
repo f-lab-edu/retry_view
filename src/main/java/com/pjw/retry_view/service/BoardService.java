@@ -4,7 +4,6 @@ import com.pjw.retry_view.dto.BoardView;
 import com.pjw.retry_view.dto.ImageView;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.Image;
-import com.pjw.retry_view.enums.BoardType;
 import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
@@ -12,10 +11,11 @@ import com.pjw.retry_view.repositoryImpl.BoardRepositoryImpl;
 import com.pjw.retry_view.repositoryImpl.ImageRepositoryImpl;
 import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteBoardRequest;
+import com.pjw.retry_view.spec.BoardSpecification;
 import com.pjw.retry_view.util.Utils;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,19 +35,21 @@ public class BoardService {
     }
 
     public List<BoardView> getBoardList(Long cursor, SearchType searchType, String content){
-        Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE, Sort.Direction.DESC, "id");
         if(Objects.isNull(searchType)) searchType = SearchType.ALL;
 
-        List<Board> boardList = switch (searchType) {
+        Specification<Board> spec = Specification.where(BoardSpecification.gtId(cursor));
+        switch (searchType) {
             case TITLE ->
-                boardRepositoryImpl.findByIdLessThanAndTitleLikeOrderByIdDesc(cursor, "%" + content + "%", pageable);
+                spec = spec.and(BoardSpecification.likeTitle(content));
             case TYPE ->
-                    boardRepositoryImpl.findByIdLessThanAndTypeOrderByIdDesc(cursor, BoardType.getValue(content), pageable);
-            default -> boardRepositoryImpl.findAllByOrderByIdDesc(pageable);
-        };
+                spec = spec.and(BoardSpecification.eqType(content));
+        }
+
+        Slice<Board> boardList = boardRepositoryImpl.findAll(spec, pageable);
 
         List<BoardView> dtoList = new ArrayList<>();
-        for(Board board : boardList){
+        for(Board board : boardList.getContent()){
             if(CollectionUtils.isEmpty(board.getImageIds())) continue;
 
             List<Image> imageList = imageRepositoryImpl.findByIdIn(board.getImageIds());
