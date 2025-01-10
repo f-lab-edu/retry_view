@@ -55,6 +55,7 @@ public class Board {
                 .id(id)
                 .type(type)
                 .productId(productId)
+                .title(title)
                 .content(content)
                 .viewCount(viewCount)
                 .price(price)

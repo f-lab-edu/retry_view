@@ -35,6 +35,7 @@ public class BoardView {
                 .id(board.getId())
                 .type(board.getType())
                 .productId(board.getProductId())
+                .title(board.getTitle())
                 .content(board.getContent())
                 .viewCount(board.getViewCount())
                 .price(board.getPrice())
@@ -47,10 +48,11 @@ public class BoardView {
     }
 
     @Builder
-    public BoardView(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageView> images) {
+    public BoardView(Long id, BoardType type, Long productId, String title, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageView> images) {
         this.id = id;
         this.type = type;
         this.productId = productId;
+        this.title = title;
         this.content = content;
         this.viewCount = viewCount;
         this.price = price;
