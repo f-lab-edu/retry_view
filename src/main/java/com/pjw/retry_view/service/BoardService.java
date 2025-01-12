@@ -18,20 +18,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import software.amazon.awssdk.services.sns.model.PublishResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class BoardService {
     private final BoardRepositoryImpl boardRepositoryImpl;
     private final ImageRepositoryImpl imageRepositoryImpl;
+    private final SnsService snsService;
     private static final int DEFAULT_PAGE_SIZE = 3;
 
-    public BoardService(BoardRepositoryImpl boardRepositoryImpl, ImageRepositoryImpl imageRepositoryImpl){
+    public BoardService(BoardRepositoryImpl boardRepositoryImpl, ImageRepositoryImpl imageRepositoryImpl, SnsService snsService){
         this.boardRepositoryImpl = boardRepositoryImpl;
         this.imageRepositoryImpl = imageRepositoryImpl;
+        this.snsService = snsService;
     }
 
     public List<BoardView> getBoardList(Long cursor, SearchType searchType, String content){
@@ -71,6 +72,11 @@ public class BoardService {
         for(Image boardImage : images){
             imageRepositoryImpl.save(boardImage);
         }
+
+        Map<String, Object> message = new HashMap<>();
+        message.put("postTitle", req.getTitle());
+        PublishResponse res = snsService.publishSns(message);
+        System.out.println(res);
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Board board = Board.newOne(req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), imageIds, req.getCreatedBy());

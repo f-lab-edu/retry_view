@@ -61,6 +61,11 @@ dependencies {
 // https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client
 	implementation 'org.springframework.security:spring-security-oauth2-client:6.3.3'
 
+// https://mvnrepository.com/artifact/software.amazon.awssdk/sqs
+	implementation 'software.amazon.awssdk:sqs:2.29.50'
+// https://mvnrepository.com/artifact/software.amazon.awssdk/sns
+	implementation 'software.amazon.awssdk:sns:2.29.50'
+
 }
 
 //tasks.named('test') {
