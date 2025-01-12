@@ -2,7 +2,7 @@ package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.BoardTypeEnumConverter;
 import com.pjw.retry_view.converter.ImageIdsConverter;
-import com.pjw.retry_view.dto.BoardDTO;
+import com.pjw.retry_view.dto.BoardView;
 import com.pjw.retry_view.enums.BoardType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -50,8 +50,8 @@ public class Board {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public BoardDTO toDTO(){
-        return BoardDTO.builder()
+    public BoardView toDTO(){
+        return BoardView.builder()
                 .id(id)
                 .type(type)
                 .productId(productId)

@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO implements Serializable {
+public class UserView implements Serializable {
     private Long id;
     private String name;
     private Gender gender;

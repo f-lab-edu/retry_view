@@ -1,6 +1,6 @@
 package com.pjw.retry_view.entity;
 
-import com.pjw.retry_view.dto.BoardLikeDTO;
+import com.pjw.retry_view.dto.BoardLikeView;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,8 +41,8 @@ public class BoardLike {
         this.board = board;
     }
 
-    public BoardLikeDTO toDTO(){
-        return BoardLikeDTO.builder()
+    public BoardLikeView toDTO(){
+        return BoardLikeView.builder()
                 .board(board.toDTO())
                 .userId(id.getUserId())
                 .createdAt(createdAt)

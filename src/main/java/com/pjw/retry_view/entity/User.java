@@ -4,7 +4,7 @@ import com.pjw.retry_view.converter.UserAutnEnumConverter;
 import com.pjw.retry_view.converter.UserStateEnumConverter;
 import com.pjw.retry_view.enums.Gender;
 import com.pjw.retry_view.enums.UserAuth;
-import com.pjw.retry_view.dto.UserDTO;
+import com.pjw.retry_view.dto.UserView;
 import com.pjw.retry_view.enums.UserState;
 import jakarta.persistence.*;
 import lombok.*;
@@ -88,8 +88,8 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public UserDTO toDTO(){
-        return UserDTO.builder()
+    public UserView toDTO(){
+        return UserView.builder()
                 .id(userId.getId())
                 .name(name)
                 .gender(gender)

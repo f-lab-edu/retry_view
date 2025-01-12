@@ -10,13 +10,13 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BoardLikeDTO {
+public class BoardLikeView {
     private Long userId;
-    private BoardDTO board;
+    private BoardView board;
     private ZonedDateTime createdAt;
 
     @Builder
-    public BoardLikeDTO(Long userId, BoardDTO board, ZonedDateTime createdAt) {
+    public BoardLikeView(Long userId, BoardView board, ZonedDateTime createdAt) {
         this.userId = userId;
         this.board = board;
         this.createdAt = createdAt;

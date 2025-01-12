@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.ZonedDateTime;
 
 @Getter
-public class ImageDTO {
+public class ImageView {
     private Long id;
     private String imageUrl;
 
@@ -16,8 +16,8 @@ public class ImageDTO {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    public static ImageDTO newOne(Long id, String imageUrl, Long createdBy){
-        return ImageDTO.builder()
+    public static ImageView newOne(Long id, String imageUrl, Long createdBy){
+        return ImageView.builder()
                 .id(id)
                 .imageUrl(imageUrl)
                 .createdBy(createdBy)
@@ -25,8 +25,8 @@ public class ImageDTO {
                 .build();
     }
 
-    public static ImageDTO fromEntity(Image image){
-        return ImageDTO.builder()
+    public static ImageView fromEntity(Image image){
+        return ImageView.builder()
                 .id(image.getId())
                 .imageUrl(image.getImageUrl())
                 .createdBy(image.getCreatedBy())
@@ -37,7 +37,7 @@ public class ImageDTO {
     }
 
     @Builder
-    public ImageDTO(Long id, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public ImageView(Long id, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.createdBy = createdBy;

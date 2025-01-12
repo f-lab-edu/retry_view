@@ -1,6 +1,6 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.CategoryDTO;
+import com.pjw.retry_view.dto.CategoryView;
 import com.pjw.retry_view.enums.CategoryType;
 import com.pjw.retry_view.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,19 +22,19 @@ public class CategoryController {
 
     @Operation(summary = "카테고리 목록 조회 API", description = "")
     @GetMapping
-    public List<CategoryDTO> getCategoryList(@RequestParam(name = "type")CategoryType type, @RequestParam(name = "groupId")Long groupId){
+    public List<CategoryView> getCategoryList(@RequestParam(name = "type")CategoryType type, @RequestParam(name = "groupId")Long groupId){
         return categoryService.getCategoryList(type, groupId);
     }
 
     @Operation(summary = "카테고리 추가 API", description = "")
     @PostMapping
-    public CategoryDTO addCategory(@RequestBody @Valid CategoryDTO categoryReq){
+    public CategoryView addCategory(@RequestBody @Valid CategoryView categoryReq){
         return categoryService.saveCategory(categoryReq);
     }
 
     @Operation(summary = "카테고리 수정 API", description = "")
     @PutMapping
-    public CategoryDTO updateCategory(@RequestBody @Valid CategoryDTO categoryReq){
+    public CategoryView updateCategory(@RequestBody @Valid CategoryView categoryReq){
         return categoryService.updateCategory(categoryReq);
     }
 

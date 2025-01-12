@@ -1,7 +1,7 @@
 package com.pjw.retry_view.entity;
 
-import com.pjw.retry_view.dto.CategoryDTO;
-import com.pjw.retry_view.dto.ProductDTO;
+import com.pjw.retry_view.dto.CategoryView;
+import com.pjw.retry_view.dto.ProductView;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -86,8 +86,8 @@ public class Product {
                 .build();
     }
 
-    public ProductDTO toDTO(){
-        return ProductDTO.builder()
+    public ProductView toDTO(){
+        return ProductView.builder()
                 .id(id)
                 .mainCategory(categoryToDTO(mainCategory))
                 .subCategory(categoryToDTO(subCategory))
@@ -103,7 +103,7 @@ public class Product {
                 .build();
     }
 
-    private CategoryDTO categoryToDTO(Category category){
+    private CategoryView categoryToDTO(Category category){
         if(category == null) return null;
         return category.toDTO();
     }

@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EventDTO {
+public class EventView {
     private Long id;
     private String content;
     private Long viewCount;
@@ -26,18 +26,18 @@ public class EventDTO {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    private List<ImageDTO> images;
+    private List<ImageView> images;
 
-    public static EventDTO from(Event event, List<Image> images){
+    public static EventView from(Event event, List<Image> images){
         if(images == null) images = new ArrayList<>();
 
-        return EventDTO.builder()
+        return EventView.builder()
                 .id(event.getId())
                 .content(event.getContent())
                 .viewCount(event.getViewCount())
                 .startAt(event.getStartAt())
                 .endAt(event.getEndAt())
-                .images(images.stream().map(ImageDTO::fromEntity).toList())
+                .images(images.stream().map(ImageView::fromEntity).toList())
                 .createdBy(event.getCreatedBy())
                 .createdAt(event.getCreatedAt())
                 .updatedBy(event.getUpdatedBy())
@@ -45,7 +45,7 @@ public class EventDTO {
                 .build();
     }
     @Builder
-    public EventDTO(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageDTO> images) {
+    public EventView(Long id, String content, Long viewCount, ZonedDateTime startAt, ZonedDateTime endAt, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageView> images) {
         this.id = id;
         this.content = content;
         this.viewCount = viewCount;

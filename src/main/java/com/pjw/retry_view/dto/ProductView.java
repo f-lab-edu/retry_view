@@ -2,22 +2,20 @@ package com.pjw.retry_view.dto;
 
 import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.entity.Product;
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductDTO {
+public class ProductView {
     private Long id;
-    private CategoryDTO mainCategory;
-    private CategoryDTO subCategory;
+    private CategoryView mainCategory;
+    private CategoryView subCategory;
     private String name;
     private Integer price;
     private String brand;
@@ -30,7 +28,7 @@ public class ProductDTO {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public ProductDTO(Long id, CategoryDTO mainCategory, CategoryDTO subCategory, String name, Integer price, String brand, String detail, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public ProductView(Long id, CategoryView mainCategory, CategoryView subCategory, String name, Integer price, String brand, String detail, String imageUrl, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.mainCategory = mainCategory;
         this.subCategory = subCategory;
@@ -62,7 +60,7 @@ public class ProductDTO {
                 .build();
     }
 
-    private Category categoryToEntity(CategoryDTO category){
+    private Category categoryToEntity(CategoryView category){
         if(category == null) return null;
         return category.toEntity();
     }
