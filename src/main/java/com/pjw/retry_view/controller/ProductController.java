@@ -25,8 +25,13 @@ public class ProductController {
     @Operation(summary = "상품 목록 조회 API", description = "")
     @ApiResponseCodeExamples({ErrorCode.INVALID_TOKEN})
     @GetMapping
-    public List<ProductView> getProductList(){
-        return productService.getProductList();
+    public List<ProductView> getProductList(
+            @RequestParam(name = "mainCateId", required = false) Long mainCateId,
+            @RequestParam(name = "subCateId", required = false) Long subCateId,
+            @RequestParam(name = "brand", required = false) String brand,
+            @RequestParam(name = "name", required = false) String name
+    ){
+        return productService.getProductList(mainCateId, subCateId, brand, name);
     }
 
     @Operation(summary = "상품 상세 정보 조회 API", description = "")

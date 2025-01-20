@@ -5,11 +5,13 @@ import com.pjw.retry_view.dto.ProductView;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "product")
 public class Product {
     @Id
