@@ -1,59 +1,59 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.ProductDTO;
+import com.pjw.retry_view.dto.ProductView;
 import com.pjw.retry_view.entity.Category;
 import com.pjw.retry_view.entity.Product;
-import com.pjw.retry_view.repository.CategoryRepository;
-import com.pjw.retry_view.repository.ProductRepository;
+import com.pjw.retry_view.exception.ResourceNotFoundException;
+import com.pjw.retry_view.repositoryImpl.CategoryRepositoryImpl;
+import com.pjw.retry_view.repositoryImpl.ProductRepositoryImpl;
 import com.pjw.retry_view.request.ProductRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
 import java.util.List;
 
 @Service
 public class ProductService {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    private final ProductRepositoryImpl productRepositoryImpl;
+    private final CategoryRepositoryImpl categoryRepositoryImpl;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
+    public ProductService(ProductRepositoryImpl productRepositoryImpl, CategoryRepositoryImpl categoryRepositoryImpl) {
+        this.productRepositoryImpl = productRepositoryImpl;
+        this.categoryRepositoryImpl = categoryRepositoryImpl;
     }
 
-    public List<ProductDTO> getProductList(){
-        return productRepository.findAll().stream().map(Product::toDTO).toList();
+    public List<ProductView> getProductList(){
+        return productRepositoryImpl.findAll().stream().map(Product::toDTO).toList();
     }
 
-    public ProductDTO getProduct(Long id){
-        return productRepository.findById(id).orElseThrow(ResolutionException::new).toDTO();
+    public ProductView getProduct(Long id){
+        return productRepositoryImpl.findById(id).orElseThrow(ResourceNotFoundException::new).toDTO();
     }
 
     @Transactional
-    public ProductDTO saveProduct(ProductRequest req){
-        Category mainCategory = categoryRepository.findById(req.getMainCategoryId()).orElse(null);
+    public ProductView saveProduct(ProductRequest req){
+        Category mainCategory = categoryRepositoryImpl.findById(req.getMainCategoryId()).orElse(null);
         Category subCategory = null;
         if(req.getSubCategoryId() != null) {
-            subCategory = categoryRepository.findById(req.getSubCategoryId()).orElse(null);
+            subCategory = categoryRepositoryImpl.findById(req.getSubCategoryId()).orElse(null);
         }
         Product product = Product.newOne(mainCategory, subCategory, req.getName(), req.getPrice(), req.getDetail(), req.getBrand(), req.getImageUrl(), req.getCreatedBy());
-        return productRepository.save(product).toDTO();
+        return productRepositoryImpl.save(product).toDTO();
     }
 
     @Transactional
-    public ProductDTO updateProduct(ProductRequest req){
-        Category mainCategory = categoryRepository.findById(req.getMainCategoryId()).orElse(null);
+    public ProductView updateProduct(ProductRequest req){
+        Category mainCategory = categoryRepositoryImpl.findById(req.getMainCategoryId()).orElse(null);
         Category subCategory = null;
         if(req.getSubCategoryId() != null) {
-            categoryRepository.findById(req.getSubCategoryId()).orElse(null);
+            categoryRepositoryImpl.findById(req.getSubCategoryId()).orElse(null);
         }
         Product product = Product.updateProduct(req.getId(), mainCategory, subCategory, req.getName(), req.getPrice(), req.getDetail(), req.getBrand(), req.getImageUrl(), req.getUpdatedBy());
-        return productRepository.save(product).toDTO();
+        return productRepositoryImpl.save(product).toDTO();
     }
 
     @Transactional
     public void deleteProduct(Long id){
-        productRepository.deleteById(id);
+        productRepositoryImpl.deleteById(id);
     }
 }

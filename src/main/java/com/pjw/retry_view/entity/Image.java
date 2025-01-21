@@ -1,8 +1,5 @@
 package com.pjw.retry_view.entity;
 
-import com.pjw.retry_view.converter.ImageTypeConverter;
-import com.pjw.retry_view.dto.ImageDTO;
-import com.pjw.retry_view.enums.ImageType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

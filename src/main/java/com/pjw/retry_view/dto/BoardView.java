@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BoardDTO {
+public class BoardView {
     private Long id;
     private BoardType type;
     private Long productId;
@@ -26,19 +26,19 @@ public class BoardDTO {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    private List<ImageDTO> images;
+    private List<ImageView> images;
 
-    public static BoardDTO from(Board board, List<Image> images){
+    public static BoardView from(Board board, List<Image> images){
         if(images == null) images = new ArrayList<>();
 
-        return BoardDTO.builder()
+        return BoardView.builder()
                 .id(board.getId())
                 .type(board.getType())
                 .productId(board.getProductId())
                 .content(board.getContent())
                 .viewCount(board.getViewCount())
                 .price(board.getPrice())
-                .images(images.stream().map(ImageDTO::fromEntity).toList())
+                .images(images.stream().map(ImageView::fromEntity).toList())
                 .createdBy(board.getCreatedBy())
                 .createdAt(board.getCreatedAt())
                 .updatedBy(board.getUpdatedBy())
@@ -47,7 +47,7 @@ public class BoardDTO {
     }
 
     @Builder
-    public BoardDTO(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageDTO> images) {
+    public BoardView(Long id, BoardType type, Long productId, String content, Long viewCount, Long price, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt, List<ImageView> images) {
         this.id = id;
         this.type = type;
         this.productId = productId;

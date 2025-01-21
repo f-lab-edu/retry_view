@@ -1,13 +1,13 @@
 package com.pjw.retry_view.service;
 
-import com.pjw.retry_view.dto.ImageDTO;
-import com.pjw.retry_view.dto.NoticeDTO;
+import com.pjw.retry_view.dto.ImageView;
+import com.pjw.retry_view.dto.NoticeView;
 import com.pjw.retry_view.entity.Image;
 import com.pjw.retry_view.entity.Notice;
 import com.pjw.retry_view.exception.NotMyResourceException;
 import com.pjw.retry_view.exception.ResourceNotFoundException;
-import com.pjw.retry_view.repository.ImageRepository;
-import com.pjw.retry_view.repository.NoticeRepository;
+import com.pjw.retry_view.repositoryImpl.ImageRepositoryImpl;
+import com.pjw.retry_view.repositoryImpl.NoticeRepositoryImpl;
 import com.pjw.retry_view.request.ImageRequest;
 import com.pjw.retry_view.request.WriteNoticeRequest;
 import com.pjw.retry_view.util.Utils;
@@ -23,61 +23,61 @@ import java.util.Objects;
 
 @Service
 public class NoticeService {
-    private final NoticeRepository noticeRepository;
-    private final ImageRepository imageRepository;
+    private final NoticeRepositoryImpl noticeRepositoryImpl;
+    private final ImageRepositoryImpl imageRepositoryImpl;
     private static final int DEFAULT_PAGE_SIZE = 10;
 
-    public NoticeService(NoticeRepository noticeRepository, ImageRepository imageRepository) {
-        this.noticeRepository = noticeRepository;
-        this.imageRepository = imageRepository;
+    public NoticeService(NoticeRepositoryImpl noticeRepositoryImpl, ImageRepositoryImpl imageRepositoryImpl) {
+        this.noticeRepositoryImpl = noticeRepositoryImpl;
+        this.imageRepositoryImpl = imageRepositoryImpl;
     }
 
-    public List<NoticeDTO> getNoticeList(Long cursor){
+    public List<NoticeView> getNoticeList(Long cursor){
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
 
         List<Notice> noticeList = null;
         if(!Objects.isNull(cursor) && cursor > 0L){
-            noticeList = noticeRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+            noticeList = noticeRepositoryImpl.findByIdLessThanOrderByIdDesc(cursor, pageable);
         }else{
-            noticeList = noticeRepository.findAllByOrderByIdDesc(pageable);
+            noticeList = noticeRepositoryImpl.findAllByOrderByIdDesc(pageable);
         }
 
-        List<NoticeDTO> dtoList = new ArrayList<>();
+        List<NoticeView> dtoList = new ArrayList<>();
         for(Notice notice: noticeList){
             if(CollectionUtils.isEmpty(notice.getImageIds())) continue;
 
-            List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
-            dtoList.add(NoticeDTO.from(notice, imageList));
+            List<Image> imageList = imageRepositoryImpl.findByIdIn(notice.getImageIds());
+            dtoList.add(NoticeView.from(notice, imageList));
         }
         return dtoList;
     }
 
-    public NoticeDTO getNotice(Long id){
-        Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        List<Image> imageList = imageRepository.findByIdIn(notice.getImageIds());
-        return NoticeDTO.from(notice, imageList);
+    public NoticeView getNotice(Long id){
+        Notice notice = noticeRepositoryImpl.findById(id).orElseThrow(ResourceNotFoundException::new);
+        List<Image> imageList = imageRepositoryImpl.findByIdIn(notice.getImageIds());
+        return NoticeView.from(notice, imageList);
     }
 
     @Transactional
-    public NoticeDTO saveNotice(WriteNoticeRequest req){
+    public NoticeView saveNotice(WriteNoticeRequest req){
         if(CollectionUtils.isEmpty(req.getImages())) {
             req.setImages(new ArrayList<>());
         }
         List<Image> images = req.getImages().stream().map(img -> Image.newOne(null, img.getImageUrl(), req.getCreatedBy())).toList();
         for(Image noticeImage : images){
-            imageRepository.save(noticeImage);
+            imageRepositoryImpl.save(noticeImage);
         }
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Notice notice = Notice.newOne(req.getTitle(), req.getContent(), imageIds, req.getCreatedBy());
-        NoticeDTO result = noticeRepository.save(notice).toDTO();
-        result.setImages(images.stream().map(ImageDTO::fromEntity).toList());
+        NoticeView result = noticeRepositoryImpl.save(notice).toDTO();
+        result.setImages(images.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
     @Transactional
-    public NoticeDTO updateNotice(WriteNoticeRequest req){
-        Notice notice = noticeRepository.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
+    public NoticeView updateNotice(WriteNoticeRequest req){
+        Notice notice = noticeRepositoryImpl.findById(req.getId()).orElseThrow(ResourceNotFoundException::new);
 
         if(Long.compare(notice.getCreatedBy(), req.getUpdatedBy()) != 0)
             throw new NotMyResourceException("접근 불가능한 리소스입니다.");
@@ -87,35 +87,35 @@ public class NoticeService {
         }
         List<Image> reqImages = new ArrayList<>(req.getImages().stream().map(img -> Image.newOne(img.getId(), img.getImageUrl(), req.getCreatedBy())).toList());
         List<Long> imageIds = req.getImages().stream().map(ImageRequest::getId).filter(Objects::nonNull).toList();
-        List<Long> oldImageIds = imageRepository.findByIdIn(notice.getImageIds()).stream().map(Image::getId).toList();
+        List<Long> oldImageIds = imageRepositoryImpl.findByIdIn(notice.getImageIds()).stream().map(Image::getId).toList();
         List<Long> deleteImageIds = Utils.getDeleteImageIds(imageIds, oldImageIds);
         if(!CollectionUtils.isEmpty(deleteImageIds)) {
-            imageRepository.deleteByIds(deleteImageIds);
+            imageRepositoryImpl.deleteByIdIn(deleteImageIds);
             reqImages.removeIf(img->deleteImageIds.contains(img.getId()));
         }
 
         for(Image noticeImage : reqImages){
             if(noticeImage.getId() == null) {
-                imageRepository.save(noticeImage);
+                imageRepositoryImpl.save(noticeImage);
             }
         }
 
         List<Long> updateImageIds = reqImages.stream().map(Image::getId).toList();
         notice.updateNotice(req.getTitle(), req.getContent(), updateImageIds, req.getUpdatedBy());
-        NoticeDTO result = noticeRepository.save(notice).toDTO();
-        result.setImages(reqImages.stream().map(ImageDTO::fromEntity).toList());
+        NoticeView result = noticeRepositoryImpl.save(notice).toDTO();
+        result.setImages(reqImages.stream().map(ImageView::fromEntity).toList());
         return result;
     }
 
     @Transactional
     public void deleteNotice(Long id, Long userId){
-        Notice notice = noticeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        Notice notice = noticeRepositoryImpl.findById(id).orElseThrow(ResourceNotFoundException::new);
 
         if(Long.compare(notice.getCreatedBy(), userId) != 0)
             throw new NotMyResourceException("접근 불가능한 리소스입니다.");
 
-        if(CollectionUtils.isEmpty(notice.getImageIds())) imageRepository.deleteByIds(notice.getImageIds());
-        noticeRepository.deleteById(id);
+        if(CollectionUtils.isEmpty(notice.getImageIds())) imageRepositoryImpl.deleteByIdIn(notice.getImageIds());
+        noticeRepositoryImpl.deleteById(id);
     }
 
 }

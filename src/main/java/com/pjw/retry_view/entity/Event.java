@@ -1,7 +1,7 @@
 package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.ImageIdsConverter;
-import com.pjw.retry_view.dto.EventDTO;
+import com.pjw.retry_view.dto.EventView;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,8 +45,8 @@ public class Event {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    public EventDTO toDTO(){
-        return EventDTO.builder()
+    public EventView toDTO(){
+        return EventView.builder()
                 .id(id)
                 .content(content)
                 .viewCount(viewCount)

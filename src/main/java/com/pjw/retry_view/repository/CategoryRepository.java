@@ -1,7 +1,7 @@
 package com.pjw.retry_view.repository;
 
-import com.pjw.retry_view.enums.CategoryType;
 import com.pjw.retry_view.entity.Category;
+import com.pjw.retry_view.enums.CategoryType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
