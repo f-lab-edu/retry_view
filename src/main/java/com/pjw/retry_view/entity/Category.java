@@ -1,7 +1,7 @@
 package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.CategoryTypeEnumConverter;
-import com.pjw.retry_view.dto.CategoryView;
+import com.pjw.retry_view.dto.CategoryDTO;
 import com.pjw.retry_view.enums.CategoryType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -30,8 +30,8 @@ public class Category {
         this.name = name;
     }
 
-    public CategoryView toDTO(){
-        return CategoryView.builder()
+    public CategoryDTO toDTO(){
+        return CategoryDTO.builder()
                 .id(id)
                 .type(type)
                 .groupId(groupId)

@@ -1,7 +1,7 @@
 package com.pjw.retry_view.entity;
 
 import com.pjw.retry_view.converter.ImageIdsConverter;
-import com.pjw.retry_view.dto.NoticeView;
+import com.pjw.retry_view.dto.NoticeDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,8 +73,8 @@ public class Notice {
         this.updatedAt = ZonedDateTime.now();
     }
 
-    public NoticeView toDTO(){
-        return NoticeView.builder()
+    public NoticeDTO toDTO(){
+        return NoticeDTO.builder()
                 .id(id)
                 .content(content)
                 .viewCount(viewCount)

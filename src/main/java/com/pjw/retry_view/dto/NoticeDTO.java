@@ -14,24 +14,24 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NoticeView {
+public class NoticeDTO {
     private Long id;
     private String content;
     private Long viewCount;
-    private List<ImageView> images;
+    private List<ImageDTO> images;
     private Long createdBy;
     private ZonedDateTime createdAt;
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    public static NoticeView from(Notice notice, List<Image> images){
+    public static NoticeDTO from(Notice notice, List<Image> images){
         if(images == null) images = new ArrayList<>();
 
-        return NoticeView.builder()
+        return NoticeDTO.builder()
                 .id(notice.getId())
                 .content(notice.getContent())
                 .viewCount(notice.getViewCount())
-                .images(images.stream().map(ImageView::fromEntity).toList())
+                .images(images.stream().map(ImageDTO::fromEntity).toList())
                 .createdBy(notice.getCreatedBy())
                 .createdAt(notice.getCreatedAt())
                 .updatedBy(notice.getUpdatedBy())
@@ -40,7 +40,7 @@ public class NoticeView {
     }
 
     @Builder
-    public NoticeView(Long id, String content, Long viewCount, List<ImageView> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public NoticeDTO(Long id, String content, Long viewCount, List<ImageDTO> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.content = content;
         this.viewCount = viewCount;

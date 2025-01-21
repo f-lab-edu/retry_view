@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long>  {
+public interface ProductRepository extends JpaRepository<Product, Long> {
     public List<Product> findAll();
     public Optional<Product> findById(Long id);
     public Product save(Product product);

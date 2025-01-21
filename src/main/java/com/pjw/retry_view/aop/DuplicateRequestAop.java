@@ -28,7 +28,7 @@ public class DuplicateRequestAop {
         String httpMethod = request.getMethod();
         String reqKey = "req:"+request.getHeader("reqKey");
 
-        if (isAllowMethod(httpMethod)) {
+        if ("GET".equalsIgnoreCase(httpMethod)) {
             return joinPoint.proceed();
         }
 
@@ -38,12 +38,5 @@ public class DuplicateRequestAop {
         }else{
             throw new DuplicateRequestException("중복된 요청입니다.");
         }
-    }
-
-    private boolean isAllowMethod(String method){
-        return switch (method) {
-            case "GET"-> true;
-            default -> false;
-        };
     }
 }
