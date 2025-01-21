@@ -1,4 +1,4 @@
-package com.pjw.retry_view.enums;
+package com.pjw.retry_view.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -1,9 +1,7 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.dto.BoardView;
+import com.pjw.retry_view.dto.BoardDTO;
 import com.pjw.retry_view.dto.UserDetail;
-import com.pjw.retry_view.enums.ApiResponseCodeExamples;
-import com.pjw.retry_view.enums.ErrorCode;
 import com.pjw.retry_view.enums.SearchType;
 import com.pjw.retry_view.request.DeleteRequest;
 import com.pjw.retry_view.request.WriteBoardRequest;
@@ -27,9 +25,8 @@ public class BoardController {
     }
 
     @Operation(summary = "게시글 목록 조회 API", description = "")
-    @ApiResponseCodeExamples({ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INVALID_TOKEN})
     @GetMapping
-    public List<BoardView> getBoardList(
+    public List<BoardDTO> getBoardList(
                 @RequestParam(name = "cursor", required = false) Long cursor,
                 @RequestParam(name = "searchType", required = false) SearchType searchType,
                 @RequestParam(name = "content", required = false) String content
@@ -38,30 +35,26 @@ public class BoardController {
     }
 
     @Operation(summary = "특정 게시글 조회 API", description = "")
-    @ApiResponseCodeExamples({ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.INVALID_TOKEN})
     @GetMapping("/{id}")
-    public BoardView getBoard(@PathVariable(name = "id") Long id){
+    public BoardDTO getBoard(@PathVariable(name = "id") Long id){
         return boardService.getBoard(id);
     }
 
     @Operation(summary = "게시글 작성 API", description = "")
-    @ApiResponseCodeExamples({ErrorCode.INVALID_TOKEN, ErrorCode.DUPLICATE_REQ})
     @PostMapping
-    public BoardView writeBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
+    public BoardDTO writeBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
         board.setCreatedBy(userDetail.getId());
         return boardService.saveBoard(board);
     }
 
     @Operation(summary = "게시글 수정 API", description = "")
-    @ApiResponseCodeExamples({ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.NOT_MY_RESOURCE, ErrorCode.INVALID_TOKEN, ErrorCode.DUPLICATE_REQ})
     @PutMapping
-    public BoardView updateBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
+    public BoardDTO updateBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid WriteBoardRequest board){
         board.setUpdatedBy(userDetail.getId());
         return boardService.updateBoard(board);
     }
 
     @Operation(summary = "게시글 삭제 API", description = "")
-    @ApiResponseCodeExamples({ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.NOT_MY_RESOURCE, ErrorCode.INVALID_TOKEN, ErrorCode.DUPLICATE_REQ})
     @DeleteMapping
     public void deleteBoard(@AuthenticationPrincipal UserDetail userDetail, @RequestBody @Valid DeleteRequest req){
         boardService.deleteBoard(req.getId(), userDetail.getId());

@@ -1,9 +1,7 @@
 package com.pjw.retry_view.controller;
 
-import com.pjw.retry_view.enums.ApiResponseCodeExamples;
-import com.pjw.retry_view.enums.ErrorCode;
 import com.pjw.retry_view.response.JWToken;
-import com.pjw.retry_view.dto.UserView;
+import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.dto.UserInfo;
 import com.pjw.retry_view.request.LoginRequest;
 import com.pjw.retry_view.response.LoginResponse;
@@ -30,10 +28,9 @@ public class LoginController {
     }
 
     @Operation(summary = "일반 로그인 API", description = "")
-    @ApiResponseCodeExamples({ErrorCode.USER_LOGIN_FAILED, ErrorCode.USER_NOT_FOUND})
     @PostMapping
     public ResponseEntity<LoginResponse> userLogin(@RequestBody @Valid LoginRequest loginReq){
-        UserView user = userService.userLogin(loginReq);
+        UserDTO user = userService.userLogin(loginReq);
 
         UserInfo userInfo = new UserInfo(user.getId(), user.getName(), user.getLoginId(), user.getRole());
 

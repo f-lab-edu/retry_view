@@ -1,7 +1,7 @@
 package com.pjw.retry_view.request;
 
 import com.pjw.retry_view.enums.Gender;
-import com.pjw.retry_view.dto.UserView;
+import com.pjw.retry_view.dto.UserDTO;
 import com.pjw.retry_view.enums.UserState;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -30,8 +30,8 @@ public class RegistUserRequest {
 
     private String nickname;
 
-    public UserView toUserDTO(){
-        return UserView.builder()
+    public UserDTO toUserDTO(){
+        return UserDTO.builder()
                 .name(name)
                 .gender(gender)
                 .phone(phone)

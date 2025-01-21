@@ -1,6 +1,6 @@
 package com.pjw.retry_view.converter;
 
-import com.pjw.retry_view.enums.MessageType;
+import com.pjw.retry_view.dto.MessageType;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.Objects;

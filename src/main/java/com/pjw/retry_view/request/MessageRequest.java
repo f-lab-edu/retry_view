@@ -1,6 +1,6 @@
 package com.pjw.retry_view.request;
 
-import com.pjw.retry_view.enums.MessageType;
+import com.pjw.retry_view.dto.MessageType;
 import lombok.Getter;
 import lombok.Setter;
 

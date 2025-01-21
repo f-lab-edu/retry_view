@@ -13,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class UserId implements Serializable {
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public static UserId of(Long id){

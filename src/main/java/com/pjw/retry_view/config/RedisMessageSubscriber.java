@@ -1,7 +1,7 @@
 package com.pjw.retry_view.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pjw.retry_view.enums.MessageType;
+import com.pjw.retry_view.dto.MessageType;
 import com.pjw.retry_view.exception.ChatMessageParseException;
 import com.pjw.retry_view.request.MessageRequest;
 import org.springframework.data.redis.connection.Message;

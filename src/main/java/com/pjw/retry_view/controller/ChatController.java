@@ -3,9 +3,7 @@ package com.pjw.retry_view.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pjw.retry_view.dto.ChatMessageView;
-import com.pjw.retry_view.enums.ApiResponseCodeExamples;
-import com.pjw.retry_view.enums.ErrorCode;
-import com.pjw.retry_view.enums.MessageType;
+import com.pjw.retry_view.dto.MessageType;
 import com.pjw.retry_view.exception.ChatMessageParseException;
 import com.pjw.retry_view.request.MessageRequest;
 import com.pjw.retry_view.service.ChatMessageService;
@@ -28,13 +26,11 @@ public class ChatController {
     }
 
     @GetMapping("/chat/{id}")
-    @ApiResponseCodeExamples({ErrorCode.INVALID_TOKEN})
     public List<ChatMessageView> getMessageList(@PathVariable("id") Long id){
         return chatMessageService.findChatListByChatId(id);
     }
 
     @GetMapping("/chat/test")
-    @ApiResponseCodeExamples({ErrorCode.CHAT_MESSAGE_PARSE, ErrorCode.INVALID_TOKEN})
     public void test(@RequestParam(name="message")String message, @RequestParam(name="type")String type, @RequestParam("chatId") Long chatId) {
         MessageRequest messageRequest = new MessageRequest();
         messageRequest.setMessage(message);

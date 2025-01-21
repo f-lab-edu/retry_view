@@ -23,7 +23,7 @@ public class ReviewView {
     private Long updatedBy;
     private ZonedDateTime updatedAt;
 
-    private List<ImageView> images;
+    private List<ImageDTO> images;
 
     public static ReviewView fromEntity(Review review){
         return ReviewView.builder()
@@ -39,7 +39,7 @@ public class ReviewView {
     }
 
     @Builder
-    public ReviewView(Long id, Long productId, Integer score, String comment, List<ImageView> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public ReviewView(Long id, Long productId, Integer score, String comment, List<ImageDTO> images, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.id = id;
         this.productId = productId;
         this.score = score;

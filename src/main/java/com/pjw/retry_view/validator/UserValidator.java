@@ -1,17 +1,18 @@
 package com.pjw.retry_view.validator;
 
-import com.pjw.retry_view.dto.UserView;
+import com.pjw.retry_view.dto.UserDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.util.Set;
 @Component
 public class UserValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        UserView user = (UserView)target;
+        UserDTO user = (UserDTO)target;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "field.required","이름은 필수 입력값입니다.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "phone", "field.required","연락처는 필수 입력값입니다.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "address", "field.required","주소는 필수 입력값입니다.");
@@ -21,6 +22,6 @@ public class UserValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return (UserView.class.isAssignableFrom(clazz));
+        return (UserDTO.class.isAssignableFrom(clazz));
     }
 }
