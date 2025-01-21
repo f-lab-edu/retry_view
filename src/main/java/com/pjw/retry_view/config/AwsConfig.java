@@ -1,5 +1,6 @@
 package com.pjw.retry_view.config;
 
+import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,8 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
+
+import java.time.Duration;
 
 @Configuration
 public class AwsConfig {
@@ -35,7 +38,17 @@ public class AwsConfig {
                 .build();
     }
 
-    private AwsCredentialsProvider getAwsCredentialsProvider(){
+    @Bean
+    public SqsMessageListenerContainerFactory<Object> defaultSqsListenerContainerFactory(){
+        return SqsMessageListenerContainerFactory.builder()
+                .sqsAsyncClient(sqsClient())
+                .configure(options-> options.maxConcurrentMessages(10)
+                        .pollTimeout(Duration.ofSeconds(10)))
+                .build();
+    }
+
+    @Bean
+    public AwsCredentialsProvider getAwsCredentialsProvider(){
         return StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey));
     }
 }
