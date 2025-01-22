@@ -24,7 +24,7 @@ public class SnsService {
         this.objectMapper = objectMapper;
     }
 
-    public PublishResponse publishSns(Map<String, Object> message){
+    public PublishResponse publishSns(String subject, Map<String, Object> message){
         String json;
 
         try {
@@ -35,7 +35,7 @@ public class SnsService {
 
         PublishRequest req = PublishRequest.builder()
                 .topicArn(arn)
-                .subject("test")
+                .subject(subject)
                 .message(json)
                 .build();
 

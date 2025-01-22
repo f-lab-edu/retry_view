@@ -18,7 +18,6 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import software.amazon.awssdk.services.sns.model.PublishResponse;
 
 import java.util.*;
 
@@ -75,16 +74,21 @@ public class BoardService {
             imageRepositoryImpl.save(boardImage);
         }
 
-        Map<String, Object> message = new HashMap<>();
-        message.put("postTitle", req.getTitle());
-        PublishResponse res = snsService.publishSns(message);
-        System.out.println(res);
+        publish(req.getTitle(), req.getType().getCode());
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
         Board board = Board.newOne(req.getType(), req.getProductId(), req.getTitle(), req.getContent(), req.getPrice(), imageIds, req.getCreatedBy());
         BoardView result = boardRepositoryImpl.save(board).toDTO();
         result.setImages(images.stream().map(ImageView::fromEntity).toList());
         return result;
+    }
+
+    public void publish(String title, String type){
+        Map<String, Object> message = new HashMap<>();
+        message.put("type", "post");
+        message.put("postTitle", title);
+        message.put("postType", type);
+        snsService.publishSns("NewPost", message);
     }
 
     @Transactional

@@ -10,9 +10,12 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -22,6 +25,16 @@ public class WebConfig implements WebMvcConfigurer {
     public WebConfig(JWTVerifyFilter jwtVerifyFilter, UserAuthorizationFilter userAuthorizationFilter){
         this.jwtverifyFilter = jwtVerifyFilter;
         this.userAuthorizationFilter = userAuthorizationFilter;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/firebase-messaging-sw.js")
+                .addResourceLocations("classpath:/static/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/templates/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
     }
 
     @Bean
