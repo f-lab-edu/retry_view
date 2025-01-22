@@ -29,6 +29,7 @@ public class UserView implements Serializable {
     private String type;
     private UserState state;
     private String refreshToken;
+    private String deviceToken;
 
     private Long createdBy;
     private ZonedDateTime createdAt;
@@ -55,6 +56,7 @@ public class UserView implements Serializable {
                 .type(type)
                 .state(state)
                 .refreshToken(refreshToken)
+                .deviceToken(deviceToken)
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
