@@ -45,8 +45,6 @@ public class User {
     private UserState state;
     @Column(name = "refresh_token")
     private String refreshToken;
-    @Column(name = "device_token")
-    private String deviceToken;
 
     @Column(name = "created_by")
     private Long createdBy;
@@ -66,12 +64,11 @@ public class User {
         this.address = null;
         this.password = null;
         this.nickname = null;
-        this.deviceToken = null;
         this.updatedAt = ZonedDateTime.now();
     }
 
     @Builder
-    public User(UserId userId, String name, Gender gender, String phone, String email, String address, UserAuth role, String loginId, String password, String nickname, String type, UserState state, String refreshToken, String deviceToken, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
+    public User(UserId userId, String name, Gender gender, String phone, String email, String address, UserAuth role, String loginId, String password, String nickname, String type, UserState state, String refreshToken, Long createdBy, ZonedDateTime createdAt, Long updatedBy, ZonedDateTime updatedAt) {
         this.userId = userId;
         this.name = name;
         this.gender = gender;
@@ -85,7 +82,6 @@ public class User {
         this.type = type;
         this.state = state;
         this.refreshToken = refreshToken;
-        this.deviceToken = deviceToken;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
@@ -107,7 +103,6 @@ public class User {
                 .type(type)
                 .state(state)
                 .refreshToken(refreshToken)
-                .deviceToken(deviceToken)
                 .createdBy(createdBy)
                 .createdAt(createdAt)
                 .updatedBy(updatedBy)
