@@ -16,7 +16,7 @@ public class UserDevice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "user_id")
-    private UserId userId;
+    private Long userId;
     @Column(name = "type")
     private String type;
     @Column(name = "token")
@@ -28,7 +28,7 @@ public class UserDevice {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public UserDevice(Long id, UserId userId, String type, String token, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+    public UserDevice(Long id, Long userId, String type, String token, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
         this.id = id;
         this.userId = userId;
         this.type = type;

@@ -42,7 +42,6 @@ public class RegistUserRequest {
                 .password(password)
                 .nickname(nickname)
                 .state(state)
-                .deviceToken(deviceToken)
                 .build();
     }
 }
