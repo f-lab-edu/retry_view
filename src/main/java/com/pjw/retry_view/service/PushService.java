@@ -4,6 +4,7 @@ import com.pjw.retry_view.dto.PushMessage;
 import com.pjw.retry_view.entity.UserDevice;
 import com.pjw.retry_view.repositoryImpl.UserDeviceRepositoryImpl;
 import com.pjw.retry_view.request.PushRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PushService {
         this.fcmService = fcmService;
     }
 
+    @Transactional
     public void send(PushRequest req){
         List<UserDevice> list = userDeviceRepositoryImpl.findByUserIdIn(req.getUserIds());
         PushMessage msg = PushMessage.from(null,req.getTitle(),req.getBody());

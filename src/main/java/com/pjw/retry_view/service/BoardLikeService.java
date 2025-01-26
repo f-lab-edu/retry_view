@@ -1,16 +1,11 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.BoardLikeView;
-import com.pjw.retry_view.dto.PushMessage;
-import com.pjw.retry_view.entity.BoardLike;
-import com.pjw.retry_view.entity.LikeId;
-import com.pjw.retry_view.entity.User;
-import com.pjw.retry_view.entity.UserId;
-import com.pjw.retry_view.exception.UserNotFoundException;
+import com.pjw.retry_view.entity.*;
 import com.pjw.retry_view.repositoryImpl.BoardLikeRepositoryImpl;
-import com.pjw.retry_view.repositoryImpl.UserRepositoryImpl;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,18 +16,16 @@ import java.util.*;
 @Service
 public class BoardLikeService {
     private final BoardLikeRepositoryImpl boardLikeRepositoryImpl;
-    private final UserRepositoryImpl userRepositoryImpl;
     private final RedisTemplate<String, String> redisTemplate;
-    private final FCMService fcmService;
     private final SnsService snsService;
+    private final ApplicationEventPublisher publisher;
     private static final String HASH_KEY = "Likes";
 
-    public BoardLikeService(BoardLikeRepositoryImpl boardLikeRepositoryImpl, UserRepositoryImpl userRepositoryImpl, RedisTemplate<String, String> redisTemplate, FCMService fcmService, SnsService snsService) {
+    public BoardLikeService(BoardLikeRepositoryImpl boardLikeRepositoryImpl, RedisTemplate<String, String> redisTemplate, SnsService snsService, ApplicationEventPublisher publisher) {
         this.boardLikeRepositoryImpl = boardLikeRepositoryImpl;
-        this.userRepositoryImpl = userRepositoryImpl;
         this.redisTemplate = redisTemplate;
-        this.fcmService = fcmService;
         this.snsService = snsService;
+        this.publisher = publisher;
     }
 
     public List<BoardLikeView> getUserBoardLikeList(Long userId){
@@ -56,23 +49,10 @@ public class BoardLikeService {
         String strUserIds = String.join(",",userIds);
 
         hashOper.put(HASH_KEY, strBoardId, strUserIds);
-
-        User user = userRepositoryImpl.findById(UserId.of(userId)).orElseThrow(UserNotFoundException::new);
-        push(user.getDeviceToken());
-        publish();
+        snsService.publishBoardLike();
     }
 
-    public void push(String deviceToken){
-        if(StringUtils.isBlank(deviceToken)) return;
-        PushMessage message = PushMessage.getLikePushMessssage(deviceToken);
-        fcmService.send(message);
-    }
 
-    public void publish(){
-        Map<String, Object> message = new HashMap<>();
-        message.put("type","like");
-        snsService.publishSns("NewPost", message);
-    }
 
     @Scheduled(fixedDelay = 60000) //1분 단위로 실행
     @Transactional
@@ -91,6 +71,7 @@ public class BoardLikeService {
 
             hashOper.delete(HASH_KEY, boardId);
         }
+
         boardLikeRepositoryImpl.saveAll(boardLikes);
     }
 
