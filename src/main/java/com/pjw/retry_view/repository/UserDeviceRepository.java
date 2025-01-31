@@ -11,5 +11,6 @@ import java.util.Set;
 public interface UserDeviceRepository extends JpaRepository<UserDevice, Long> {
     List<UserDevice> findByUserIdIn(Set<Long> userId);
     List<UserDevice> findByUserId(Long userId);
+    List<UserDevice> findByUserIdAndType(Long userId, String type);
     UserDevice save(UserDevice userDevice);
 }
