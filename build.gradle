@@ -66,6 +66,7 @@ dependencies {
 // https://mvnrepository.com/artifact/software.amazon.awssdk/sns
 	implementation 'software.amazon.awssdk:sns:2.29.50'
 
+	implementation 'com.google.firebase:firebase-admin:9.4.2'
 }
 
 //tasks.named('test') {

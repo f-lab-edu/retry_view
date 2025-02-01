@@ -43,25 +43,20 @@ public class SecurityConfig {
             .headers(headersConfigurer -> headersConfigurer.frameOptions(
                 HeadersConfigurer.FrameOptionsConfig::disable
             ))
-            .sessionManagement(sessionManagementConfigurer -> {
-                sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            })
-            .authorizeHttpRequests(authorizeRequest -> {
-                authorizeRequest.requestMatchers("/login/**","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**", "/favicon.ico", "/error").permitAll()
+            .sessionManagement(sessionManagementConfigurer ->
+                sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorizeRequest -> authorizeRequest
+                .requestMatchers("/login/**","/users/regist","/ws","/chat/msg","/swagger-ui/**","/v3/api-docs/**", "/favicon.ico", "/error","/push","/Push**","/firebase-messaging-sw.js").permitAll()
                 .requestMatchers("/admin**").hasRole(UserAuth.ADMIN.getCode())
                 .requestMatchers("/**").hasAnyAuthority(UserAuth.USER.getCode(), UserAuth.ADMIN.getCode())
-                .anyRequest().authenticated();
-            })
+            .anyRequest().authenticated())
             .oauth2Login(oAuth2LoginConfigurer -> { // OAuth2 설정
-                oAuth2LoginConfigurer
-                .userInfoEndpoint(userInfoEndpointConfig -> {
-                    userInfoEndpointConfig.userService(oAuthUserService);
-                }).successHandler(oAuth2SuccessHandler);
+                oAuth2LoginConfigurer.userInfoEndpoint(userInfoEndpointConfig ->
+                    userInfoEndpointConfig.userService(oAuthUserService))
+                    .successHandler(oAuth2SuccessHandler);
             })
-            .exceptionHandling(exceptionConfig -> {
-                exceptionConfig.authenticationEntryPoint(authenticationEntryPoint())
-                    .accessDeniedHandler(accessDeniedHandler());
-            })
+            .exceptionHandling(exceptionConfig -> exceptionConfig.authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler()))
             .addFilterBefore(new JWTVerifyFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

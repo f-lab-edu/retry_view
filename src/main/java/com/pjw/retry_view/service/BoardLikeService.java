@@ -1,11 +1,11 @@
 package com.pjw.retry_view.service;
 
 import com.pjw.retry_view.dto.BoardLikeView;
-import com.pjw.retry_view.entity.BoardLike;
-import com.pjw.retry_view.entity.LikeId;
+import com.pjw.retry_view.entity.*;
 import com.pjw.retry_view.repositoryImpl.BoardLikeRepositoryImpl;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,11 +17,15 @@ import java.util.*;
 public class BoardLikeService {
     private final BoardLikeRepositoryImpl boardLikeRepositoryImpl;
     private final RedisTemplate<String, String> redisTemplate;
+    private final SnsService snsService;
+    private final ApplicationEventPublisher publisher;
     private static final String HASH_KEY = "Likes";
 
-    public BoardLikeService(BoardLikeRepositoryImpl boardLikeRepositoryImpl, RedisTemplate<String, String> redisTemplate) {
+    public BoardLikeService(BoardLikeRepositoryImpl boardLikeRepositoryImpl, RedisTemplate<String, String> redisTemplate, SnsService snsService, ApplicationEventPublisher publisher) {
         this.boardLikeRepositoryImpl = boardLikeRepositoryImpl;
         this.redisTemplate = redisTemplate;
+        this.snsService = snsService;
+        this.publisher = publisher;
     }
 
     public List<BoardLikeView> getUserBoardLikeList(Long userId){
@@ -45,7 +49,10 @@ public class BoardLikeService {
         String strUserIds = String.join(",",userIds);
 
         hashOper.put(HASH_KEY, strBoardId, strUserIds);
+        snsService.publishBoardLike();
     }
+
+
 
     @Scheduled(fixedDelay = 60000) //1분 단위로 실행
     @Transactional
@@ -64,6 +71,7 @@ public class BoardLikeService {
 
             hashOper.delete(HASH_KEY, boardId);
         }
+
         boardLikeRepositoryImpl.saveAll(boardLikes);
     }
 

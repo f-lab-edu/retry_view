@@ -25,6 +25,7 @@ public class RegistUserRequest {
     private String loginId;
     @NotEmpty(message = "비밀번호는 필수 입력값입니다.")
     private String password;
+    private String deviceToken;
 
     private UserState state;
 
