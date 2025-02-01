@@ -22,6 +22,7 @@ jobs:
       - run: mkdir -p ./src/main/resources
       - run: touch ./src/main/resources/application-dev.properties
       - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
+      - run: touch ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - run: echo "${{ secrets.FCM_JSON }}" > ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - run: cat ./src/main/resources/application-dev.properties
       - uses: actions/upload-artifact@v4
