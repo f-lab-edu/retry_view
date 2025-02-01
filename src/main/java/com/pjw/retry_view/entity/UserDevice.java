@@ -1,5 +1,7 @@
 package com.pjw.retry_view.entity;
 
+import com.pjw.retry_view.converter.DeviceTypeConverter;
+import com.pjw.retry_view.enums.DeviceType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +20,8 @@ public class UserDevice {
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "type")
-    private String type;
+    @Convert(converter = DeviceTypeConverter.class)
+    private DeviceType type;
     @Column(name = "token")
     private String token;
 
@@ -28,12 +31,27 @@ public class UserDevice {
     private ZonedDateTime updatedAt;
 
     @Builder
-    public UserDevice(Long id, Long userId, String type, String token, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+    public UserDevice(Long id, Long userId, DeviceType type, String token, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
         this.id = id;
         this.userId = userId;
         this.type = type;
         this.token = token;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+    public void tokenUpdate(DeviceType type, String token){
+        this.type = type;
+        this.token = token;
+        this.updatedAt = ZonedDateTime.now();
+    }
+    public static UserDevice newOne(Long userId, DeviceType type, String token){
+        ZonedDateTime now = ZonedDateTime.now();
+        return UserDevice.builder()
+                .userId(userId)
+                .type(type)
+                .token(token)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
     }
 }
