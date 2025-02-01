@@ -1,9 +1,8 @@
-package com.pjw.retry_view.handler;
+package com.pjw.retry_view.event;
 
 import com.pjw.retry_view.dto.PushMessage;
 import com.pjw.retry_view.entity.Board;
 import com.pjw.retry_view.entity.UserDevice;
-import com.pjw.retry_view.event.LikedEvent;
 import com.pjw.retry_view.repositoryImpl.BoardRepositoryImpl;
 import com.pjw.retry_view.repositoryImpl.UserDeviceRepositoryImpl;
 import com.pjw.retry_view.service.FCMService;
@@ -16,12 +15,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class PushEventHandler {
+public class PushEventListener {
     private final BoardRepositoryImpl boardRepositoryImpl;
     private final UserDeviceRepositoryImpl userDeviceRepositoryImpl;
     private final FCMService fcmService;
 
-    public PushEventHandler(BoardRepositoryImpl boardRepositoryImpl, UserDeviceRepositoryImpl userDeviceRepositoryImpl, FCMService fcmService) {
+    public PushEventListener(BoardRepositoryImpl boardRepositoryImpl, UserDeviceRepositoryImpl userDeviceRepositoryImpl, FCMService fcmService) {
         this.boardRepositoryImpl = boardRepositoryImpl;
         this.userDeviceRepositoryImpl = userDeviceRepositoryImpl;
         this.fcmService = fcmService;
@@ -37,7 +36,7 @@ public class PushEventHandler {
         Set<Long> userIds = boardRepositoryImpl.findByIdIn(boardIds).stream().map(Board::getCreatedBy).collect(Collectors.toSet());
         Set<String> userTokens = userDeviceRepositoryImpl.findByUserIdIn(userIds).stream().map(UserDevice::getToken).collect(Collectors.toSet());
 
-        PushMessage msg = PushMessage.getLikePushMessssage("token");
+        PushMessage msg = PushMessage.makeLikePushMessssage("token");
         fcmService.sendMulticast(msg, userTokens);
     }
 }

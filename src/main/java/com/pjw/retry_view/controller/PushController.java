@@ -21,7 +21,7 @@ public class PushController {
     @Operation(summary = "Push 발송 API", description = "")
     @ApiResponseCodeExamples({ErrorCode.INVALID_TOKEN, ErrorCode.DUPLICATE_REQ})
     @PostMapping
-    public void writeBoard(@RequestBody PushRequest req){
+    public void sendPush(@RequestBody PushRequest req){
         pushService.send(req);
     }
 }

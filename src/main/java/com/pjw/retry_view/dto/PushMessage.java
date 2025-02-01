@@ -16,7 +16,7 @@ public class PushMessage {
         this.body = body;
     }
 
-    public static PushMessage getLikePushMessssage(String token){
+    public static PushMessage makeLikePushMessssage(String token){
         return PushMessage.builder()
                 .token(token)
                 .title("RetryView")
