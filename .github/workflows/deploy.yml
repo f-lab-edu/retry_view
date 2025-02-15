@@ -19,16 +19,17 @@ jobs:
           distribution: 'temurin'
 
       - uses: actions/checkout@v3
-      - run: mkdir -p ./src/main/resources
-      - run: touch ./src/main/resources/application-dev.properties
-      - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
+      - name: Config File setting
+        run:
+          mkdir -p ./src/main/resources
+          touch ./src/main/resources/application-dev.properties
+          echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
+          touch ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+          echo "${{ secrets.FCM_JSON }}" > ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - uses: actions/upload-artifact@v4
         with:
           name: application-dev.properties
           path: ./src/main/resources/application-dev.properties
-      - uses: actions/checkout@v3
-      - run: touch ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-      - run: echo "${{ secrets.FCM_JSON }}" > ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - uses: actions/upload-artifact@v4
         with:
           name: retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
