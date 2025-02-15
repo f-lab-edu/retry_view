@@ -17,13 +17,9 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "chat_id")
     private Long chatId;
-    @Column(name = "message")
     private String message;
-    @Column(name = "sender")
     private Long sender;
-    @Column(name = "send_at")
     private ZonedDateTime sendAt;
 
     @Builder

@@ -17,16 +17,11 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "created_by")
     private Long createdBy;
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     public static Image newOne(Long imageId, String imageUrl, Long createdBy){

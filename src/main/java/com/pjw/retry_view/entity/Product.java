@@ -23,24 +23,15 @@ public class Product {
     @OneToOne
     @JoinColumn(name = "sub_cate_id")
     private Category subCategory;
-    @Column(name = "name")
     private String name;
-    @Column(name = "price")
     private Integer price;
-    @Column(name = "brand")
     private String brand;
-    @Column(name = "detail")
     private String detail;
-    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "created_by")
     private Long createdBy;
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     @Builder

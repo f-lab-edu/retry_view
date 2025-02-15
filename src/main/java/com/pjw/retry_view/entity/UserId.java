@@ -12,7 +12,6 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor
 public class UserId implements Serializable {
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

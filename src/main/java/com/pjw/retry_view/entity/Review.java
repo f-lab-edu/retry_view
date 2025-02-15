@@ -19,23 +19,15 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "product_id")
     private Long productId;
-    @Column(name = "score", nullable = true)
     private Integer score;
-    @Column(name = "comment")
     private String comment;
-    @Column(name = "image_ids")
     @Convert(converter = ImageIdsConverter.class)
     private List<Long> imageIds;
 
-    @Column(name = "created_by")
     private Long createdBy;
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     public void updateReview(Long productId, Integer score, String comment, List<Long> imageIds, Long updatedBy){

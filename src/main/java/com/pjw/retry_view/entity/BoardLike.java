@@ -18,7 +18,6 @@ public class BoardLike {
     @EmbeddedId
     private LikeId id;
 
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

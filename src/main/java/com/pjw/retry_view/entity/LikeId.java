@@ -16,10 +16,8 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor
 public class LikeId implements Serializable {
-    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "board_id")
     private Long boardId;
 
     public static LikeId newOne(Long userId, Long boardId){

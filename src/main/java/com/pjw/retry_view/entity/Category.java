@@ -14,12 +14,9 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="type")
     @Convert(converter = CategoryTypeEnumConverter.class)
     private CategoryType type;
-    @Column(name = "group_id")
     private Long groupId;
-    @Column(name = "name")
     private String name;
 
     @Builder

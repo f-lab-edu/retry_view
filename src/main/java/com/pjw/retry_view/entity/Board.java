@@ -23,31 +23,20 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "type")
     @Convert(converter = BoardTypeEnumConverter.class)
     private BoardType type;
-    @Column(name = "product_id")
     private Long productId;
-    @Column(name = "title")
     private String title;
-    @Column(name = "content")
     private String content;
-    @Column(name = "view_count")
     @ColumnDefault("0")
     private Long viewCount;
-    @Column(name = "price")
     private Long price;
-    @Column(name = "image_ids")
     @Convert(converter = ImageIdsConverter.class)
     private List<Long> imageIds;
 
-    @Column(name = "created_by")
     private Long createdBy;
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     public BoardView toDTO(){

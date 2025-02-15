@@ -17,17 +17,12 @@ public class UserDevice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_id")
     private Long userId;
-    @Column(name = "type")
     @Convert(converter = DeviceTypeConverter.class)
     private DeviceType type;
-    @Column(name = "token")
     private String token;
 
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     @Builder
