@@ -28,13 +28,13 @@ jobs:
           name: application-dev.properties
           path: ./src/main/resources/application-dev.properties
       - uses: actions/checkout@v3
-      - run: touch ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-      - run: echo "${{ secrets.FCM_JSON }}" > ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-      - run: cat ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+      - run: touch ./src/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+      - run: echo "${{ secrets.FCM_JSON }}" > ./src/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+      - run: cat ./src/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - uses: actions/upload-artifact@v4
         with:
           name: retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-          path: ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+          path: ./src/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
