@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/checkout@v3
       - name: Config File setting
-        run:
+        run: |
           mkdir -p ./src/main/resources
           touch ./src/main/resources/application-dev.properties
           echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
