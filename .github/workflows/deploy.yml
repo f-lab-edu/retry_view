@@ -39,7 +39,9 @@ jobs:
           name: retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
           path: ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - name: test
-        run: ls -l
+        run: |
+          cd src/main/resources
+          ls -l
       - run: cat ./src/main/resources/application-dev.properties
       - run: cat ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
 
