@@ -24,8 +24,13 @@ jobs:
           mkdir -p ./src/main/resources
           touch ./src/main/resources/application-dev.properties
           echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
-          touch ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-          echo "${{ secrets.FCM_JSON }}" > ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+      - name: Json File setting
+        id: Json File setting
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json"
+          json: ${{ secrets.FCM_JSON }}
+          dir: "./src/main/resources/"
       - uses: actions/upload-artifact@v4
         with:
           name: application-dev.properties
