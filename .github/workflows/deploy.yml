@@ -24,8 +24,8 @@ jobs:
           mkdir -p ./src/main/resources
           touch ./src/main/resources/application-dev.properties
           echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
-          touch ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-          echo "${{ secrets.FCM_JSON }}" > ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+          touch ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+          echo "${{ secrets.FCM_JSON }}" > ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - uses: actions/upload-artifact@v4
         with:
           name: application-dev.properties
@@ -33,9 +33,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
-          path: ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+          path: ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
       - run: cat ./src/main/resources/application-dev.properties
-      - run: cat ./retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
+      - run: cat ./src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json
 
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
