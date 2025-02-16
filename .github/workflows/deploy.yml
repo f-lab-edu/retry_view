@@ -25,7 +25,7 @@ jobs:
           touch ./src/main/resources/application-dev.properties
           echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application-dev.properties
       - name: Json File setting
-        id: Json File setting
+        id: Json-File-setting
         uses: jsdaniell/create-json@1.1.2
         with:
           name: "retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json"
