@@ -22,7 +22,7 @@ public class CategoryController {
 
     @Operation(summary = "카테고리 목록 조회 API", description = "")
     @GetMapping
-    public List<CategoryView> getCategoryList(@RequestParam(name = "type")CategoryType type, @RequestParam(name = "groupId")Long groupId){
+    public List<CategoryView> getCategoryList(@RequestParam(name = "type", required = true)CategoryType type, @RequestParam(name = "groupId", required = false)Long groupId){
         return categoryService.getCategoryList(type, groupId);
     }
 
