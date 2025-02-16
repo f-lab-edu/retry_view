@@ -8,13 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Configuration
 public class FCMConfig {
 
     @PostConstruct
     public void init() throws IOException{
-        FileInputStream serviceAccount = new FileInputStream("src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json");
+        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json");
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount).createScoped("https://www.googleapis.com/auth/firebase.messaging");
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)
