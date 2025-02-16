@@ -14,7 +14,7 @@ public class FCMConfig {
 
     @PostConstruct
     public void init() throws IOException{
-        FileInputStream serviceAccount = new FileInputStream(System.getProperty("user.dir")+"src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json");
+        FileInputStream serviceAccount = new FileInputStream("src/main/resources/retry-view-firebase-adminsdk-fd6yj-e0d4bede58.json");
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount).createScoped("https://www.googleapis.com/auth/firebase.messaging");
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)
