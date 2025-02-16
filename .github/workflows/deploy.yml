@@ -17,10 +17,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Create Folder
-        run: |
-          mkdir -p /app
-          cd /app
       - uses: actions/checkout@v3
       - name: Config File setting
         run: |
