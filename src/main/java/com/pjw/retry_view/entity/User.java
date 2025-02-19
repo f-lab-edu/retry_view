@@ -19,40 +19,24 @@ import java.time.ZonedDateTime;
 public class User {
     @EmbeddedId
     private UserId userId;
-    @Column(name = "name")
     private String name;
-    @Column(name = "gender")
     private Gender gender;
-    @Column(name = "phone")
     private String phone;
-    @Column(name = "email")
     private String email;
-    @Column(name = "address")
     private String address;
-    @Column(name = "role")
     @Convert(converter = UserAutnEnumConverter.class)
     private UserAuth role;
-    @Column(name = "login_id")
     private String loginId;
-    @Column(name = "password")
     private String password;
-    @Column(name = "nickname")
     private String nickname;
-    @Column(name = "type")
     private String type;
-    @Column(name = "state")
     @Convert(converter = UserStateEnumConverter.class)
     private UserState state;
-    @Column(name = "refresh_token")
     private String refreshToken;
 
-    @Column(name = "created_by")
     private Long createdBy;
-    @Column(name = "created_at")
     private ZonedDateTime createdAt;
-    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
     public void withdraw(){
